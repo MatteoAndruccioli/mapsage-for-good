@@ -1,0 +1,29 @@
+POST http://localhost:3000/customers/register 
+Content-Type: application/json
+
+{
+  "first_name": "ginopippo", 
+  "last_name": "freebooter",
+  "email": "ginopippo@freebooter.com",
+  "password": "ginopippo"
+}
+
+###
+
+POST http://localhost:3000/customers/login 
+Content-Type: application/json
+
+{
+  "email": "ginopippo@freebooter.com",
+  "password": "ginopippo"
+}
+
+###
+
+POST http://localhost:3000/customers/login 
+Content-Type: application/json
+
+{
+  "email": "gi@freebooter.com",
+  "password": "gin"
+}
