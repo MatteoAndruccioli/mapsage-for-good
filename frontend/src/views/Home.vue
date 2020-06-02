@@ -1,20 +1,20 @@
 <template>
-  <div>
+  <div id="app-home">
     <Navbar/>
-    <Home/>
+    <SearchPanel/>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import Navbar from '../components/Navbar'
-import Home from '../components/Home'
+import SearchPanel from '../components/SearchPanel'
 
 export default {
   name: 'Home_view',
   components: {
     Navbar,
-    Home
+    SearchPanel
   }
 }
 </script>

@@ -1,12 +1,13 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home'
-import Login from '../views/Login'
-import Register from '../views/Register'
-import Profile from '../views/Profile'
-import PageNotFound from '../views/PageNotFound'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import Home from '../views/Home';
+import Login from '../views/Login';
+import Register from '../views/Register';
+import Profile from '../views/Profile';
+import PageNotFound from '../views/PageNotFound';
+import SearchMap from '../views/SearchMap.vue';
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
@@ -28,14 +29,19 @@ const routes = [
     path: '/profile',
     name: 'Profile_view',
     component: Profile
-  }, 
+  },
+  {
+    path: '/search/:city',
+    name: 'SearchMap',
+    component: SearchMap
+  },
   {
     path: '/404',
     name: 'PageNotFound_view',
     component: PageNotFound
   },
   {
-    path: '*', 
+    path: '*',
     redirect: '/404'
   }
 ]
@@ -47,5 +53,3 @@ const router = new VueRouter({
 })
 
 export default router
-
- 

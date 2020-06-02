@@ -30,7 +30,7 @@
 <script>
 import EventBus from './EventBus'
 
-//questo è solo di test per far vedere che puo essere usato qua 
+//questo è solo di test per far vedere che puo essere usato qua
 EventBus.$on('logged-in', test => {
   console.log(test, "caracas")
 })
@@ -50,7 +50,7 @@ export default {
     },
 
     checktoken() {
-      if(localStorage.getItem('usertoken') !== null) 
+      if(localStorage.getItem('usertoken') !== null)
         this.auth = 'loggedin'
     }
   },
