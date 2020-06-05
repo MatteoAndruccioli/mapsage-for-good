@@ -7,7 +7,7 @@
           <input @keyup="getSuggestions" v-model="city" type="search" id="searchCity" class="form-control" placeholder="Città" autocomplete="off" autofocus required>
           <label for="searchCity" id="error" v-if="isSubmittedWithoutCity">Compila questo campo</label>
         </div>
-        <button @click.prevent="onSubmit" type="submit" class="btn ml-auto text-white bg-secondary">Cerca</button> <!-- Intentionally "prevent" omitted -->
+        <button @click.prevent="onSubmit" type="submit" class="btn ml-auto btn-primary">Cerca</button> <!-- Intentionally "prevent" omitted -->
       </form>
     </div>
   </div>
