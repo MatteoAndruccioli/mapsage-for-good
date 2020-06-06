@@ -22,7 +22,6 @@
 <script>
 import axios from 'axios'
 import router from '../router'
-import EventBus from './EventBus'
 import { hex_sha512 } from "../assets/js/sha512.js"
 
 export default {
@@ -40,18 +39,19 @@ export default {
         email: this.email,
         password: hex_sha512(this.password)
       }).then(res => {
-        localStorage.setItem('usertoken', res.data.accessToken)
         this.email = ''
         this.password = ''
-        router.push({ name: 'Profile_view' })
+        //se accessToken è settato allora ridirigo alla pagina di profilo
+        if (res.data.accessToken != null && res.data.accessToken!=''){
+          localStorage.setItem('usertoken', res.data.accessToken)
+          router.push({ name: 'Profile_view' })
+        } else {
+          //accessToken non settato => notifico all'utente che il login è fallito
+          alert("Login failed!! try again");
+        }
       }).catch(err => {
         console.log(err)
       })
-      this.emitMethod()
-    },
-    emitMethod () {
-      console.log("ciaobel")
-      EventBus.$emit('logged-in', 'loggedin')
     }
   }
 }

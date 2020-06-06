@@ -28,13 +28,6 @@
 </template>
 
 <script>
-import EventBus from './EventBus'
-
-//questo è solo di test per far vedere che puo essere usato qua
-EventBus.$on('logged-in', test => {
-  console.log(test, "caracas")
-})
-
 export default {
   data () {
     return {
@@ -56,11 +49,6 @@ export default {
   },
 
   mounted () {
-    EventBus.$on('logged-in', status => {
-      this.auth = status
-      console.log("Navbar - this.auth= ", this.auth)
-    })
-
     this.checktoken()
   }
 }
