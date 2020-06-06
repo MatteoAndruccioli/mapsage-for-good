@@ -1,8 +1,9 @@
 <template>
     <div class="container">
         <div class="jumbotron mt-5">
-            <div class="col-sm-8 mx-auto">
+            <div class="col-sm-8 mx-auto myCentering">
                 <h1 class="text-center">PROFILE</h1>
+                <img class="propic" :src="propic" alt="">
             </div>
             <table class="table col-md-6 mx-auto">
                 <tbody>
@@ -34,8 +35,20 @@ export default {
     return {
       first_name: decoded.first_name,
       last_name: decoded.last_name,
-      email: decoded.email
+      email: decoded.email,
+      propic: decoded.profile_picture
     }
   }
 }
 </script>
+
+<style scoped>
+.propic {
+}
+
+.myCentering {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+</style>
