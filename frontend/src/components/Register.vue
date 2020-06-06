@@ -4,6 +4,10 @@
       <div class="col-md-6 mt-5 mx-auto">
         <form v-on:submit.prevent="register">
           <h1 class="h3 mb-3 font-weight-normal">Register</h1>
+          <div class="form-group my_centered">
+                <img style="" :src="propic" alt="" name="propic" class="propic">
+                <input @change="handleImage" class="my_custom-input" type="file" accept="image/*" name="propic_input">
+          </div>
           <div class="form-group">
             <label for="first_name">First Name</label>
             <input type="text" v-model="first_name" class="form-control" name="first_name" placeholder="Enter Fist Name">
@@ -38,7 +42,8 @@ export default {
       first_name: '',
       last_name: '',
       email: '',
-      password: ''
+      password: '',
+      propic: '',
     }
   },
 
@@ -49,14 +54,89 @@ export default {
         first_name: this.first_name,
         last_name: this.last_name,
         email: this.email,
-        password: hex_sha512(this.password)
+        password: hex_sha512(this.password),
+        profile_picture: this.propic
       }).then(res => {
         console.log(res)
         router.push({ name: 'Login_view' })
       }).catch(err => {
         console.log(err)
       })
-    }
+    },
+    /**
+     * metodo invocato quando si triggera l'evento '@change' in input, ovvero quando
+     * viene aggiunta una immagine:
+     * - prende la prima immagine (e.target recupera l'oggetto input e  
+     *      files è l'array in cui sono memorizzate le immagini) 
+     * - invoca sull'immagine createBase64Image
+     */
+    handleImage(e) {
+      const selectedImage = e.target.files[0]
+      this.createBase64Image(selectedImage)
+    },
+    
+    /**
+     * invoca metodo readAsBinaryString sul blob costituito dal fileObject passato 
+     *    (in questo caso l'immagine caricata)
+     * 
+     * - quando l'operazione read è terminata:
+     *    - 'readyState' diventa 'DONE'
+     *    - viene triggerato l'evento 'loadend'
+     *    - l'attributo 'result' contiene la versione raw binary data del file
+     * 
+     * - ritorna quindi un oggetto con una proprietà 'result' 
+     *    contentente in 'data' un URL che rappresenta i dati del file
+     */
+    createBase64Image(fileObject) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        this.propic = e.target.result;
+        //console.log(reader.result);
+        //this.uploadImage()
+        //console.log("this.uploadImage() chiamato")
+      };
+
+      reader.readAsDataURL(fileObject)
+    },
+
   }
 }
 </script>
+
+<style>
+.my_container {
+  display: flex;
+  justify-content: center;
+}
+
+.my_mt-10 {
+  margin-top: 10rem;
+}
+
+.my_bg-white{
+  background: #fff;
+}
+
+.my_card {
+  height: 10rem;
+  width: 20rem;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+
+img {
+  width: 17rem;
+}
+
+.my_centered {
+  text-align: center;
+}
+
+.my_custom-input {
+  display: flex;
+  justify-content: center;
+}
+
+</style>

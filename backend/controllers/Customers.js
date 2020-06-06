@@ -12,34 +12,31 @@ exports.handleRegisterRequest = function(req, res) {
       last_name: req.body.last_name,
       email: req.body.email,
       password: req.body.password,
-      created: today
+      created: today,
+      profile_picture: req.body.profile_picture
   }
 
-  User.findOne({
-      email: req.body.email
-  })
-      .then(user => {
-          //non ci deve essere un utente con quella mail
-          if (!user) {
-              console.log("Register - password: ", req.body.password)
-              bcrypt.hash(req.body.password, 10, (err, hash) => {
-                  //hash contiene la password hashata, la riassegnamo all'oggetto
-                  userData.password = hash
-                  User.create(userData) //questo lo butta nel db
-                      .then(user => {
-                          res.json({ status: user.email + ' registered' })
-                      })
-                      .catch(err => {
-                          res.send('error: ' + err)
-                      })
-              })
-          } else {
-              res.json({ error: 'User already exists' })
-          }
-      })
-      .catch(err => {
-          res.send('error: ' + err)
-      })
+  User
+    .findOne({ email: req.body.email})
+    .then(user => {
+      //non ci deve essere un utente con quella mail
+      if (!user) {
+        bcrypt
+          .hash(req.body.password, 10, (err, hash) => {
+            //hash contiene la password hashata, la riassegnamo all'oggetto
+            userData.password = hash
+
+            //creo un nuovo utente con i dati passati
+            User
+              .create(userData) 
+              .then(user => { res.json({ status: user.email + ' registered'}) })
+              .catch(err => { res.json({error: err}) })
+          })
+      } else {
+          res.json({ error: 'User already exists' })
+      }
+    })
+    .catch(err => { res.json({ error: err}) })
 }
 
 //effettua il login del client
@@ -56,12 +53,11 @@ exports.handleLoginRequest = function(req, res) {
                     _id: user._id,
                     first_name: user.first_name,
                     last_name: user.last_name,
-                    email: user.email
+                    email: user.email,
+                    profile_picture: user.profile_picture
                 }
                 //generiamo il token che usiamo nel frontend
-                let token = jwt.sign(payload, process.env.SECRET_KEY, {
-                    expiresIn: 1440
-                })
+                let token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 1440})
                 res.send({accessToken: token})
             } else {
                 res.json({ error: 'User does not exist' })
@@ -75,7 +71,7 @@ exports.handleLoginRequest = function(req, res) {
     })
 }
 
-//restituisce il client ma non serve perchè avendo il jwt gia lo sai
+//restituisce il client ma non serve perchè avendo il jwt gia lo sai; occhio qua non c'è l'immagine
 exports.getClientData = function(req, res) {
   /**
      * decodifica le authorization option che vengono dal frontend
