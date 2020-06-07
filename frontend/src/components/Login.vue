@@ -1,22 +1,37 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 mt-5 mx-auto">
-                <form v-on:submit.prevent="login"><!--nota che chiama il metodo login-->
-                    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+    <div class="container ">
+        <div class="row pt-5">
+            <div class="col-md-4 col-sm-6">
+              <img class="Card imgage px-auto my-cover" src="../assets/images/copertina.png" alt="Card image">
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <img class="Card imgage px-auto my-cover" src="../assets/images/cover.jpg" alt="Card image">
+              <img class="Card imgage px-auto my-cover mt-5" src="../assets/images/cover2.jpg" alt="Card image">
+            </div>
+            <div class="col-md-4 col-sm-6 my-box">
+                <h1 class="h3 mb-3 font-weight-5 text-center mt-5">Mapsage</h1>
+                <form v-on:submit.prevent="login" class="mx-5 mt-5">
                     <div class="form-group">
-                        <label for="email">Email Address</label>
                         <input type="email" v-model="email" class="form-control" name="email" placeholder="Enter Email">
                     </div>
                     <div class="form-group">
-                        <label for="password">Password</label>
                         <input type="password" v-model="password" class="form-control" name="password" placeholder="Enter Password">
                     </div>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
                 </form>
+
+
+                <hr class="mx-3 mt-5">                  
+
+                <div class="mt-4 text-center">
+                  <p>Don't have an account?
+                    <router-link class="" to="/register">Sign up</router-link>
+                  </p>
+                </div>
             </div>
         </div>
     </div>
+
 </template>
 
 <script>
@@ -56,3 +71,32 @@ export default {
   }
 }
 </script>
+
+
+<style scoped>
+.my-background{
+  background-color: #f5f5f5;
+}
+
+.my-box {
+  border: 1px solid #eee;
+  border-radius: 5px;
+  padding: 10px 0;
+  background-color: #fff;
+}
+
+.my-cover {
+  border-radius: 5px;
+}
+
+input.form-control{
+  background-color: #eee;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+
+}
+</style>
