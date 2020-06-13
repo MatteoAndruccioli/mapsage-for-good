@@ -32,7 +32,7 @@ const routes = [
   },
   {
     path: '/search/:city',
-    name: 'SearchMap',
+    name: 'SearchMap_view',
     component: SearchMap
   },
   {

@@ -19,10 +19,7 @@
                     </div>
                     <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
                 </form>
-
-
-                <hr class="mx-3 mt-5">                  
-
+                <hr class="mx-3 mt-5">
                 <div class="mt-4 text-center">
                   <p>Don't have an account?
                     <router-link class="" to="/register">Sign up</router-link>
@@ -31,12 +28,10 @@
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
 import axios from 'axios'
-import router from '../router'
 import { hex_sha512 } from "../assets/js/sha512.js"
 
 export default {
@@ -49,19 +44,17 @@ export default {
 
   methods: {
     login () {
-      //axios.post('http://192.168.1.6:3000/customers/login', { 
-      axios.post('http://localhost:3000/customers/login', { 
+      //axios.post('http://192.168.1.6:3000/customers/login', {
+      axios.post('http://localhost:3000/customers/login', {
         email: this.email,
         password: hex_sha512(this.password)
-      }).then(res => {
+      }, { withCredentials: true }).then(res => {
         this.email = ''
         this.password = ''
-        //se accessToken è settato allora ridirigo alla pagina di profilo
-        if (res.data.accessToken != null && res.data.accessToken!=''){
-          localStorage.setItem('usertoken', res.data.accessToken)
-          router.push({ name: 'Profile_view' })
+        if (!res.data.error) {
+          this.$cookies.set('logged-in', true); // creates a cookie
+          this.$router.push({ name: 'Home_view' })
         } else {
-          //accessToken non settato => notifico all'utente che il login è fallito
           alert("Login failed!! try again");
         }
       }).catch(err => {

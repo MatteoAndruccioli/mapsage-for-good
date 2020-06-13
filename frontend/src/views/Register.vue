@@ -1,20 +1,20 @@
 <template>
   <div>
     <Navbar/>
-    <Register/>
+    <RegisterPanel/>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import Navbar from '../components/Navbar'
-import Register from '../components/Register'
+import RegisterPanel from '../components/RegisterPanel'
 
 export default {
   name: 'Register_view',
   components: {
     Navbar,
-    Register
+    RegisterPanel
   }
 }
 </script>

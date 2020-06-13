@@ -1,5 +1,5 @@
 module.exports = function(app) {
-	var customersController = require('../controllers/Customers')
+	var customersController = require('../controllers/CustomersController')
 
     process.env.SECRET_KEY = 'secret'
 
@@ -10,5 +10,5 @@ module.exports = function(app) {
 		.post(customersController.handleLoginRequest)
 
 	app.route('/customers/profile')
-		.get(customersController.getClientData)
+		.get(customersController.getCustomer)
 };

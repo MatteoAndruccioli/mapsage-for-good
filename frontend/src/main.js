@@ -12,6 +12,10 @@ import "esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css";
 
 Vue.config.productionTip = false
 
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies)
+Vue.$cookies.config('30d')
+
 new Vue({
   router,
   render: h => h(App)

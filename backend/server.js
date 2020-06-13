@@ -3,10 +3,16 @@ var cors = require("cors")
 var bodyParser = require("body-parser")
 var app = express()
 var mongoose = require("mongoose")
+var cookieParser = require("cookie-parser")
 var port = process.env.PORT || 3000
 
+app.use(cookieParser('ztVX2HQJP0')); // secret for cokieParser
+
 app.use(bodyParser.json())
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:8080',
+    credentials: true
+  }))
 app.use(bodyParser.urlencoded({ extended: false }))
 
 const mongoURI = 'mongodb://localhost:27017/mapsage'
@@ -15,11 +21,11 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("MongoDB Connected"))
     .catch(err => console.log(err))
 
-var clientRoute = require("./routes/Customers")
+var clientRoute = require("./routes/CustomersRoutes")
 clientRoute(app)
 
 app.use(function(req, res) {
-    res.status(404).send({url: req.originalUrl + ' not found'})
+    res.status(404).send({url: req.originalUrl + " not found"})
 });
 
 app.listen(port, function () {

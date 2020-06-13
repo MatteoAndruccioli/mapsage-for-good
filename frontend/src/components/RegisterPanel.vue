@@ -33,7 +33,6 @@
 
 <script>
 import axios from 'axios'
-import router from '../router'
 import { hex_sha512 } from "../assets/js/sha512.js"
 
 export default {
@@ -49,16 +48,18 @@ export default {
 
   methods: {
     register () {
-      //axios.post('http://192.168.1.6:3000/customers/register', { 
-      axios.post('http://localhost:3000/customers/register', { 
+      axios.post('http://localhost:3000/customers/register', {
         first_name: this.first_name,
         last_name: this.last_name,
         email: this.email,
         password: hex_sha512(this.password),
         profile_picture: this.propic
-      }).then(res => {
+      }, { withCredentials: true }).then(res => {
         console.log(res)
-        router.push({ name: 'Login_view' })
+        if (!res.data.error) {
+          this.$cookies.set('logged-in', true);
+          this.$router.push({ name: 'Home_view' })
+        }
       }).catch(err => {
         console.log(err)
       })
@@ -66,25 +67,25 @@ export default {
     /**
      * metodo invocato quando si triggera l'evento '@change' in input, ovvero quando
      * viene aggiunta una immagine:
-     * - prende la prima immagine (e.target recupera l'oggetto input e  
-     *      files è l'array in cui sono memorizzate le immagini) 
+     * - prende la prima immagine (e.target recupera l'oggetto input e
+     *      files è l'array in cui sono memorizzate le immagini)
      * - invoca sull'immagine createBase64Image
      */
     handleImage(e) {
       const selectedImage = e.target.files[0]
       this.createBase64Image(selectedImage)
     },
-    
+
     /**
-     * invoca metodo readAsBinaryString sul blob costituito dal fileObject passato 
+     * invoca metodo readAsBinaryString sul blob costituito dal fileObject passato
      *    (in questo caso l'immagine caricata)
-     * 
+     *
      * - quando l'operazione read è terminata:
      *    - 'readyState' diventa 'DONE'
      *    - viene triggerato l'evento 'loadend'
      *    - l'attributo 'result' contiene la versione raw binary data del file
-     * 
-     * - ritorna quindi un oggetto con una proprietà 'result' 
+     *
+     * - ritorna quindi un oggetto con una proprietà 'result'
      *    contentente in 'data' un URL che rappresenta i dati del file
      */
     createBase64Image(fileObject) {

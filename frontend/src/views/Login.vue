@@ -1,20 +1,20 @@
 <template>
   <div>
     <Navbar/>
-    <Login/>
+    <LoginPanel/>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import Navbar from '../components/Navbar'
-import Login from '../components/Login'
+import LoginPanel from '../components/LoginPanel'
 
 export default {
   name: 'Login_view',
   components: {
     Navbar,
-    Login
+    LoginPanel
   }
 }
 </script>

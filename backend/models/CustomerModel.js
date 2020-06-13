@@ -21,8 +21,7 @@ const CustomerSchema = new Schema({
         default: Date.now
     },
     profile_picture: {
-        type: String, //non ho trovato soluzione migliore!!!
-        required: true
+        type: String
     }
 })
 

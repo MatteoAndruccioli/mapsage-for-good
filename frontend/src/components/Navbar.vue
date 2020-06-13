@@ -10,17 +10,20 @@
                 <li class="nav-item">
                     <router-link class="nav-link" to="/">Home</router-link>
                 </li>
-                <li v-if="auth==''" class="nav-item">
+                <li v-if="!isUserLoggedIn" class="nav-item">
                     <router-link class="nav-link" to="/login">Login</router-link>
                 </li>
-                <li v-if="auth==''" class="nav-item">
+                <li v-if="!isUserLoggedIn" class="nav-item">
                     <router-link class="nav-link" to="/register">Register</router-link>
                 </li>
-                <li v-if="auth=='loggedin'" class="nav-item"> <!-- loggedin viene da login emitMethod() -->
+                <li v-if="isUserLoggedIn" class="nav-item"> <!-- loggedin viene da login emitMethod() -->
                     <router-link class="nav-link" to="/profile">Profile</router-link>
                 </li>
-                <li v-if="auth=='loggedin'" class="nav-item">
-                    <a class="nav-link" href="/login" v-on:click="logout">Logout</a>
+                <li v-if="isUserLoggedIn" class="nav-item">
+                    <a class="nav-link" href="/" v-on:click="logout">Logout</a>
+                </li>
+                <li v-if="isUserLoggedIn" class="nav-item">  <!-- TEST ONLY -->
+                    <a class="nav-link" v-on:click="getUserInfo">GetUserInfo</a>
                 </li>
             </ul>
         </div>
@@ -28,28 +31,39 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data () {
     return {
-      auth: '', //nota che controllando questo la navbar sopra mostra login e register se non sei loggato, se sei loggato il profilo e loggedin
+      isUserLoggedIn: false,
       user: ''
     }
   },
-
-  //al logout rimuovi lo usertoken
   methods: {
-    logout () {
-      localStorage.removeItem('usertoken')
+    logout() {
+      if (this.$cookies.get('logged-in')) {
+        this.$cookies.remove('logged-in');
+      }
     },
-
-    checktoken() {
-      if(localStorage.getItem('usertoken') !== null)
-        this.auth = 'loggedin'
+    checkUserLogin() {
+      if (this.$cookies.get('logged-in')) {
+        this.isUserLoggedIn = true;
+      }
+    },
+    getUserInfo() {
+      if (this.isUserLoggedIn) {
+        axios.get('http://localhost:3000/customers/profile', { withCredentials: true })
+          .then(res => {
+            console.log(res.data);
+          }).catch(err => {
+            console.log(err)
+          })
+      }
     }
   },
-
   mounted () {
-    this.checktoken()
+    this.checkUserLogin()
   }
 }
 </script>
