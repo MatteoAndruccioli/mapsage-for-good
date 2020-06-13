@@ -45,7 +45,6 @@ export default {
       propic: '',
     }
   },
-
   methods: {
     register () {
       axios.post('http://localhost:3000/customers/register', {
