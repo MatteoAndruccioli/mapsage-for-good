@@ -3,9 +3,10 @@
 </template>
 
 <script>
-  import L from 'leaflet';
-  import * as esri from 'esri-leaflet';
-  import * as geocoding from 'esri-leaflet-geocoder';
+  import axios from 'axios'
+  import L from 'leaflet'
+  import * as esri from 'esri-leaflet'
+  import * as geocoding from 'esri-leaflet-geocoder'
   // Code required to display leaflet markers with Vue.js Webpack (comments included)
   // eslint-disable-next-line
   delete L.Icon.Default.prototype._getIconUrl
@@ -25,37 +26,27 @@
     },
     methods: {
       init: function() {
-        const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-        const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        var streetsTile = L.tileLayer(tileUrl, {attribution});
+        // Configuring map
+        //const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+        //const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        //var streetsTile = L.tileLayer(tileUrl, {attribution});
+        var streetsTile = esri.basemapLayer('Streets');
         var satelliteTile = esri.basemapLayer('Imagery');
-
         const map = L.map('map-panel', {
           layers: [streetsTile]
         }).setView([43.991830, 12.607960], 8);
-
         var baseMaps = {
           "Streets": streetsTile,
           "Satellite": satelliteTile
         }
         L.control.layers(baseMaps).addTo(map);
-
         L.control.scale().addTo(map);
 
-        // Build and configuration of search control
-        var searchControl = new geocoding.geosearch({
-          allowMultipleResults: true,
-          useMapBounds: false
-        }).addTo(map);
-        var results = new L.layerGroup().addTo(map);
-        searchControl.on('results', function(data){
-          results.clearLayers();
-          for (var i = data.results.length - 1; i >= 0; i--) {
-            results.addLayer(L.marker(data.results[i].latlng));
-          }
-        });
+        var geoJsonLayer = new L.LayerGroup();
+        geoJsonLayer.addTo(map);
 
         // Locating map on the selected city
+        const vm = this;
         var geocoder = geocoding.geocodeService();
         geocoder.geocode().text(this.city).run(function (error, response) {
           if (error) {
@@ -63,9 +54,49 @@
             return;
           }
           if(response.results[0] != null) {
-            map.fitBounds(response.results[0].bounds);
+            const lng = response.results[0].latlng.lng;
+            const lat = response.results[0].latlng.lat;
+            vm.buildGeoJsonLayer(lng, lat, geoJsonLayer);
           }
+          map.fitBounds(response.results[0].bounds);
         });
+
+        // Building and configuration of search control
+        var searchControl = new geocoding.geosearch({
+          allowMultipleResults: false,
+          useMapBounds: false
+        }).addTo(map);
+        searchControl.on('results', function(data){
+          geoJsonLayer.clearLayers();
+          // Only one "results" because of "allowMultipleResults=false" attribute
+          const lng = data.results[0].latlng.lng;
+          const lat = data.results[0].latlng.lat;
+          vm.buildGeoJsonLayer(lng, lat, geoJsonLayer);
+        });
+      },
+      buildGeoJsonLayer: function(lng, lat, geoJsonLayer) {
+        axios.post('http://localhost:3000/masseurs', {
+          type: "Point",
+          coordinates: [lng, lat]
+        }).then(res => {
+          if(!res.data.error && res.data.cityBoundaries) {
+            var coordinates = new Array;
+            coordinates.push(res.data.cityBoundaries)
+            if(res.data.masseursLocations) {
+              res.data.masseursLocations.forEach(location => coordinates.push(location));
+            } else {
+              console.log("NO MASSEUR IN THE SPECIFIED CITY")
+            }
+            console.log(coordinates)
+            const geoJson = L.geoJSON({
+              type: "FeatureCollection",
+              features: coordinates
+            });
+            geoJsonLayer.addLayer(geoJson)
+          } else {
+            console.log("CAN'T SEARCH IN A CITY OUTSIDE OF ITALY")
+          }
+        })
       }
     },
     mounted() {

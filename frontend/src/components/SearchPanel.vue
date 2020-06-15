@@ -40,7 +40,7 @@
           .text(this.city)
           .run(function(error, response) {
             vm.suggestions = response.suggestions.map(elem => elem.text);
-            //console.log(vm.suggestions);
+            console.log(vm.suggestions);
           });
         }
       },

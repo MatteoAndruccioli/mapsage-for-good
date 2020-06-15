@@ -6,6 +6,7 @@ var mongoose = require("mongoose")
 var cookieParser = require("cookie-parser")
 var port = process.env.PORT || 3000
 
+process.env.SECRET_KEY = 'EWl9Lcrav8'; // secret for JWT
 app.use(cookieParser('ztVX2HQJP0')); // secret for cokieParser
 
 app.use(bodyParser.json())
@@ -21,8 +22,11 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("MongoDB Connected"))
     .catch(err => console.log(err))
 
-var clientRoute = require("./routes/CustomersRoutes")
-clientRoute(app)
+// APIs registration
+var customersRoutes = require("./routes/customersRoutes")
+var masseursRoutes = require("./routes/masseursRoutes")
+customersRoutes(app)
+masseursRoutes(app)
 
 app.use(function(req, res) {
     res.status(404).send({url: req.originalUrl + " not found"})

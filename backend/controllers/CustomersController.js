@@ -1,8 +1,6 @@
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
-const User = require("../models/CustomerModel")
-
-process.env.SECRET_KEY = 'secret'
+const Customer = require("../models/customersModel")
 
 //effettua la registrazione del client
 exports.handleRegisterRequest = function(req, res) {
@@ -16,12 +14,12 @@ exports.handleRegisterRequest = function(req, res) {
       profile_picture: req.body.profile_picture
   }
 
-  User.findOne({ email: req.body.email })
+  Customer.findOne({ email: req.body.email })
       .then(user => {
         if (!user) { //non ci deve essere un utente con quella mail
           bcrypt.hash(req.body.password, 10, (err, hash) => { //hash contiene la password hashata, la riassegnamo all'oggetto
             userData.password = hash
-            User.create(userData) //creo un nuovo utente con i dati passati
+            Customer.create(userData) //creo un nuovo utente con i dati passati
                 .then(user => {
                   const payload = { _id: user._id }
                   //generiamo il token che usiamo nel frontend
@@ -45,7 +43,7 @@ exports.handleRegisterRequest = function(req, res) {
 
 //effettua il login del client
 exports.handleLoginRequest = function(req, res) {
-  User.findOne({
+  Customer.findOne({
     email: req.body.email
   }).then(user => {
       if (user) {
@@ -73,12 +71,12 @@ exports.handleLoginRequest = function(req, res) {
   })
 }
 
-exports.getCustomer = function(req, res) {
+exports.readCustomerByJwt = function(req, res) {
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
     try {
       var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
-      User.findOne({
+      Customer.findOne({
         _id: decodedPayload._id
       }).then(user => {
         if(user) {
@@ -90,11 +88,35 @@ exports.getCustomer = function(req, res) {
         res.send({ error: err })
       })
     } catch (error) {
-      // The JWT is not valid - verify method failed
-      res.sendStatus(401);
+      res.sendStatus(401); // The JWT is not valid - verify method failed
     }
   } else {
-    // No JWT specified
-    res.sendStatus(401);
+    res.sendStatus(401); // No JWT specified
+  }
+}
+
+exports.readCustomerById = function(req, res) {
+  if (req.signedCookies.jwt != null) {
+    const token = req.signedCookies.jwt;
+    try {
+      jwt.verify(token, process.env.SECRET_KEY);
+      Customer.findById(req.params.id, function(err, user) {
+        if (err) {
+          res.send({ error: err })
+        } else {
+          if (user == null) {
+            res.status(404).send({
+              error: 'User does not exist'
+            })
+          } else {
+            res.json(user)
+          }
+        }
+      })
+    } catch (error) {
+      res.sendStatus(401); // The JWT is not valid - verify method failed
+    }
+  } else {
+    res.sendStatus(401); // No JWT specified
   }
 }
