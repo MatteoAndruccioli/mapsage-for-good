@@ -55,8 +55,14 @@ export default {
       if (this.isUserLoggedIn) {
         axios.get('http://localhost:3000/customers/profile', { withCredentials: true })
           .then(res => {
-            console.log(res.data);
+            if (!res.data.error){
+              console.log(res.data.user);
+              this.user = res.data.user
+            } else {
+              alert(res.data.error)
+            }
           }).catch(err => {
+            alert(err)
             console.log(err)
           })
       }
