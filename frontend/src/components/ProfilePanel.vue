@@ -1,22 +1,21 @@
 <template>
     <div class="container">
-        <div class="jumbotron mt-5">
-            <div class="col-sm-8 mx-auto myCentering">
-                <h1 class="text-center">PROFILE</h1>
-                <img class="propic" :src="propic" alt="">
+        <div class="mt-3 my-box col-sm-5 col-md-5 mx-auto">
+            <div class="col-md-8 col-sm-8 mx-auto ">
+                <img class="propic responsive" :src="propic" alt="">
             </div>
-            <table class="table col-md-6 mx-auto">
+            <table class="table col-md-8 col-sm-10 mt-5 mx-auto text-center">
                 <tbody>
                     <tr>
-                        <td>First Name</td>
+                        <th>First Name</th>
                         <td>{{first_name}}</td>
                     </tr>
                     <tr>
-                        <td>Last Name</td>
+                        <th>Last Name</th>
                         <td>{{last_name}}</td>
                     </tr>
                     <tr>
-                        <td>Email</td>
+                        <th>Email</th>
                         <td>{{email}}</td>
                     </tr>
                 </tbody>
@@ -41,11 +40,25 @@ export default {
 
 <style scoped>
 .propic {
+    width: 17rem;
+    border-radius: 5px;
 }
 
-.myCentering {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.responsive {
+  width: 100%;
+  height: auto;
 }
+
+.my-box {
+  border: 1px solid #eee;
+  border-radius: 5px;
+  padding: 10px 0;
+  background-color: #fff;
+  margin-bottom: 5px;
+}
+
+th {
+    font-weight: 600 !important;
+}
+
 </style>
