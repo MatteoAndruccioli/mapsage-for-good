@@ -20,7 +20,7 @@ const CustomerSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    profile_picture_path: {
+    profile_picture: {
         type: String
     }
 })

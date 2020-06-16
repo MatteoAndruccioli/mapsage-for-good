@@ -35,8 +35,7 @@ const MasseurSchema = new Schema({
         }
       },
       properties: {
-        first_name: String,
-        last_name: String,
+        full_name: String,
       }
     },
     tel_numb: String,

@@ -16,7 +16,7 @@
                 <li v-if="!isUserLoggedIn" class="nav-item">
                     <router-link class="nav-link" to="/register">Register</router-link>
                 </li>
-                <li v-if="isUserLoggedIn" class="nav-item"> <!-- loggedin viene da login emitMethod() -->
+                <li v-if="isUserLoggedIn" class="nav-item">
                     <router-link class="nav-link" to="/profile">Profile</router-link>
                 </li>
                 <li v-if="isUserLoggedIn" class="nav-item">
@@ -36,15 +36,13 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      isUserLoggedIn: false,
-      user: ''
+      isUserLoggedIn: false
     }
   },
   methods: {
     logout() {
       if (this.$cookies.get('logged-in')) {
         this.$cookies.remove('logged-in');
-        this.$cookies.remove('current-user');
       }
     },
     checkUserLogin() {
@@ -56,13 +54,11 @@ export default {
       if (this.isUserLoggedIn) {
         axios.get('http://localhost:3000/customers/profile', { withCredentials: true })
           .then(res => {
-            if (!res.data.error){
-              //console.log(res.data.user);
-              this.user = res.data.user
-              this.$cookies.set('current-user', res.data.user);
-              console.log(this.$cookies.get('current-user'))
+            if (!res.data.error) {
+              console.log(res.data)
             } else {
               alert(res.data.error)
+              console.log(res.data.error)
             }
           }).catch(err => {
             alert(err)
@@ -73,7 +69,6 @@ export default {
   },
   mounted () {
     this.checkUserLogin()
-    this.getUserInfo()
   }
 }
 </script>

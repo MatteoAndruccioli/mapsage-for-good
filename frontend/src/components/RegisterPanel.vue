@@ -5,8 +5,8 @@
         <form v-on:submit.prevent="register">
           <h1 class="h3 mb-3 font-weight-normal">Register</h1>
           <div class="form-group my_centered">
-                <img style="" :src="propic" alt="" name="propic" class="propic">
-                <input @change="handleImage" class="my_custom-input" type="file" accept="image/*" name="propic_input">
+            <img style="" :src="propic" alt="" name="propic" class="propic">
+            <input @change="handleImage" class="my_custom-input" type="file" accept="image/*" name="propic_input">
           </div>
           <div class="form-group">
             <label for="first_name">First Name</label>
@@ -49,28 +49,23 @@ export default {
   methods: {
     register () {
       const formData = new FormData();
-      //ricorda di mettere questi prima dell'immagine
-      formData.append('originImageName', this.profileImage.name)
       formData.append('first_name', this.first_name)
       formData.append('last_name', this.last_name)
       formData.append('email', this.email)
       formData.append('password', hex_sha512(this.password))
       formData.append('profileImage', this.profileImage)
-      axios
-      .post('http://localhost:3000/customers/register', 
-                  formData, 
-                  { withCredentials: true }
-            ).then(res => {
-        console.log(res)
-        if (!res.data.error) {
-          this.$cookies.set('logged-in', true);
-          this.$router.push({ name: 'Home_view' })
-        } else {
-          alert(res.data.error)
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+      axios.post('http://localhost:3000/customers/register', formData, { withCredentials: true })
+        .then(res => {
+          console.log(res)
+          if (!res.data.error) {
+            this.$cookies.set('logged-in', true);
+            this.$router.push({ name: 'Home_view' })
+          } else {
+           console.log(res.data.error)
+          }
+        }).catch(err => {
+         console.log(err)
+        })
     },
 
     /**

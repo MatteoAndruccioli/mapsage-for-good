@@ -2,7 +2,7 @@
     <div class="container">
         <div class="mt-3 my-box col-sm-5 col-md-5 mx-auto">
             <div class="col-md-8 col-sm-8 mx-auto ">
-                <img class="propic responsive" :src="propic" alt="">
+                <img class="propic responsive" :src="profile_picture" alt="">
             </div>
             <table class="table col-md-8 col-sm-10 mt-5 mx-auto text-center">
                 <tbody>
@@ -25,15 +25,38 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
-  data () {
-    const loggedUser = this.$cookies.get('current-user')
+  data() {
     return {
-      first_name: loggedUser.first_name,
-      last_name: loggedUser.last_name,
-      email: loggedUser.email,
-      propic: 'http://localhost:3000/'+ loggedUser.folder +'/'+ loggedUser.imgName
+      first_name: '',
+      last_name: '',
+      email: '',
+      profile_picture: ''
     }
+  },
+  methods: {
+    init: function() {
+      var vm = this;
+      axios.get('http://localhost:3000/customers/profile', { withCredentials: true })
+        .then(res => {
+          if (!res.data.error) {
+            //console.log(res.data)
+            vm.first_name = res.data.first_name
+            vm.last_name = res.data.last_name
+            vm.email = res.data.email
+            vm.profile_picture = res.data.profile_picture
+          } else {
+            console.log(res.data.error)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+    }
+  },
+  mounted() {
+    this.init();
   }
 }
 </script>

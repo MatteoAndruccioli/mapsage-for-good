@@ -3,10 +3,10 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import L from 'leaflet'
   import * as esri from 'esri-leaflet'
   import * as geocoding from 'esri-leaflet-geocoder'
+  import {buildGeoJsonLayer} from './utils/searchMapUtil'
   // Code required to display leaflet markers with Vue.js Webpack (comments included)
   // eslint-disable-next-line
   delete L.Icon.Default.prototype._getIconUrl
@@ -46,7 +46,6 @@
         geoJsonLayer.addTo(map);
 
         // Locating map on the selected city
-        const vm = this;
         var geocoder = geocoding.geocodeService();
         geocoder.geocode().text(this.city).run(function (error, response) {
           if (error) {
@@ -56,7 +55,7 @@
           if(response.results[0] != null) {
             const lng = response.results[0].latlng.lng;
             const lat = response.results[0].latlng.lat;
-            vm.buildGeoJsonLayer(lng, lat, geoJsonLayer);
+            buildGeoJsonLayer(lng, lat, geoJsonLayer);
           }
           map.fitBounds(response.results[0].bounds);
         });
@@ -71,32 +70,8 @@
           // Only one "results" because of "allowMultipleResults=false" attribute
           const lng = data.results[0].latlng.lng;
           const lat = data.results[0].latlng.lat;
-          vm.buildGeoJsonLayer(lng, lat, geoJsonLayer);
+          buildGeoJsonLayer(lng, lat, geoJsonLayer);
         });
-      },
-      buildGeoJsonLayer: function(lng, lat, geoJsonLayer) {
-        axios.post('http://localhost:3000/masseurs', {
-          type: "Point",
-          coordinates: [lng, lat]
-        }).then(res => {
-          if(!res.data.error && res.data.cityBoundaries) {
-            var coordinates = new Array;
-            coordinates.push(res.data.cityBoundaries)
-            if(res.data.masseursLocations) {
-              res.data.masseursLocations.forEach(location => coordinates.push(location));
-            } else {
-              console.log("NO MASSEUR IN THE SPECIFIED CITY")
-            }
-            console.log(coordinates)
-            const geoJson = L.geoJSON({
-              type: "FeatureCollection",
-              features: coordinates
-            });
-            geoJsonLayer.addLayer(geoJson)
-          } else {
-            console.log("CAN'T SEARCH IN A CITY OUTSIDE OF ITALY")
-          }
-        })
       }
     },
     mounted() {

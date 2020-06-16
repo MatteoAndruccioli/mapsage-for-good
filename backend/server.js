@@ -7,6 +7,7 @@ var mongoose = require("mongoose")
 var cookieParser = require("cookie-parser")
 var port = process.env.PORT || 3000
 
+process.env.SERVER_LOCATION = 'http://localhost:' + port + '/';
 process.env.SECRET_KEY = 'EWl9Lcrav8'; // secret for JWT
 app.use(cookieParser('ztVX2HQJP0')); // secret for cokieParser
 
@@ -29,8 +30,7 @@ var masseursRoutes = require("./routes/masseursRoutes")
 customersRoutes(app)
 masseursRoutes(app)
 
-var dir = path.join(__dirname, 'uploads')
-app.use(express.static(dir))
+app.use('/static', express.static(__dirname + '/public'));
 
 app.use(function(req, res) {
     res.status(404).send({url: req.originalUrl + " not found"})
