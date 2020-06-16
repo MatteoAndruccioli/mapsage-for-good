@@ -44,6 +44,7 @@ export default {
     logout() {
       if (this.$cookies.get('logged-in')) {
         this.$cookies.remove('logged-in');
+        this.$cookies.remove('current-user');
       }
     },
     checkUserLogin() {
@@ -56,8 +57,10 @@ export default {
         axios.get('http://localhost:3000/customers/profile', { withCredentials: true })
           .then(res => {
             if (!res.data.error){
-              console.log(res.data.user);
+              //console.log(res.data.user);
               this.user = res.data.user
+              this.$cookies.set('current-user', res.data.user);
+              console.log(this.$cookies.get('current-user'))
             } else {
               alert(res.data.error)
             }
@@ -70,6 +73,7 @@ export default {
   },
   mounted () {
     this.checkUserLogin()
+    this.getUserInfo()
   }
 }
 </script>

@@ -26,17 +26,14 @@
 </template>
 
 <script>
-import jwtDecode from 'jwt-decode'
-
 export default {
   data () {
-    const token = localStorage.usertoken
-    const decoded = jwtDecode(token)
+    const loggedUser = this.$cookies.get('current-user')
     return {
-      first_name: decoded.first_name,
-      last_name: decoded.last_name,
-      email: decoded.email,
-      propic: decoded.profile_picture
+      first_name: loggedUser.first_name,
+      last_name: loggedUser.last_name,
+      email: loggedUser.email,
+      propic: 'http://localhost:3000/'+ loggedUser.folder +'/'+ loggedUser.imgName
     }
   }
 }
