@@ -7,7 +7,7 @@ node_modules
 #.env.*.local
 
 #Cartelle contenenti fotoprofilo
-
+/backend/uploads/*
 
 # Log files
 npm-debug.log*
