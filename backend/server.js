@@ -1,3 +1,4 @@
+var path = require('path');
 var express = require("express")
 var cors = require("cors")
 var bodyParser = require("body-parser")
@@ -27,6 +28,9 @@ var customersRoutes = require("./routes/customersRoutes")
 var masseursRoutes = require("./routes/masseursRoutes")
 customersRoutes(app)
 masseursRoutes(app)
+
+var dir = path.join(__dirname, 'uploads')
+app.use(express.static(dir))
 
 app.use(function(req, res) {
     res.status(404).send({url: req.originalUrl + " not found"})

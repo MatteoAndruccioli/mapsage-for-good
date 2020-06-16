@@ -43,26 +43,36 @@ export default {
       email: '',
       password: '',
       propic: '',
+      profileImage: null
     }
   },
   methods: {
     register () {
-      axios.post('http://localhost:3000/customers/register', {
-        first_name: this.first_name,
-        last_name: this.last_name,
-        email: this.email,
-        password: hex_sha512(this.password),
-        profile_picture: this.propic
-      }, { withCredentials: true }).then(res => {
+      const formData = new FormData();
+      //ricorda di mettere questi prima dell'immagine
+      formData.append('originImageName', this.profileImage.name)
+      formData.append('first_name', this.first_name)
+      formData.append('last_name', this.last_name)
+      formData.append('email', this.email)
+      formData.append('password', hex_sha512(this.password))
+      formData.append('profileImage', this.profileImage)
+      axios
+      .post('http://localhost:3000/customers/register', 
+                  formData, 
+                  { withCredentials: true }
+            ).then(res => {
         console.log(res)
         if (!res.data.error) {
           this.$cookies.set('logged-in', true);
           this.$router.push({ name: 'Home_view' })
+        } else {
+          alert(res.data.error)
         }
       }).catch(err => {
         console.log(err)
       })
     },
+
     /**
      * metodo invocato quando si triggera l'evento '@change' in input, ovvero quando
      * viene aggiunta una immagine:
@@ -72,6 +82,7 @@ export default {
      */
     handleImage(e) {
       const selectedImage = e.target.files[0]
+      this.profileImage = selectedImage
       this.createBase64Image(selectedImage)
     },
 
