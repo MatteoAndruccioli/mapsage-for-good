@@ -16,8 +16,11 @@
                 <li v-if="!isUserLoggedIn" class="nav-item">
                     <router-link class="nav-link" to="/register">Register</router-link>
                 </li>
-                <li v-if="isUserLoggedIn" class="nav-item">
-                    <router-link class="nav-link" to="/profile">Profile</router-link>
+                <li v-if="isCustomer" class="nav-item">
+                    <router-link class="nav-link" to="/profile">Customer Profile</router-link>
+                </li>
+                <li v-if="isMasseur" class="nav-item">
+                    <router-link class="nav-link" to="/profile">Masseur Profile</router-link>
                 </li>
                 <li v-if="isUserLoggedIn" class="nav-item">
                     <a class="nav-link" href="/" v-on:click="logout">Logout</a>
@@ -36,18 +39,30 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      isUserLoggedIn: false
+      isUserLoggedIn: false,
+      isCustomer: false,
+      isMasseur:false,
     }
   },
   methods: {
     logout() {
-      if (this.$cookies.get('logged-in')) {
-        this.$cookies.remove('logged-in');
+      if (this.$cookies.get('currentUser')) {
+        this.$cookies.remove('currentUser')
+        this.isUserLoggedIn = false
+        this.isCustomer = false
+        this.isMasseur = false
       }
     },
     checkUserLogin() {
-      if (this.$cookies.get('logged-in')) {
-        this.isUserLoggedIn = true;
+      if (this.$cookies.get('currentUser')) {
+        this.isUserLoggedIn = this.$cookies.get('currentUser').logged_in
+        if (this.$cookies.get('currentUser').profile_type === "Customer"){
+          this.isCustomer = true
+          this.isMasseur = false
+        }else{
+          this.isCustomer = false
+          this.isMasseur = true 
+        }
       }
     },
     getUserInfo() {

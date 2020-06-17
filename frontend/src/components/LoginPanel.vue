@@ -52,10 +52,12 @@ export default {
         this.email = ''
         this.password = ''
         if (!res.data.error) {
-          this.$cookies.set('logged-in', true); // creates a cookie
+          var currentUser = { logged_in: true, profile_type: res.data.profile_type}
+          this.$cookies.set('currentUser',currentUser)
           this.$router.push({ name: 'Home_view' })
         } else {
           alert("Login failed!! try again");
+          console.log(res.data.error)
         }
       }).catch(err => {
         console.log(err)
