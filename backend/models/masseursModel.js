@@ -37,9 +37,7 @@ const MasseurSchema = new Schema({
       properties: {
         full_name: String,
       }
-    },
-    tel_numb: String,
-    address: String
+    }
     // Da aggiungere i restanti campi all'occorrenza
 })
 

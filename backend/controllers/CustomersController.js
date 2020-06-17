@@ -3,49 +3,10 @@ const bcrypt = require("bcrypt")
 const Customer = require("../models/customersModel")
 const multer = require('multer')
 var fs = require('fs')
-
-/**
- * registerStorage allows to set multer options
- */
-const registerStorage = multer.diskStorage({
-  // Defines where to store images
-	destination: function(req, file, cb){
-    Customer.findOne({ email: req.body.email })
-      .then(customer => {
-        // check for user presence
-        if (customer == null) {
-          let destinationDir = './public/uploads/' + req.body.email + '/'
-          // check for destinationDir presence
-          if(!fs.existsSync(destinationDir)) {
-            fs.mkdirSync(destinationDir)
-						// Need to save destinationDir value in req.body.folderPath so that
-	          // it's possible to take it when the user will be created and set in db
-	          req.body.folderPath = 'static/uploads/' + req.body.email + '/'
-          } else {
-            cb(new Error("User already exists"))
-          }
-
-          cb(null, destinationDir) //cb(error?, path where to save images)
-      } else {
-          cb(new Error("User already exists"))
-      }
-    }).catch(err => {
-      cb(new Error("mongodb error: "+ err))
-    })
-	},
-  // Defines images names
-	filename: function(req, file, cb){
-    // Need to save file.originalname in req.body.imageName so that it's possible
-    // to take it when the user will be created and set in db
-    req.body.imageName = file.originalname
-		cb(null, file.originalname)
-	},
-})
-
-const registerUpload = multer({ storage: registerStorage }).single('profileImage')
+const multerUtil = require("./utils/multerUtil")
 
 exports.handleRegisterRequest = function(req, res) {
-  registerUpload(req, res, function (err) {
+  multerUtil.registerUpload(req, res, function (err) {
     // If a 'profileImage' is specified it is redirected to functions specified in "registerStorage"
     // that make some checks and eventually store the user profile pic. If no 'profileImage' is
 		// specified, there won't be any redirection.
@@ -59,10 +20,12 @@ exports.handleRegisterRequest = function(req, res) {
     }
 
 		var profileImagePath;
-		if (req.body.folderPath == null) {
+		if (req.body.profileImage) { // If attribute "profileImage" is still present in req.body, no image was specified by the user
 			profileImagePath = process.env.SERVER_LOCATION + "static/uploads/defaultImg.png"
 		} else {
-			//req.body.folderPath and req.body.imageName are set by "registerStorage"
+			// If attribute "profileImage" is no more present in req.body, it's beacause it has been consumed by multer
+			// so an image was specified by the user
+			// req.body.folderPath and req.body.imageName are set by "registerStorage"
 			profileImagePath = process.env.SERVER_LOCATION + req.body.folderPath + req.body.imageName
 		}
     const today = new Date()
@@ -71,7 +34,7 @@ exports.handleRegisterRequest = function(req, res) {
       last_name: req.body.last_name,
       email: req.body.email,
       password: req.body.password,
-      created: today,
+      date: today,
       profile_picture: profileImagePath
     }
 
