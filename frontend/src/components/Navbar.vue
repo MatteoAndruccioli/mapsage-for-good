@@ -52,7 +52,7 @@ export default {
     },
     getUserInfo() {
       if (this.isUserLoggedIn) {
-        axios.get('http://localhost:3000/customers/profile', { withCredentials: true })
+        axios.get('http://localhost:3000/users/profile', { withCredentials: true })
           .then(res => {
             if (!res.data.error) {
               console.log(res.data)

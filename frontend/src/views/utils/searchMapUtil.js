@@ -2,7 +2,7 @@ import axios from 'axios'
 import L from 'leaflet'
 
 export function buildGeoJsonLayer(lng, lat, geoJsonLayer) {
-  axios.post('http://localhost:3000/masseurs', {
+  axios.post('http://localhost:3000/users/masseursByLocation', {
     type: "Point",
     coordinates: [lng, lat]
   }).then(res => {

@@ -53,8 +53,9 @@ export default {
       formData.append('last_name', this.last_name)
       formData.append('email', this.email)
       formData.append('password', hex_sha512(this.password))
+      formData.append('profile_type', "Customer") // "Customer" da cambiare con una variabile in data che cambia valore in base alla tab di registrazione scelta
       formData.append('profileImage', this.profileImage)
-      axios.post('http://localhost:3000/customers/register', formData, { withCredentials: true })
+      axios.post('http://localhost:3000/users/register', formData, { withCredentials: true })
         .then(res => {
           console.log(res)
           if (!res.data.error) {

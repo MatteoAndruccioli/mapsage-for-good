@@ -1,14 +1,56 @@
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
-const Masseur = require("../models/masseursModel")
+const User = require("../models/usersModel")
 const Municipality = require("../models/municipalitiesModel")
 const multer = require('multer')
 var fs = require('fs')
-const multerUtil = require("./utils/multerUtil")
+
+/**
+ * registerStorage allows to set multer options
+ */
+const registerStorage = multer.diskStorage({
+  // Defines where to store images
+	destination: function(req, file, cb){
+    User.findOne({ email: req.body.email })
+      .then(customer => {
+        // check for user presence
+        if (customer == null) {
+          let destinationDir = './public/uploads/' + req.body.email + '/'
+          // check for destinationDir presence
+          if(!fs.existsSync(destinationDir)) {
+            fs.mkdirSync(destinationDir)
+						// Need to save destinationDir value in req.body.folderPath so that
+	          // it's possible to take it when the user will be created and set in db
+	          req.body.folderPath = 'static/uploads/' + req.body.email + '/'
+          } else {
+            cb(new Error("User already exists"))
+          }
+
+          cb(null, destinationDir) //cb(error?, path where to save images)
+      } else {
+          cb(new Error("User already exists"))
+      }
+    }).catch(err => {
+      cb(new Error("mongodb error: "+ err))
+    })
+	},
+  // Defines images names
+	filename: function(req, file, cb){
+    // Need to save file.originalname in req.body.imageName so that it's possible
+    // to take it when the user will be created and set in db
+    req.body.imageName = file.originalname
+		cb(null, file.originalname)
+	},
+})
+
+const registerUpload = multer({storage: registerStorage}).single('profileImage')
 
 exports.handleRegisterRequest = function(req, res) {
-  multerUtil.registerUpload(req, res, function (err) {
-    // See comment in customersController.js
+  registerUpload(req, res, function (err) {
+		// If a 'profileImage' is specified it is redirected to functions specified in "registerStorage"
+    // that make some checks and eventually store the user profile pic. If no 'profileImage' is
+		// specified, there won't be any redirection.
+		// If an error occurs it will be catched in the following if-else statements.
     if (err instanceof multer.MulterError) {
       res.json({ error: err, type: 'multer upload error' })
       return;
@@ -27,22 +69,27 @@ exports.handleRegisterRequest = function(req, res) {
 			profileImagePath = process.env.SERVER_LOCATION + req.body.folderPath + req.body.imageName
 		}
     const today = new Date()
-    const userData = {
+    var userData = {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       email: req.body.email,
       password: req.body.password,
       date: today,
-      profile_picture: profileImagePath,
-      location: req.body.location // GeoJSON
+      profile_type: req.body.profile_type,
+      profile_picture: profileImagePath
+    };
+    if (req.body.profile_type == "Masseur") {
+      userData.location = req.body.location // GeoJSON
+      // Aggiungere campi all'occorrenza
     }
+    //console.log(userData)
 
-    Masseur.findOne({ email: req.body.email })
+    User.findOne({ email: req.body.email })
       .then(user => {
         if (!user) {
           bcrypt.hash(req.body.password, 10, (err, hash) => {
             userData.password = hash
-            Masseur.create(userData)
+            User.create(userData)
               .then(user => {
                 const payload = { _id: user._id }
                 // JWT generation
@@ -53,7 +100,7 @@ exports.handleRegisterRequest = function(req, res) {
                   signed: true
                 }
                 res.cookie('jwt', token, cookieConfig)
-                res.send('set cookie')
+                res.send({ profile_type: user.profile_type })
               }).catch(err => {
                 res.json({ error: err })
               })
@@ -66,7 +113,7 @@ exports.handleRegisterRequest = function(req, res) {
 }
 
 exports.handleLoginRequest = function(req, res) {
-  Masseur.findOne({
+  User.findOne({
     email: req.body.email
   }).then(user => {
       if (user) {
@@ -80,7 +127,7 @@ exports.handleLoginRequest = function(req, res) {
             signed: true
           }
           res.cookie('jwt', token, cookieConfig)
-          res.send('set cookie')
+          res.send({ profile_type: user.profile_type })
         } else {
           console.log("wrong password")
           res.json({ error: 'Wrong password' })
@@ -94,22 +141,27 @@ exports.handleLoginRequest = function(req, res) {
   })
 }
 
-exports.readMasseurByJwt = function(req, res) {
+exports.readUserByJwt = function(req, res) {
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
     try {
       var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
-      Masseur.findOne({
+      User.findOne({
         _id: decodedPayload._id
       }).then(user => {
         if(user) {
-          res.json({
-              first_name: user.first_name,
-              last_name: user.last_name,
-              email: user.email,
-              profile_picture: user.profile_picture
-              // Aggiungere location e i restanti campi futuri
-            })
+          var userData = {
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            profile_type: user.profile_type,
+            profile_picture: user.profile_picture
+          };
+          if (req.body.profile_type == "Masseur") {
+            userData.location = user.location // GeoJSON
+            // Aggiungere campi all'occorrenza
+          }
+          res.json(userData)
         } else {
           res.send({ error: 'User does not exist' })
         }
@@ -124,9 +176,9 @@ exports.readMasseurByJwt = function(req, res) {
   }
 }
 
-exports.readMasseurById = function(req, res) {
+exports.readUserById = function(req, res) {
   // No JWT check because no need for authentication searching a masseur
-  Masseur.findById(req.params.id, function(err, user) {
+  User.findById(req.params.id, function(err, user) {
     if (err) {
       res.send({ error: err })
     } else {
@@ -156,8 +208,8 @@ exports.readMasseursByLocation = function(req, res) {
     }
   }).then(municipality => {
     if (municipality != null) {
-      Masseur.find({
-        "location.geometry": {
+      User.find({
+        "location.geometry": { // Only masseurs have location.geometry attribute
           $geoWithin: {
             $geometry: municipality.geometry
           }

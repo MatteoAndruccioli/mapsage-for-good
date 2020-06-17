@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-const MasseurSchema = new Schema({
+const UserSchema = new Schema({
     first_name: String,
     last_name: String,
     email: {
@@ -12,6 +12,11 @@ const MasseurSchema = new Schema({
         type: String,
         required: true
     },
+    profile_type: {
+      type: String,
+      enum: ['Customer', 'Masseur'],
+      required: true
+    },
     date: {
         type: Date,
         default: Date.now
@@ -21,17 +26,14 @@ const MasseurSchema = new Schema({
       type: {
         type: String,
         enum: ['Feature'],
-        required: true
       },
       geometry: {
         type: {
           type: String,
           enum: ['Point'],
-          required: true
         },
         coordinates: {
           type: [Number],
-          required: true
         }
       },
       properties: {
@@ -41,4 +43,4 @@ const MasseurSchema = new Schema({
     // Da aggiungere i restanti campi all'occorrenza
 })
 
-module.exports = Masseur = mongoose.model('masseur', MasseurSchema)
+module.exports = User = mongoose.model('user', UserSchema)

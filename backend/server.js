@@ -25,10 +25,8 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .catch(err => console.log(err))
 
 // APIs registration
-var customersRoutes = require("./routes/customersRoutes")
-var masseursRoutes = require("./routes/masseursRoutes")
-customersRoutes(app)
-masseursRoutes(app)
+var usersRoutes = require("./routes/usersRoutes")
+usersRoutes(app)
 
 app.use('/static', express.static(__dirname + '/public'));
 

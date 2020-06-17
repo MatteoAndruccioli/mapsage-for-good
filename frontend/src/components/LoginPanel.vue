@@ -45,7 +45,7 @@ export default {
   methods: {
     login () {
       //axios.post('http://192.168.1.6:3000/customers/login', {
-      axios.post('http://localhost:3000/customers/login', {
+      axios.post('http://localhost:3000/users/login', {
         email: this.email,
         password: hex_sha512(this.password)
       }, { withCredentials: true }).then(res => {
