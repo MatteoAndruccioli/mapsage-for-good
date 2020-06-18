@@ -3,7 +3,7 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home';
 import Login from '../views/Login';
 import Register from '../views/Register';
-import Profile from '../views/Profile';
+import CustomerProfile from '../views/CustomerProfile';
 import PageNotFound from '../views/PageNotFound';
 import SearchMap from '../views/SearchMap.vue';
 
@@ -26,9 +26,9 @@ const routes = [
     component: Register
   },
   {
-    path: '/profile',
-    name: 'Profile_view',
-    component: Profile
+    path: '/customerProfile',
+    name: 'CustomerProfile_view',
+    component: CustomerProfile
   },
   {
     path: '/search/:city',
