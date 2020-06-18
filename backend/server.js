@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 const mongoURI = 'mongodb://localhost:27017/mapsage'
 
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
     .then(() => console.log("MongoDB Connected"))
     .catch(err => console.log(err))
 

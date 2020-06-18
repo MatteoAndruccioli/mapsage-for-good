@@ -17,6 +17,10 @@ const MasseurSchema = new Schema({
     mailing_address: String,
     phone_number: String,
     expertise: String,
+    advertisements: [{
+      title: String,
+      body: String
+    }],
     date: {
         type: Date,
         default: Date.now

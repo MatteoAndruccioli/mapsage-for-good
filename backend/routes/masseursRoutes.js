@@ -17,4 +17,7 @@ module.exports = function(app) {
 
 	app.route('/masseurs/masseursByLocation')
 		.post(masseursController.readMasseursByLocation)
+
+	app.route('/masseurs/adverisement')
+		.post(masseursController.addAdvertisement)
 };
