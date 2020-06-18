@@ -20,4 +20,7 @@ module.exports = function(app) {
 
 	app.route('/masseurs/adverisement')
 		.post(masseursController.addAdvertisement)
+
+	app.route('/masseurs/edit')
+		.post(masseursController.editMasseurInfo)
 };

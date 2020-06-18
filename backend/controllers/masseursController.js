@@ -204,3 +204,57 @@ exports.addAdvertisement = function(req, res){
     res.sendStatus(401); // No JWT specified
   }
 }
+
+exports.editMasseurInfo = function(req, res){
+  if (req.signedCookies.jwt != null) {
+    const token = req.signedCookies.jwt;
+    try {
+      var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
+      var newAdv = {
+        title: req.body.advertisementTitle,
+        body: req.body.advertisementBody
+      }
+
+      Masseur.findOne({ _id: decodedPayload._id })
+        .then(user => {
+          if(user) {
+            if(req.body.edit_brand_name != null && req.body.edit_brand_name != ""){
+              user.brand_name = req.body.edit_brand_name
+            }
+            if(req.body.edit_mailing_address != null && req.body.edit_mailing_address != ""){
+              user.mailing_address = req.body.edit_mailing_address
+            }
+            if(req.body.edit_phone_number != null && req.body.edit_phone_number != ""){
+              user.phone_number = req.body.edit_phone_number
+            }
+            if(req.body.edit_expertise != null && req.body.edit_expertise != ""){
+              user.expertise = req.body.edit_expertise
+            }
+            user.save()  
+          } else {
+            res.send({ error: 'User does not exist' })
+          }
+        }).catch(err => {
+          res.send({ error: err })
+        })
+
+        Masseur.findOne({
+          _id: decodedPayload._id
+        }).then(user => {
+          if(user) {
+            console.log(user)
+            res.json({updatedUser: user})
+          } else {
+            res.send({ error: 'User does not exist' })
+          }
+        }).catch(err => {
+          res.send({ error: err })
+        })
+
+    } catch (error) {
+      res.sendStatus(401); // The JWT is not valid - verify method failed
+    }
+  } else {
+    res.sendStatus(401); // No JWT specified
+  }
+} 

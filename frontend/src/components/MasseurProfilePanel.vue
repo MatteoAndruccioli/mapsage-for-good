@@ -11,7 +11,7 @@
             </div>
             <div class="col-lg-8 col-md-12 mx-auto mt-4">
               <h6 class="card-title text-center">Why you'll choose me</h6>
-              <p class="card-text">{{expertise}}</p>
+              <p class="card-text" >{{expertise}}</p>
             </div>
           </div>
 
@@ -20,10 +20,52 @@
                <h3 class="text-center">{{brand_name}}</h3>
             </div>
             <div class="col-md-7 d-flex flex-row justify-content-center justify-content-sm-center justify-content-md-end">
-              <button v-if="isMasseur" type="button" class="btn btn-info btn-sm my-btn mx-1" >edit profile</button>
+              <button v-if="isMasseur" type="button" class="btn btn-info btn-sm my-btn mx-1" data-toggle="modal" data-target="#modalLoginForm" >edit profile</button>
               <button v-if="isCustomer" type="button" class="btn btn-info btn-sm my-btn mx-1" >Send Message</button>
               <button v-if="isCustomer" type="button" class="btn btn-info btn-sm my-btn mx-1" >Follow</button>
             </div>
+
+            <!-- INIZIA QUI -->
+            <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+
+                  <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">Update your profile</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+
+                  <div class="modal-body mx-3">
+                    <div class="form-group">
+                      <label for="masseur-brandName">Brand Name</label>
+                      <input type="text" v-model="edit_brand_name" class="form-control" name="masseur-brandName" placeholder="Enter New Brand Name">
+                    </div>
+                    <div class="form-group">
+                      <label for="masseur-mailingAddress">Mailing Address</label>
+                      <input type="text" v-model="edit_mailing_address" class="form-control" name="masseur-mailingAddress" placeholder="Enter Mailing Address" >
+                    </div>
+                    <div class="form-group">
+                      <label for="masseur_phoneNumber">Phone Number</label>
+                      <input type="tel" v-model="edit_phone_number" id="masseur_phoneNumber" class="form-control" name="masseur_phoneNumber" placeholder="Enter Phone Number" pattern="[0-9]{10}" >
+                    </div>
+                    <div class="form-group">
+                      <label for="masseur-expertise">Espertise</label>
+                      <textarea  type="text" v-model="edit_expertise" class="form-control" name="masseur-expertise" cols="30" rows="4"
+                        placeholder="Here you can write a short text to describe yourself to your costumers" />
+                    </div>
+                  </div>
+
+                  <div class="modal-footer d-flex justify-content-center">
+                    <button class="btn btn-info" v-on:click="printa" data-dismiss="modal">Update</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- FINISCE QUI -->
+
           </div>
 
           <div class="col-11 mx-auto pt-3">
@@ -66,8 +108,6 @@
             </ul>
           </div>
 
-
-
           <div v-if="isMasseur" class="col-12 mx-auto mt-3 align-self-end" style="display: table">
             <form v-on:submit.prevent="addAdvertisement">
               <h5 class="text-center">Add a new advertisement</h5>
@@ -82,9 +122,6 @@
             </form>
           </div>
         </div>
-
-
-
 
         <!--questo va mostrato quando c'è almeno un advertisement-->
         <div class="col-12 mx-auto mt-2" style="display:none">
@@ -120,11 +157,47 @@ export default {
       advertisements: [],
       advertisementTitle: '',
       advertisementBody: '',
-      isAdvertisementListEmpty: true
+      isAdvertisementListEmpty: true,
+
+      edit_brand_name: '',
+      edit_mailing_address: '',
+      edit_phone_number: '',
+      edit_expertise: '',
+
     }
   },
   methods: {
-    addAdvertisement () {
+    printa: function() {
+      var vm = this;
+
+      axios.post('http://localhost:3000/masseurs/edit', {
+        edit_brand_name: vm.edit_brand_name,
+        edit_mailing_address: vm.edit_mailing_address,
+        edit_phone_number: vm.edit_phone_number,
+        edit_expertise: vm.edit_expertise
+      }, { withCredentials: true }).then(res => {
+        if (!res.data.error) {
+          vm.edit_brand_name = ''
+          vm.edit_mailing_address = ''
+          vm.edit_phone_number = ''
+          vm.edit_expertise = ''
+
+          console.log(res.data.updatedUser)
+
+          vm.brand_name = res.data.updatedUser.brand_name
+          vm.mailing_address = res.data.updatedUser.mailing_address
+          vm.phone_number = res.data.updatedUser.phone_number
+          vm.expertise = res.data.updatedUser.expertise
+        } else {
+          alert("Login failed!! try again");
+          console.log(res.data.error)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+
+    addAdvertisement: function() {
       axios.post('http://localhost:3000/masseurs/adverisement', {
         advertisementTitle: this.advertisementTitle,
         advertisementBody: this.advertisementBody
