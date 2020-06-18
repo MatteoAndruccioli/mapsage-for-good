@@ -4,6 +4,7 @@ import Home from '../views/Home';
 import Login from '../views/Login';
 import Register from '../views/Register';
 import CustomerProfile from '../views/CustomerProfile';
+import MasseurProfile from '../views/MasseurProfile';
 import PageNotFound from '../views/PageNotFound';
 import SearchMap from '../views/SearchMap.vue';
 
@@ -29,6 +30,11 @@ const routes = [
     path: '/customerProfile',
     name: 'CustomerProfile_view',
     component: CustomerProfile
+  },
+  {
+    path: '/masseurProfile',
+    name: 'MasseurProfile_view',
+    component: MasseurProfile
   },
   {
     path: '/search/:city',
