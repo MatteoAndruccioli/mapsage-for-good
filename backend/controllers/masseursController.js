@@ -44,7 +44,8 @@ exports.handleRegisterRequest = function(req, res) {
 			expertise: req.body.expertise,
 			date: today,
 			profile_picture: profileImagePath,
-			location: location
+      location: location,
+      advertisements: []
 		}
     //console.log(userData)
 
@@ -95,6 +96,7 @@ exports.readMasseurByJwt = function(req, res) {
 						phone_number: user.phone_number,
 						expertise: user.expertise,
             profile_picture: user.profile_picture,
+            advertisements: user.advertisements,
             location: user.location // GeoJSON
           }
           res.json(userData)
@@ -167,4 +169,38 @@ exports.readMasseursByLocation = function(req, res) {
       res.json({ error: 'No municipalities found' })
     }
   }).catch(err => { res.json({ error: err}) })
+}
+
+exports.addAdvertisement = function(req, res){
+  if (req.signedCookies.jwt != null) {
+    const token = req.signedCookies.jwt;
+    try {
+      var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
+      var newAdv = {
+        title: req.body.advertisementTitle,
+        body: req.body.advertisementBody
+      }
+      Masseur.findOneAndUpdate({_id: decodedPayload._id}, {$push: {advertisements: newAdv}})
+        .catch(err => {
+          res.send({ error: err })
+        });
+
+      Masseur.findOne({
+        _id: decodedPayload._id
+      }).then(user => {
+        if(user) {
+          console.log(user.advertisements)
+          res.json({advertisements: user.advertisements})
+        } else {
+          res.send({ error: 'User does not exist' })
+        }
+      }).catch(err => {
+        res.send({ error: err })
+      })
+    } catch (error) {
+      res.sendStatus(401); // The JWT is not valid - verify method failed
+    }
+  } else {
+    res.sendStatus(401); // No JWT specified
+  }
 }
