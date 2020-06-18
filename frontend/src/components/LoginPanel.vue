@@ -44,7 +44,7 @@ export default {
 
   methods: {
     login () {
-      //axios.post('http://192.168.1.6:3000/customers/login', {
+      //axios.post('http://192.168.1.6:3000/users/login', {
       axios.post('http://localhost:3000/users/login', {
         email: this.email,
         password: hex_sha512(this.password)
@@ -53,7 +53,7 @@ export default {
         this.password = ''
         if (!res.data.error) {
           var currentUser = { logged_in: true, profile_type: res.data.profile_type}
-          this.$cookies.set('currentUser',currentUser)
+          this.$cookies.set('currentUser', currentUser)
           this.$router.push({ name: 'Home_view' })
         } else {
           alert("Login failed!! try again");

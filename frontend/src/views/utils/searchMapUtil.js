@@ -1,8 +1,9 @@
 import axios from 'axios'
 import L from 'leaflet'
+import router from '../../router'
 
 export function buildGeoJsonLayer(lng, lat, geoJsonLayer) {
-  axios.post('http://localhost:3000/users/masseursByLocation', {
+  axios.post('http://localhost:3000/masseurs/masseursByLocation', {
     type: "Point",
     coordinates: [lng, lat]
   }).then(res => {
@@ -38,12 +39,12 @@ function buildMarkerPopup(masseurProperties) {
   img.setAttribute('alt', 'Profile image');
   const div2 = L.DomUtil.create('div', 'card-body d-flex flex-column', div1);
   const h5 = L.DomUtil.create('h6', 'card-title center', div2);
-  h5.textContent = masseurProperties.full_name;
+  h5.textContent = masseurProperties.brand_name;
 
   const button = L.DomUtil.create('a', 'btn btn-primary text-white', div2);
   button.textContent = 'View profile';
   L.DomEvent.on(button, 'click', () => {
-    alert('View Profile clicked!');
+    router.push("/profile");
   })
   return div1;
 }

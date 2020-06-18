@@ -1,9 +1,11 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-const UserSchema = new Schema({
-    first_name: String,
-    last_name: String,
+const MasseurSchema = new Schema({
+    brand_name: {
+      type: String,
+      required: true
+    },
     email: {
         type: String,
         required: true
@@ -12,11 +14,9 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    profile_type: {
-      type: String,
-      enum: ['Customer', 'Masseur'],
-      required: true
-    },
+    mailing_address: String,
+    phone_number: String,
+    expertise: String,
     date: {
         type: Date,
         default: Date.now
@@ -26,21 +26,24 @@ const UserSchema = new Schema({
       type: {
         type: String,
         enum: ['Feature'],
+        required: true
       },
       geometry: {
         type: {
           type: String,
           enum: ['Point'],
+          required: true
         },
         coordinates: {
           type: [Number],
+          required: true
         }
       },
       properties: {
-        full_name: String,
+        brand_name: String,
+        profile_picture: String,
       }
     }
-    // Da aggiungere i restanti campi all'occorrenza
 })
 
-module.exports = User = mongoose.model('user', UserSchema)
+module.exports = Masseur = mongoose.model('masseur', MasseurSchema)
