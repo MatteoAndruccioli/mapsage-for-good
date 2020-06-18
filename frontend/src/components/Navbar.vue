@@ -17,7 +17,7 @@
                     <router-link class="nav-link" to="/register">Register</router-link>
                 </li>
                 <li v-if="isCustomer" class="nav-item">
-                    <router-link class="nav-link" to="/profile">Customer Profile</router-link>
+                    <router-link class="nav-link" to="/customerProfile">Customer Profile</router-link>
                 </li>
                 <li v-if="isMasseur" class="nav-item">
                     <router-link class="nav-link" to="/profile">Masseur Profile</router-link>
@@ -56,7 +56,7 @@ export default {
     checkUserLogin() {
       if (this.$cookies.get('currentUser')) {
         this.isUserLoggedIn = this.$cookies.get('currentUser').logged_in
-        if (this.$cookies.get('currentUser').profile_type === "Customer"){
+        if (this.$cookies.get('currentUser').profile_type == "Customer"){
           this.isCustomer = true
           this.isMasseur = false
         }else{

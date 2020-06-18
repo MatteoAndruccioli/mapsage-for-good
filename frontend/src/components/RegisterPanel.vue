@@ -17,7 +17,7 @@
               <h1 class="h3 mb-3 font-weight-normal">Signing up as customer</h1>
               <div class="form-group my_centered">
                     <img style="" :src="customer_propic" alt="" name="customer-propic" class="propic">
-                    <input @change="customerHandleImage" class="my_custom-input" type="file" accept="image/*" name="customer-propic_input" required> 
+                    <input @change="customerHandleImage" class="my_custom-input" type="file" accept="image/*" name="customer-propic_input" > 
               </div>
               <div class="form-group">
                 <label for="customer-first_name">First Name</label>
@@ -44,7 +44,7 @@
               <h1 class="h3 mb-3 font-weight-normal">Signing up as Masseur</h1>
               <div class="form-group my_centered">
                     <img style="" :src="masseur_propic" alt="" name="masseur-propic" class="propic">
-                    <input @change="masseurHandleImage" class="my_custom-input" type="file" accept="image/*" name="masseur-propic_input" required>
+                    <input @change="masseurHandleImage" class="my_custom-input" type="file" accept="image/*" name="masseur-propic_input">
               </div>
               <div class="form-group">
                 <label for="masseur-email">Email Address</label>
@@ -149,7 +149,7 @@ export default {
         .then(res => {
           console.log(res)
           if (!res.data.error) {
-            var currentUser = { logged_in: true, profile_type: 'Masseur'}
+            var currentUser = { logged_in: true, profile_type: 'Customer'}
             this.$cookies.set('currentUser',currentUser); 
             this.$router.push({ name: 'Home_view' })
           } else {

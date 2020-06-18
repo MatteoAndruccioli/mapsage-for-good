@@ -1,20 +1,20 @@
 <template>
   <div>
     <Navbar/>
-    <ProfilePanel/>
+    <CustomerProfilePanel/>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import Navbar from '../components/Navbar'
-import ProfilePanel from '../components/ProfilePanel'
+import CustomerProfilePanel from '../components/CustomerProfilePanel'
 
 export default {
-  name: 'Profile_view',
+  name: 'CustomerProfile_view',
   components: {
     Navbar,
-    ProfilePanel
+    CustomerProfilePanel
   }
 }
 </script>
