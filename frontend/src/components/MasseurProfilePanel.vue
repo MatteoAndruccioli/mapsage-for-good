@@ -203,7 +203,7 @@ export default {
         if (!res.data.error) {
           this.advertisementTitle = ''
           this.advertisementBody = ''
-          console.log(res.data.advertisements)
+          //console.log(res.data)
           this.advertisements = res.data.advertisements
           this.isAdvertisementListEmpty = res.data.advertisements.length == 0
         } else {

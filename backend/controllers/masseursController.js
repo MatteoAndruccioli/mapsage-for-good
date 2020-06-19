@@ -185,23 +185,19 @@ exports.addAdvertisement = function(req, res){
         body: req.body.advertisementBody
       }
       Masseur.findOneAndUpdate({_id: decodedPayload._id},
-        {$push: {advertisements: newAdv}})
+        {$addToSet: {advertisements: newAdv}}, 
+        {new: true}, 
+        (err, updatedUser) => {
+          if (err) {
+            console.log("Something wrong when updating data!");
+          }
+          console.log("primogiro")
+          console.log(updatedUser);
+          res.send({ advertisements: updatedUser.advertisements })
+        })
         .catch(err => {
           res.send({ error: err })
         });
-
-      Masseur.findOne({
-        _id: decodedPayload._id
-      }).then(user => {
-        if(user) {
-          //console.log(user.advertisements)
-          res.json({advertisements: user.advertisements})
-        } else {
-          res.send({ error: 'User does not exist' })
-        }
-      }).catch(err => {
-        res.send({ error: err })
-      })
 
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed
