@@ -180,7 +180,8 @@ exports.addAdvertisement = function(req, res){
         title: req.body.advertisementTitle,
         body: req.body.advertisementBody
       }
-      Masseur.findOneAndUpdate({_id: decodedPayload._id}, {$push: {advertisements: newAdv}})
+      Masseur.findOneAndUpdate({_id: decodedPayload._id}, 
+        {$push: {advertisements: newAdv}})
         .catch(err => {
           res.send({ error: err })
         });
@@ -189,7 +190,7 @@ exports.addAdvertisement = function(req, res){
         _id: decodedPayload._id
       }).then(user => {
         if(user) {
-          console.log(user.advertisements)
+          //console.log(user.advertisements)
           res.json({advertisements: user.advertisements})
         } else {
           res.send({ error: 'User does not exist' })
@@ -197,6 +198,7 @@ exports.addAdvertisement = function(req, res){
       }).catch(err => {
         res.send({ error: err })
       })
+
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed
     }
@@ -205,7 +207,7 @@ exports.addAdvertisement = function(req, res){
   }
 }
 
-exports.editMasseurInfo = function(req, res){
+exports.editMasseurInfo = async function(req, res){
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
     try {
@@ -230,27 +232,25 @@ exports.editMasseurInfo = function(req, res){
             if(req.body.edit_expertise != null && req.body.edit_expertise != ""){
               user.expertise = req.body.edit_expertise
             }
-            user.save()  
+            user.save(function(err,savedObj){
+              // some error occurs during save
+              if(err){
+                res.send({ error: err })
+              }
+              // for some reason no saved obj return
+              else if(!savedObj){
+                res.send({ error: 'no user found' })
+              } 
+              else {
+                res.json({updatedUser: user})
+              }
+            })  
           } else {
             res.send({ error: 'User does not exist' })
           }
         }).catch(err => {
           res.send({ error: err })
         })
-
-        Masseur.findOne({
-          _id: decodedPayload._id
-        }).then(user => {
-          if(user) {
-            console.log(user)
-            res.json({updatedUser: user})
-          } else {
-            res.send({ error: 'User does not exist' })
-          }
-        }).catch(err => {
-          res.send({ error: err })
-        })
-
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed
     }
