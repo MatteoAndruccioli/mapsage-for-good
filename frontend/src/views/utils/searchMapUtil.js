@@ -44,7 +44,7 @@ function buildMarkerPopup(masseurProperties) {
   const button = L.DomUtil.create('a', 'btn btn-primary text-white', div2);
   button.textContent = 'View profile';
   L.DomEvent.on(button, 'click', () => {
-    router.push("/profile");
+    router.push("/masseurProfile");
   })
   return div1;
 }

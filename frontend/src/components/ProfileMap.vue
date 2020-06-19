@@ -18,12 +18,10 @@
     shadowUrl: require('leaflet/dist/images/marker-shadow.png')
   })
 
-  import { eventBus } from './RegisterPanel'
-
   export default {
     data() {
       return {
-        map: ''
+        map: null
       }
     },
     methods: {
@@ -55,16 +53,9 @@
           vm.$emit('locationEvent', [data.results[0].latlng.lng, data.results[0].latlng.lat])
         });
       },
-      // Required for refreshing map when a user clicks the Masseur Tab in register panel
-      refreshMap() {
-        this.map.remove();
-        setTimeout(this.init, 800)
-      }
     },
     mounted() {
-      this.init();
-      var meth = this.refreshMap
-      eventBus.$on('refreshMap', meth)
+      setTimeout(this.init, 500)
     }
   }
 </script>

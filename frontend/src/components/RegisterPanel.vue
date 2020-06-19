@@ -4,19 +4,19 @@
       <div class="col-md-6 mt-5 mx-auto">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item">
-            <a class="nav-link active" id="customer-tab" data-toggle="tab" href="#customer" role="tab" aria-controls="customer" aria-selected="true">Customer</a>
+            <a @click="profile_type='Customer'" class="nav-link active" id="customer-tab" data-toggle="tab" href="#customer" role="tab" aria-controls="customer" aria-selected="true">Customer</a>
           </li>
           <li class="nav-item">
-            <a v-on:click="refreshMap" class="nav-link" id="masseur-tab" data-toggle="tab" href="#masseur" role="tab" aria-controls="masseur" aria-selected="false">Masseur</a>
+            <a @click="profile_type='Masseur'" class="nav-link" id="masseur-tab" data-toggle="tab" href="#masseur" role="tab" aria-controls="masseur" aria-selected="false">Masseur</a>
           </li>
         </ul>
 
         <div class="tab-content" id="myTabContent">
           <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
-            <CustomerRegisterPanel/>
+            <CustomerRegisterPanel v-if="profile_type=='Customer'"/>
           </div>
           <div class="tab-pane fade" id="masseur" role="tabpanel" aria-labelledby="masseur-tab">
-            <MasseurRegisterPanel/>
+            <MasseurRegisterPanel v-if="profile_type=='Masseur'"/>
           </div>
         </div>
       </div>
@@ -28,17 +28,15 @@
 import CustomerRegisterPanel  from "./CustomerRegisterPanel"
 import MasseurRegisterPanel  from "./MasseurRegisterPanel"
 
-import Vue from 'vue'
-export const eventBus = new Vue()
-
 export default {
   components: {
     CustomerRegisterPanel,
     MasseurRegisterPanel
   },
-  methods: {
-    refreshMap() {
-      eventBus.$emit('refreshMap')
+  data() {
+    return {
+      // Required for map refreshing
+      profile_type: 'Customer'
     }
   }
 }
