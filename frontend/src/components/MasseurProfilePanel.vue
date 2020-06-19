@@ -182,8 +182,6 @@ export default {
           vm.edit_phone_number = ''
           vm.edit_expertise = ''
 
-          console.log(res.data.updatedUser)
-
           vm.brand_name = res.data.updatedUser.brand_name
           vm.mailing_address = res.data.updatedUser.mailing_address
           vm.phone_number = res.data.updatedUser.phone_number
