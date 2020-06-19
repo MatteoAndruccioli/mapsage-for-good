@@ -18,16 +18,19 @@
     shadowUrl: require('leaflet/dist/images/marker-shadow.png')
   })
 
+  import { eventBus } from './RegisterPanel'
+
   export default {
     data() {
       return {
-        city: this.$route.params.city
+        map: ''
       }
     },
     methods: {
       init: function() {
+        var vm = this;
         // Configuring map
-        const map = L.map('map').setView([43.991830, 12.607960], 8);
+        this.map = L.map('map').setView([43.991830, 12.607960], 8);
         var streetsTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
@@ -36,24 +39,32 @@
           "Streets": streetsTile,
           "Satellite": satelliteTile
         }
-        streetsTile.addTo(map);
-        L.control.layers(baseMaps).addTo(map);
-        L.control.scale().addTo(map);
+        streetsTile.addTo(this.map);
+        L.control.layers(baseMaps).addTo(this.map);
+        L.control.scale().addTo(this.map);
 
         // Building and configuration of search control
         var searchControl = new geocoding.geosearch({
           allowMultipleResults: false,
           useMapBounds: false
-        }).addTo(map);
-        var results = new L.layerGroup().addTo(map);
+        }).addTo(this.map);
+        var results = new L.layerGroup().addTo(this.map);
         searchControl.on('results', function(data) {
           results.clearLayers();
           results.addLayer(L.marker(data.results[0].latlng));
+          vm.$emit('locationEvent', [data.results[0].latlng.lng, data.results[0].latlng.lat])
         });
+      },
+      // Required for refreshing map when a user clicks the Masseur Tab in register panel
+      refreshMap() {
+        this.map.remove();
+        setTimeout(this.init, 800)
       }
     },
     mounted() {
       this.init();
+      var meth = this.refreshMap
+      eventBus.$on('refreshMap', meth)
     }
   }
 </script>

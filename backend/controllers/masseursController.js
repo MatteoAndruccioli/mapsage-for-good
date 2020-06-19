@@ -30,16 +30,21 @@ exports.handleRegisterRequest = function(req, res) {
 			profileImagePath = process.env.SERVER_LOCATION + req.body.folderPath + req.body.imageName
 		}
     const today = new Date()
-		const location = JSON.parse(req.body.location) // GeoJSON
-		location.properties = {
-			brand_name: req.body.brand_name,
-			profile_picture: profileImagePath
-		}
+    const location = { // GeoJSON
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: JSON.parse(req.body.coordinates)
+      },
+      properties: {
+        brand_name: req.body.brand_name,
+  			profile_picture: profileImagePath
+      }
+    }
 		const userData = {
 			brand_name: req.body.brand_name,
 			email: req.body.email,
 			password: req.body.password,
-			mailing_address: req.body.mailing_address,
 			phone_number: req.body.phone_number,
 			expertise: req.body.expertise,
 			date: today,
@@ -92,7 +97,6 @@ exports.readMasseurByJwt = function(req, res) {
           var userData = {
             brand_name: user.brand_name,
             email: user.email,
-						mailing_address: user.mailing_address,
 						phone_number: user.phone_number,
 						expertise: user.expertise,
             profile_picture: user.profile_picture,
