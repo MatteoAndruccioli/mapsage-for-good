@@ -2,11 +2,11 @@
     <div class="container ">
         <div class="row pt-5">
             <div class="col-lg-4 d-none d-lg-block ">
-              <img class="Card imgage px-auto my-cover" src="../assets/images/copertina.png" alt="Card image">
+              <img class="card image px-auto my-cover" src="../assets/images/copertina.png" alt="Card image">
             </div>
             <div class=" col-md-6 col-lg-4 d-none d-md-block ">
-              <img class="Card imgage px-auto my-cover" src="../assets/images/cover.jpg" alt="Card image">
-              <img class="Card imgage px-auto my-cover mt-5" src="../assets/images/cover2.jpg" alt="Card image">
+              <img class="card image px-auto my-cover" src="../assets/images/cover.jpg" alt="Card image">
+              <img class="card image px-auto my-cover mt-5" src="../assets/images/cover2.jpg" alt="Card image">
             </div>
             <div class="col-sm-12 col-md-6 col-lg-4 my-box">
                 <h1 class="h3 mb-3 font-weight-5 text-center mt-5">Mapsage</h1>
@@ -93,5 +93,9 @@ input.form-control{
     background-color: #007bff;
     border-color: #007bff;
 
+}
+
+img {
+  width: 17rem;
 }
 </style>

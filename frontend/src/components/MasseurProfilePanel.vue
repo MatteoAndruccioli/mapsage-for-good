@@ -59,7 +59,7 @@
                   </div>
 
                   <div class="modal-footer d-flex justify-content-center">
-                    <button class="btn btn-info" v-on:click="printa" data-dismiss="modal">Update</button>
+                    <button class="btn btn-info" v-on:click="editMasseurInfo" data-dismiss="modal">Update</button>
                   </div>
                 </div>
               </div>
@@ -71,7 +71,7 @@
           <div class="col-11 mx-auto pt-3">
             <div><b>Phone Number:</b> {{phone_number}}</div>
             <div><b>Email:</b> {{email}}</div>
-            <div><b>Mailing Address:</b> {{mailing_address}}</div>
+            <!--<div><b>Mailing Address:</b> {{mailing_address}}</div>-->
           </div>
         </div>
 
@@ -115,7 +115,7 @@
                 <input type="text" v-model="advertisementTitle" class="form-control" name="advertisementTitle" placeholder="Advertisement Title" required>
               </div>
               <div class="form-group">
-                <textarea  type="text" v-model="advertisementBody" class="form-control" name="advertisementBody" cols="30" rows="4" 
+                <textarea  type="text" v-model="advertisementBody" class="form-control" name="advertisementBody" cols="30" rows="4"
                   placeholder="Here you can write a short text for the advertisement" required/>
               </div>
               <button class="btn btn-lg btn-primary btn-block" type="submit">Add advertisement</button>
@@ -149,9 +149,9 @@ export default {
       isMasseur:false,
 
       brand_name:'',
-      profile_picture: '', 
+      profile_picture: '',
       email: "",
-      mailing_address: '',
+      //mailing_address: '',
       phone_number:'',
       expertise: '',
       advertisements: [],
@@ -167,7 +167,7 @@ export default {
     }
   },
   methods: {
-    printa: function() {
+    editMasseurInfo: function() {
       var vm = this;
 
       axios.post('http://localhost:3000/masseurs/edit', {
@@ -216,7 +216,7 @@ export default {
     },
 
     //retrieves info from server about current user,
-    //used when masseur is on his own profile 
+    //used when masseur is on his own profile
     initWithCurrentUserInfo: function() {
       var vm = this;
       axios.get('http://localhost:3000/masseurs/profile', { withCredentials: true })
@@ -226,7 +226,7 @@ export default {
             vm.brand_name = res.data.brand_name
             vm.profile_picture = res.data.profile_picture
             vm.email = res.data.email
-            vm.mailing_address = res.data.mailing_address
+            //vm.mailing_address = res.data.mailing_address
             vm.phone_number = res.data.phone_number
             vm.expertise = res.data.expertise
             vm.advertisements = res.data.advertisements
@@ -243,7 +243,7 @@ export default {
     }
 
   },
-  
+
   mounted() {
     if (this.$cookies.get('currentUser')) {
       this.isUserLoggedIn = this.$cookies.get('currentUser').logged_in
@@ -252,8 +252,8 @@ export default {
         this.isMasseur = false
       }else{
         this.isCustomer = false
-        this.isMasseur = true 
-        
+        this.isMasseur = true
+
         //non fare questa chiamata quando stai visitando la pagina di un masseur
         //essendo loggato con il profilo di un utente
         this.initWithCurrentUserInfo();
