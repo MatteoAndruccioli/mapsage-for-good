@@ -26,7 +26,7 @@ export function buildGeoJsonLayer(lng, lat, geoJsonLayer) {
       });
       geoJsonLayer.addLayer(geoJson)
     } else {
-      console.log("CAN'T SEARCH IN A CITY OUTSIDE OF ITALY")
+      console.log("CITY NOT SUPPORTED")
     }
   })
 }

@@ -4,7 +4,7 @@
 
 <script>
   import L from 'leaflet'
-  //import * as esri from 'esri-leaflet'
+  import * as esri from 'esri-leaflet'
   import * as geocoding from 'esri-leaflet-geocoder'
   import "leaflet/dist/leaflet.css";
   import "esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css";
@@ -33,9 +33,7 @@
         var streetsTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
-        var satelliteTile = L.tileLayer('http://c.tile.stamen.com/watercolor/${z}/${x}/${y}.jpg', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        });
+        var satelliteTile = esri.basemapLayer('Imagery');
           var baseMaps = {
           "Streets": streetsTile,
           "Satellite": satelliteTile

@@ -61,13 +61,19 @@ export default {
           this.isMasseur = false
         }else{
           this.isCustomer = false
-          this.isMasseur = true 
+          this.isMasseur = true
         }
       }
     },
     getUserInfo() {
       if (this.isUserLoggedIn) {
-        axios.get('http://localhost:3000/users/profile', { withCredentials: true })
+        var route;
+        if(this.isCustomer) {
+          route = 'http://localhost:3000/customers/profile'
+        } else {
+          route = 'http://localhost:3000/masseurs/profile'
+        }
+        axios.get(route, { withCredentials: true })
           .then(res => {
             if (!res.data.error) {
               console.log(res.data)
