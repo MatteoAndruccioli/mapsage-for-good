@@ -1,10 +1,10 @@
 <template>
     <div class="container">
-        <div class="mt-3 my-box col-sm-5 col-md-5 mx-auto">
-            <div class="col-md-8 col-sm-8 mx-auto ">
+        <div class="mt-3 my-box col-12 col-sm-8 col-md-6 col-lg-5 mx-auto">
+            <div class="col-md-10 col-lg-8 mx-auto ">
                 <img class="propic responsive" :src="profile_picture" alt="">
             </div>
-            <table class="table col-md-8 col-sm-10 mt-5 mx-auto text-center">
+            <table class="table col-md-10 mt-5 mx-auto text-center">
                 <tbody>
                     <tr>
                         <th>First Name</th>
