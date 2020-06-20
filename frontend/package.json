@@ -12,6 +12,7 @@
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.1.0",
     "core-js": "^3.6.5",
+    "css-animation-sync": "^0.2.0",
     "esri-leaflet": "^2.4.1",
     "esri-leaflet-geocoder": "^2.3.3",
     "jquery": "^3.5.1",
