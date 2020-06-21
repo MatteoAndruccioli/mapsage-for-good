@@ -23,7 +23,9 @@
     </div>
     <div class="form-group">
       <label for="masseur-location">Location</label>
-      <ProfileMap name="masseur-location" @locationEvent="locationChosed"/>
+      <div id="mapContainer">
+        <MapPanel name="masseur-location" @locationEvent="locationChosed" initType="REGISTER_PANEL_MAP"/>
+      </div>
     </div>
     <div class="form-group">
       <label for="masseur-expertise">Espertise</label>
@@ -37,11 +39,11 @@
 <script>
 import axios from 'axios'
 import { hex_sha512 } from "../assets/js/sha512.js"
-import ProfileMap  from "./ProfileMap"
+import MapPanel  from "./MapPanel"
 
 export default {
   components: {
-    ProfileMap
+    MapPanel
   },
   data () {
     return {
@@ -114,5 +116,10 @@ img {
 .my_custom-input {
   display: flex;
   justify-content: center;
+}
+
+#mapContainer {
+  width: 100%;
+  height: 300px;
 }
 </style>

@@ -6,7 +6,7 @@ import Register from '../views/Register';
 import CustomerProfile from '../views/CustomerProfile';
 import MasseurProfile from '../views/MasseurProfile';
 import PageNotFound from '../views/PageNotFound';
-import SearchMap from '../views/SearchMap.vue';
+import SearchVisualizer from '../views/SearchVisualizer.vue';
 
 Vue.use(VueRouter);
 
@@ -38,8 +38,8 @@ const routes = [
   },
   {
     path: '/search/:city',
-    name: 'SearchMap_view',
-    component: SearchMap
+    name: 'SearchVisualizer_view',
+    component: SearchVisualizer
   },
   {
     path: '/404',
