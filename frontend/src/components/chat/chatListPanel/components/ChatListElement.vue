@@ -18,7 +18,7 @@ export default {
   ],
   methods: {
     showChat: function() {
-      alert("user wants to chat with _id == " + this.$props._id)
+      this.$emit('openChat', this.$props._id, this.$props.fullName, this.$props.imagePath)
     }
   }
 }

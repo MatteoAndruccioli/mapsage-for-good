@@ -6,26 +6,17 @@
     <div>
       <ul class="list-group" >
         <div v-for="chat in chats" :key="chat._id">
-          <ChatListElement :fullName=chat.fullName 
-          :imagePath=chat.imagePath 
-          :_id=chat._id 
-          :blink=chat.blink /> 
+          <ChatListElement 
+            :fullName=chat.fullName 
+            :imagePath=chat.imagePath 
+            :_id=chat._id 
+            :blink=chat.blink 
+            @openChat="onOpenChat"
+          /> 
         </div>
       </ul>
     </div>
 
-    <!--
-    <div class="container">
-      <div class="row">
-        <div class="input-group col-12">
-          <textarea class="form-control" aria-label="With textarea"></textarea>
-          <div class="input-group-append">
-            <span class="input-group-text">Send</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    -->
   </div>
 </template>
 
@@ -88,6 +79,13 @@ export default {
       
       ]
     }
+  },
+
+  methods: {
+    //this method propagates child-generated backToChatList event to his father
+    onOpenChat: function(receiver_id, receiver_fullName, receiver_imgPath) {
+      this.$emit('openChat',receiver_id, receiver_fullName, receiver_imgPath)
+    },
   },
 
   mounted() {
