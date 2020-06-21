@@ -1,7 +1,11 @@
 <template>
   <div style="width: 21rem;">
     <div style="height: 40px">
-      <ChatPanelHeader :fullName=this.fullName :imagePath=this.imagePath />
+      <ChatPanelHeader 
+        :fullName=this.fullName 
+        :imagePath=this.imagePath 
+        @backToChatList="onBackToChatList()"
+      />
     </div>
 
     
@@ -86,6 +90,12 @@ export default {
           _id: 10
         },
       ]
+    }
+  },
+  methods: {
+    //this method propagates child-generated backToChatList event to his father
+    onBackToChatList: function() {
+      this.$emit('backToChatList')
     }
   },
   components: {

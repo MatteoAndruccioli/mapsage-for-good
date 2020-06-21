@@ -17,7 +17,7 @@
           <Chatlist />
         </div>
         <div v-if="!this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary">
-          <ChatPanel />
+          <ChatPanel @backToChatList="onBackToChatList()" />
         </div>
       </div>
 
@@ -32,17 +32,23 @@ import Chatlist from './chatListPanel/Chatlist'
 import ChatPanel from './chatPanel/ChatPanel'
 
 export default {
-
-  components: {
-    Chatlist,
-    ChatPanel
-  },
-
   data () {
     //const loggedUser = this.$cookies.get('current-user')
     return {
       showChatList: false,
     }
+  },
+  
+  methods: {
+    //this method propagates child-generated backToChatList event to his father
+    onBackToChatList: function() {
+      this.showChatList = true
+    }
+  },
+  
+  components: {
+    Chatlist,
+    ChatPanel
   },
 }
 </script>
