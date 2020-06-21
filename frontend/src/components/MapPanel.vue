@@ -19,8 +19,7 @@
     shadowUrl: require('leaflet/dist/images/marker-shadow.png')
   })
 
-  import axios from 'axios'
-  import router from '../router'
+  import {buildGeoJsonLayer} from './utils/geoJsonUtil'
 
   export default {
     props: ['initType', 'initialLocation', 'initialCity'],
@@ -50,7 +49,6 @@
 
         this.geoJsonLayer = new L.layerGroup().addTo(this.map)
 
-        const vm = this;
         // Map configuration
         switch(this.initType) {
           case 'SEARCH_MAP':
@@ -61,27 +59,7 @@
             this.initSearchControl(this.initType)
           break;
           case 'PROFILE_MAP':
-            L.easyButton({states: [{
-                    stateName: 'edit-location',
-                    icon: '<i class="far fa-edit fa-lg" style="color:#0000FF;"><!-- icon --></i>',
-                    title: 'edit location',
-                    onClick: function(control) {
-                      vm.initSearchControl(vm.initType)
-                      control.state('confirm-location')
-                    }
-                  },{
-                    stateName: 'confirm-location',
-                    icon: '<i class="far fa-check-circle fa-lg" style="color:#00FF00;"><!-- icon --></i>',
-                    title: 'confirm location',
-                    onClick: function(control) {
-                      control.state('edit-location');
-                      if (vm.new_location != null)
-                        vm.$emit('locationEvent', vm.new_location);
-                      vm.$router.go();
-                    }
-                  }
-                ]
-            }).addTo(this.map)
+            this.initEditLocationButton()
             this.initLocation(this.initialLocation, this.initType)
           break;
           default:
@@ -104,7 +82,7 @@
             if(response.results[0] != null) {
               const lng = response.results[0].latlng.lng;
               const lat = response.results[0].latlng.lat;
-              vm.buildGeoJsonLayer(lng, lat);
+              buildGeoJsonLayer(lng, lat, vm.geoJsonLayer);
             }
             vm.map.fitBounds(response.results[0].bounds);
           });
@@ -125,7 +103,7 @@
           const lat = data.results[0].latlng.lat;
           switch (initType) {
             case 'SEARCH_MAP':
-              vm.buildGeoJsonLayer(lng, lat);
+              buildGeoJsonLayer(lng, lat, vm.geoJsonLayer);
               break;
             case 'REGISTER_PANEL_MAP':
               vm.geoJsonLayer.addLayer(L.marker(data.results[0].latlng));
@@ -139,51 +117,30 @@
           }
         });
       },
-      buildGeoJsonLayer(lng, lat) {
+      // Builds and configures the "edit location" button
+      initEditLocationButton() {
         const vm = this;
-        axios.post('http://localhost:3000/masseurs/masseursByLocation', {
-          type: "Point",
-          coordinates: [lng, lat]
-        }).then(res => {
-          if(!res.data.error && res.data.cityBoundaries) {
-            var coordinates = new Array;
-            coordinates.push(res.data.cityBoundaries)
-            if(res.data.masseursLocations) {
-              res.data.masseursLocations.forEach(location => coordinates.push(location));
-            } else {
-              console.log("NO MASSEUR IN THE SPECIFIED CITY")
-            }
-            console.log(coordinates)
-            const geoJson = L.geoJSON({
-              type: "FeatureCollection",
-              features: coordinates
-            }, {
-              pointToLayer: function(geoJsonPoint, latlng) {
-                return L.marker(latlng).bindPopup(vm.buildMarkerPopup(geoJsonPoint.properties));
+        L.easyButton({states: [{
+                stateName: 'edit-location',
+                icon: '<i class="far fa-edit fa-lg" style="color:#0000FF;"><!-- icon --></i>',
+                title: 'edit location',
+                onClick: function(control) {
+                  vm.initSearchControl(vm.initType)
+                  control.state('confirm-location')
+                }
+              },{
+                stateName: 'confirm-location',
+                icon: '<i class="far fa-check-circle fa-lg" style="color:#00FF00;"><!-- icon --></i>',
+                title: 'confirm location',
+                onClick: function(control) {
+                  control.state('edit-location');
+                  if (vm.new_location != null)
+                    vm.$emit('locationEvent', vm.new_location);
+                  vm.$router.go();
+                }
               }
-            });
-            this.geoJsonLayer.addLayer(geoJson)
-          } else {
-            console.log("CITY NOT SUPPORTED")
-          }
-        })
-      },
-      buildMarkerPopup(masseurProperties) {
-        console.log(masseurProperties);
-        const div1 = L.DomUtil.create('div', 'card');
-        const img = L.DomUtil.create('img', 'card-img-top', div1);
-        img.src = masseurProperties.profile_picture;
-        img.setAttribute('alt', 'Profile image');
-        const div2 = L.DomUtil.create('div', 'card-body d-flex flex-column', div1);
-        const h5 = L.DomUtil.create('h6', 'card-title center', div2);
-        h5.textContent = masseurProperties.brand_name;
-
-        const button = L.DomUtil.create('a', 'btn btn-primary text-white', div2);
-        button.textContent = 'View profile';
-        L.DomEvent.on(button, 'click', () => {
-          router.push("/masseurProfile");
-        })
-        return div1;
+            ]
+        }).addTo(this.map)
       }
     },
     mounted() {
