@@ -1,7 +1,11 @@
 <template>
   <div style="width: 21rem;">
     <div style="height: 40px">
-      <ChatPanelHeader :fullName=this.fullName :imagePath=this.imagePath />
+      <ChatPanelHeader 
+        :fullName=this.fullName 
+        :imagePath=this.imagePath 
+        @backToChatList="onBackToChatList()"
+      />
     </div>
 
     
@@ -24,17 +28,40 @@
 </template>
 
 <script>
-import ChatPanelHeader from './ChatPanelHeader'
-import ChatPanelFooter from './ChatPanelFooter'
-import ChatMessage from './ChatMessage'
+import ChatPanelHeader from './components/ChatPanelHeader'
+import ChatPanelFooter from './components/ChatPanelFooter'
+import ChatMessage from './components/ChatMessage'
 
 export default {
+  props: [
+    //di questi rimarrà solo receiver_id, che per ora è l'unico non utilizzato 
+    'receiver_id', //è l'id del destinatario e verrà usato con una chiamata axios in initFields per popolare la chat con i messaggi e caricare nome e foto destinatario
+    'receiver_FullName', 
+    'receiver_imagePath'
+  ],
   data () {
     return {
-      fullName: "Tal Dei Tali",
-      imagePath: "http://localhost:3000/static/uploads/defaultImg.png",
+      fullName: '',
+      imagePath: '',
       //nota devono essere ordinati
-      messages: [
+      messages: []
+    }
+  },
+  methods: {
+    //this method propagates child-generated backToChatList event to his father
+    onBackToChatList: function() {
+      this.$emit('backToChatList')
+    },
+
+    //questo metodo verrà modificato in produzione: 
+    //prenderà un id e farà una richiesta axios al server con getbyid per tirar su cose
+    //nota in seguito alla richiesta axios il server deve sapere che i messaggi sono stati tutti letti da quell'utente
+    initFields: function(id, receiverFullName, receiverImagePath) {
+      console.log(id, receiverFullName, receiverImagePath)
+      this.fullName = receiverFullName
+      this.imagePath = receiverImagePath
+      //nota devono essere ordinati
+      this.messages = [
         {
           messageBody: "mio messaggio piu vecchio", 
           isUserMessage: true,
@@ -88,6 +115,11 @@ export default {
       ]
     }
   },
+  
+  mounted() {
+    this.initFields(this.$props.receiver_id ,this.$props.receiver_FullName ,this.$props.receiver_imagePath )
+  },
+
   components: {
     ChatPanelHeader,
     ChatMessage,

@@ -14,7 +14,7 @@ export default {
   ],
   methods: {
     goBackToChatList: function() {
-      alert("utente vuole tornare alla chatlist")
+      this.$emit('backToChatList')
     }
   }
 }
