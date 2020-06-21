@@ -31,7 +31,7 @@
 
 <script>
 import sync from 'css-animation-sync';
-import ChatListElement from './ChatListElement'
+import ChatListElement from './components/ChatListElement'
 
 export default {
   data () {

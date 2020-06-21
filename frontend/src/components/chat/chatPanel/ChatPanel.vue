@@ -24,9 +24,9 @@
 </template>
 
 <script>
-import ChatPanelHeader from './ChatPanelHeader'
-import ChatPanelFooter from './ChatPanelFooter'
-import ChatMessage from './ChatMessage'
+import ChatPanelHeader from './components/ChatPanelHeader'
+import ChatPanelFooter from './components/ChatPanelFooter'
+import ChatMessage from './components/ChatMessage'
 
 export default {
   data () {
