@@ -15,7 +15,7 @@ export function buildGeoJsonLayer(lng, lat, geoJsonLayer) {
       } else {
         console.log("NO MASSEUR IN THE SPECIFIED CITY")
       }
-      console.log(coordinates)
+      //console.log(coordinates)
       const geoJson = L.geoJSON({
         type: "FeatureCollection",
         features: coordinates
@@ -32,7 +32,7 @@ export function buildGeoJsonLayer(lng, lat, geoJsonLayer) {
 }
 
 function buildMarkerPopup(masseurProperties) {
-  console.log(masseurProperties);
+  //console.log(masseurProperties);
   const div1 = L.DomUtil.create('div', 'card');
   const img = L.DomUtil.create('img', 'card-img-top', div1);
   img.src = masseurProperties.profile_picture;
@@ -44,7 +44,7 @@ function buildMarkerPopup(masseurProperties) {
   const button = L.DomUtil.create('a', 'btn btn-primary text-white', div2);
   button.textContent = 'View profile';
   L.DomEvent.on(button, 'click', () => {
-    router.push("/masseurProfile");
+    router.push("/masseurProfile/" + masseurProperties.masseur_id);
   })
   return div1;
 }

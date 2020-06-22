@@ -19,10 +19,10 @@
     shadowUrl: require('leaflet/dist/images/marker-shadow.png')
   })
 
-  import {buildGeoJsonLayer} from './utils/geoJsonUtil'
+  import {buildGeoJsonLayer} from './geoJsonUtil'
 
   export default {
-    props: ['initType', 'initialLocation', 'initialCity'],
+    props: ['initType', 'initialLocation', 'initialCity', 'enableEditLocationButton'],
     data() {
       return {
         map: null,
@@ -59,7 +59,9 @@
             this.initSearchControl(this.initType)
           break;
           case 'PROFILE_MAP':
-            this.initEditLocationButton()
+            if (this.enableEditLocationButton) {
+              this.initEditLocationButton()
+            }
             this.initLocation(this.initialLocation, this.initType)
           break;
           default:

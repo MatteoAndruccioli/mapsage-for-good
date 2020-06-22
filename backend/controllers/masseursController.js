@@ -129,7 +129,16 @@ exports.readMasseurById = function(req, res) {
           error: 'Masseur does not exist'
         })
       } else {
-        res.json(user)
+        var userData = {
+          brand_name: user.brand_name,
+          email: user.email,
+          phone_number: user.phone_number,
+          expertise: user.expertise,
+          profile_picture: user.profile_picture,
+          advertisements: user.advertisements,
+          location: user.location.geometry.coordinates // GeoJSON
+        }
+        res.json(userData)
       }
     }
   })
@@ -158,7 +167,17 @@ exports.readMasseursByLocation = function(req, res) {
         }
       }).then(masseursList => {
         if (masseursList != null && masseursList.length > 0) {
-          const locations = masseursList.map(masseur => masseur.location);
+          const locations = masseursList.map(masseur => {
+            return {
+              geometry: masseur.location.geometry,
+              type: masseur.location.type,
+              properties: {
+                brand_name: masseur.location.properties.brand_name,
+                profile_picture: masseur.location.properties.profile_picture,
+                masseur_id: masseur._id  // Added - required for masseur profile visualization from search map
+              }
+            }
+          });
           res.json({
             cityBoundaries: municipality,
             masseursLocations: locations
@@ -185,8 +204,8 @@ exports.addAdvertisement = function(req, res){
         body: req.body.advertisementBody
       }
       Masseur.findOneAndUpdate({_id: decodedPayload._id},
-        {$addToSet: {advertisements: newAdv}}, 
-        {new: true}, 
+        {$addToSet: {advertisements: newAdv}},
+        {new: true},
         (err, updatedUser) => {
           if (err) {
             console.log("Something wrong when updating data!");

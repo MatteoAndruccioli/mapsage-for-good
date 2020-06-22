@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import MapPanel from '../components/MapPanel'
+  import MapPanel from '../components/map/MapPanel'
 
   export default {
     components: {

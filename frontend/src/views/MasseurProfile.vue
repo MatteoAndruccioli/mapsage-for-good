@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navbar/>
-    <MasseurProfilePanel/>
+    <MasseurProfilePanel :masseur_id="masseur_id"/>
   </div>
 </template>
 
@@ -14,6 +14,11 @@ export default {
   components: {
     Navbar,
     MasseurProfilePanel
+  },
+  data() {
+    return {
+      masseur_id: this.$route.params.id
+    }
   }
 }
 </script>

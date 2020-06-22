@@ -32,7 +32,7 @@ const routes = [
     component: CustomerProfile
   },
   {
-    path: '/masseurProfile',
+    path: '/masseurProfile/:id',
     name: 'MasseurProfile_view',
     component: MasseurProfile
   },

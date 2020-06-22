@@ -1,18 +1,19 @@
 <template>
-  <div>
-    <PageNotFound/>
+  <div id="page-not-found">
+    <Navbar/>
+    <PageNotFoundImage/>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import PageNotFound from '../components/PageNotFound'
-
+import Navbar from '../components/Navbar'
+import PageNotFoundImage from "../components/404/PageNotFoundImage.vue"
 
 export default {
-  name: 'PageNotFound_view',
   components: {
-    PageNotFound
-  }
+    Navbar,
+    PageNotFoundImage
+  },
+  name: 'PageNotFound_view'
 }
 </script>

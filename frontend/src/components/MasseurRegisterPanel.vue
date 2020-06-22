@@ -39,7 +39,7 @@
 <script>
 import axios from 'axios'
 import { hex_sha512 } from "../assets/js/sha512.js"
-import MapPanel  from "./MapPanel"
+import MapPanel  from "./map/MapPanel"
 
 export default {
   components: {

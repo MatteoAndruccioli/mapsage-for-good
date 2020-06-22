@@ -20,12 +20,12 @@
                <h3 class="text-center">{{brand_name}}</h3>
             </div>
             <div class="col-md-7 d-flex flex-row justify-content-center justify-content-sm-center justify-content-md-end">
-              <button v-if="isMasseur" type="button" class="btn btn-info btn-sm my-btn mx-1" data-toggle="modal" data-target="#modalLoginForm" >edit profile</button>
-              <button v-if="isCustomer" type="button" class="btn btn-info btn-sm my-btn mx-1" >Send Message</button>
-              <button v-if="isCustomer" type="button" class="btn btn-info btn-sm my-btn mx-1" >Follow</button>
+              <button v-if="isMyProfile" type="button" class="btn btn-info btn-sm my-btn mx-1" data-toggle="modal" data-target="#modalLoginForm" >edit profile</button>
+              <button v-if="!isMyProfile" type="button" class="btn btn-info btn-sm my-btn mx-1" >Send Message</button>
+              <button v-if="!isMyProfile" type="button" class="btn btn-info btn-sm my-btn mx-1" >Follow</button>
             </div>
 
-            <!-- INIZIA QUI -->
+            <!-- MODAL STARTS HERE -->
             <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
               aria-hidden="true">
               <div class="modal-dialog" role="document">
@@ -60,8 +60,7 @@
                 </div>
               </div>
             </div>
-            <!-- FINISCE QUI -->
-
+            <!-- MODAL ENDS HERE -->
           </div>
 
           <div class="col-11 mx-auto pt-3">
@@ -72,7 +71,7 @@
         </div>
 
         <div id="map-container">
-          <MapPanel @locationEvent="editMasseurLocation" initType="PROFILE_MAP" :initialLocation="location"/>
+          <MapPanel @locationEvent="editMasseurLocation" initType="PROFILE_MAP" :initialLocation="location" :enableEditLocationButton="isMyProfile"/>
         </div>
       </div>
 
@@ -100,7 +99,7 @@
             </ul>
           </div>
 
-          <div v-if="isMasseur" class="col-12 mx-auto mt-3 align-self-end" style="display: table">
+          <div v-if="isMyProfile" class="col-12 mx-auto mt-3 align-self-end" style="display: table">
             <form v-on:submit.prevent="addAdvertisement">
               <h5 class="text-center">Add a new advertisement</h5>
               <div class="form-group">
@@ -122,7 +121,6 @@
           </p>
         </div>
 
-
       </div>
     </div>
   </div>
@@ -131,15 +129,18 @@
 <script>
 import axios from 'axios'
 import Advertisement from './Advertisement'
-import MapPanel from './MapPanel'
+import MapPanel from './map/MapPanel'
 
 export default {
+  props: ['masseur_id'],
+  components: {
+    Advertisement,
+    MapPanel
+  },
   data () {
     //const loggedUser = this.$cookies.get('current-user')
     return {
-      isUserLoggedIn: false,
-      isCustomer: false,
-      isMasseur:false,
+      isMyProfile: false,
 
       brand_name:'',
       profile_picture: '',
@@ -159,112 +160,112 @@ export default {
     }
   },
   methods: {
-    editMasseurInfo: function() {
+    //retrieves info from server about the actual masseur
+    initProfile: function() {
       var vm = this;
-
-      axios.post('http://localhost:3000/masseurs/edit', {
-        edit_brand_name: vm.edit_brand_name,
-        edit_phone_number: vm.edit_phone_number,
-        edit_expertise: vm.edit_expertise
-      }, { withCredentials: true }).then(res => {
+      var call;
+      // QUESTO IF VA SOSTITUITO CON UN UNICA CHIAMATA A http://localhost:3000/masseurs/
+      // NON APPENA SARA' DISPONIBILE IL CLIENT COOKIE CHE MEMEORIZZA L'ID DEL MASSEUR LOGGATO
+      if (this.isMyProfile) {
+        call = axios.get('http://localhost:3000/masseurs/profile', { withCredentials: true })
+      } else {
+        call = axios.get('http://localhost:3000/masseurs/' + this.masseur_id)
+      }
+      call.then(res => {
+        //console.log(res.data)
         if (!res.data.error) {
-          vm.edit_brand_name = ''
-          vm.edit_phone_number = ''
-          vm.edit_expertise = ''
+          vm.brand_name = res.data.brand_name
+          vm.profile_picture = res.data.profile_picture
+          vm.email = res.data.email
+          vm.location = res.data.location
+          vm.phone_number = res.data.phone_number
+          vm.expertise = res.data.expertise
+          vm.advertisements = res.data.advertisements
 
-          vm.brand_name = res.data.updatedUser.brand_name
-          vm.phone_number = res.data.updatedUser.phone_number
-          vm.expertise = res.data.updatedUser.expertise
+          vm.isAdvertisementListEmpty = res.data.advertisements.length == 0
+          //aggiungere campi in base a necessità !!!
         } else {
-          alert("Login failed!! try again");
           console.log(res.data.error)
         }
       }).catch(err => {
         console.log(err)
       })
+    },
+
+    editMasseurInfo: function() {
+      if (this.isMyProfile) {
+        var vm = this;
+        axios.post('http://localhost:3000/masseurs/edit', {
+          edit_brand_name: vm.edit_brand_name,
+          edit_phone_number: vm.edit_phone_number,
+          edit_expertise: vm.edit_expertise
+        }, { withCredentials: true }).then(res => {
+          if (!res.data.error) {
+            vm.edit_brand_name = ''
+            vm.edit_phone_number = ''
+            vm.edit_expertise = ''
+
+            vm.brand_name = res.data.updatedUser.brand_name
+            vm.phone_number = res.data.updatedUser.phone_number
+            vm.expertise = res.data.updatedUser.expertise
+          } else {
+            alert("Login failed!! try again");
+            console.log(res.data.error)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      }
     },
 
     addAdvertisement: function() {
-      axios.post('http://localhost:3000/masseurs/adverisement', {
-        advertisementTitle: this.advertisementTitle,
-        advertisementBody: this.advertisementBody
-      }, { withCredentials: true }).then(res => {
-        if (!res.data.error) {
-          this.advertisementTitle = ''
-          this.advertisementBody = ''
-          //console.log(res.data)
-          this.advertisements = res.data.advertisements
-          this.isAdvertisementListEmpty = res.data.advertisements.length == 0
-        } else {
-          alert("Login failed!! try again");
-          console.log(res.data.error)
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+      if (this.isMyProfile) {
+        axios.post('http://localhost:3000/masseurs/adverisement', {
+          advertisementTitle: this.advertisementTitle,
+          advertisementBody: this.advertisementBody
+        }, { withCredentials: true }).then(res => {
+          if (!res.data.error) {
+            this.advertisementTitle = ''
+            this.advertisementBody = ''
+            //console.log(res.data)
+            this.advertisements = res.data.advertisements
+            this.isAdvertisementListEmpty = res.data.advertisements.length == 0
+          } else {
+            alert("Login failed!! try again");
+            console.log(res.data.error)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      }
     },
 
-    //retrieves info from server about current user,
-    //used when masseur is on his own profile
-    initWithCurrentUserInfo: function() {
-      var vm = this;
-      axios.get('http://localhost:3000/masseurs/profile', { withCredentials: true })
-        .then(res => {
+    editMasseurLocation: function(location) {
+      if (this.isMyProfile) {
+        const vm = this;
+        axios.put('http://localhost:3000/masseurs/editLocation', {
+          new_coordinates: location
+        }, { withCredentials: true }).then(res => {
           if (!res.data.error) {
-            vm.brand_name = res.data.brand_name
-            vm.profile_picture = res.data.profile_picture
-            vm.email = res.data.email
-            vm.location = res.data.location
-            vm.phone_number = res.data.phone_number
-            vm.expertise = res.data.expertise
-            vm.advertisements = res.data.advertisements
-
-            vm.isAdvertisementListEmpty = res.data.advertisements.length == 0
-            //aggiungere campi in base a necessità !!!
+            vm.location = location
           } else {
             console.log(res.data.error)
           }
         }).catch(err => {
           console.log(err)
         })
-    },
-
-    editMasseurLocation: function(location) {
-      const vm = this;
-      axios.put('http://localhost:3000/masseurs/editLocation', {
-        new_coordinates: location
-      }, { withCredentials: true }).then(res => {
-        if (!res.data.error) {
-          vm.location = location
-        } else {
-          console.log(res.data.error)
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+      }
     }
 
   },
 
   mounted() {
-    if (this.$cookies.get('currentUser')) {
-      this.isUserLoggedIn = this.$cookies.get('currentUser').logged_in
-      if (this.$cookies.get('currentUser').profile_type == "Customer"){
-        this.isCustomer = true
-        this.isMasseur = false
-      }else{
-        this.isCustomer = false
-        this.isMasseur = true
-
-        //non fare questa chiamata quando stai visitando la pagina di un masseur
-        //essendo loggato con il profilo di un utente
-        this.initWithCurrentUserInfo();
-      }
+    if (this.$cookies.get('currentUser') != null &&
+          this.$cookies.get('currentUser').logged_in &&
+            this.masseur_id == 'private') { // SOSTITUIRE 'private' CON ID MEMORIZZATO NEL COOKIE
+      this.isMyProfile = true
     }
-  },
-  components: {
-    Advertisement,
-    MapPanel
+    this.initProfile();
   }
 }
 </script>
