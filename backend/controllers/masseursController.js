@@ -101,7 +101,7 @@ exports.readMasseurByJwt = function(req, res) {
 						expertise: user.expertise,
             profile_picture: user.profile_picture,
             advertisements: user.advertisements,
-            location: user.location // GeoJSON
+            location: user.location.geometry.coordinates // GeoJSON
           }
           res.json(userData)
         } else {
@@ -223,9 +223,6 @@ exports.editMasseurInfo = async function(req, res){
             if(req.body.edit_brand_name != null && req.body.edit_brand_name != ""){
               user.brand_name = req.body.edit_brand_name
             }
-            if(req.body.edit_mailing_address != null && req.body.edit_mailing_address != ""){
-              user.mailing_address = req.body.edit_mailing_address
-            }
             if(req.body.edit_phone_number != null && req.body.edit_phone_number != ""){
               user.phone_number = req.body.edit_phone_number
             }
@@ -249,6 +246,44 @@ exports.editMasseurInfo = async function(req, res){
             res.send({ error: 'User does not exist' })
           }
         }).catch(err => {
+          res.send({ error: err })
+        })
+    } catch (error) {
+      res.sendStatus(401); // The JWT is not valid - verify method failed
+    }
+  } else {
+    res.sendStatus(401); // No JWT specified
+  }
+}
+
+exports.editMasseurLocation = function(req, res) {
+  if (req.signedCookies.jwt != null) {
+    const token = req.signedCookies.jwt;
+    try {
+      var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
+      if (req.body.new_coordinates == null) {
+        res.send({ error: 'no coordinates specified' })
+        return;
+      }
+      Masseur.findOne({ _id: decodedPayload._id })
+        .then(user => {
+          if (user != null) {
+            console.log(req.body.new_coordinates)
+            user.location.geometry.coordinates = req.body.new_coordinates
+            user.save(function(err, savedObj){
+              if(err) { // some error occurs during save
+                res.send({ error: err })
+              } else if(!savedObj) {
+                res.send({ error: 'no user found' })
+              } else { // user updated correctly
+                res.json({updatedUser: user})
+              }
+            })
+          } else {
+            res.send({ error: 'User does not exist' })
+          }
+        }).catch(err => {
+          console.log("DIO SPORCO")
           res.send({ error: err })
         })
     } catch (error) {

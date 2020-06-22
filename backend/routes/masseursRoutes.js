@@ -23,4 +23,7 @@ module.exports = function(app) {
 
 	app.route('/masseurs/edit')
 		.post(masseursController.editMasseurInfo)
+
+	app.route('/masseurs/editLocation')
+		.put(masseursController.editMasseurLocation)
 };

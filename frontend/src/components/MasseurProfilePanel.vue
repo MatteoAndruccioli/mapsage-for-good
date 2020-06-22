@@ -44,10 +44,6 @@
                       <input type="text" v-model="edit_brand_name" class="form-control" name="masseur-brandName" placeholder="Enter New Brand Name">
                     </div>
                     <div class="form-group">
-                      <label for="masseur-mailingAddress">Mailing Address</label>
-                      <input type="text" v-model="edit_mailing_address" class="form-control" name="masseur-mailingAddress" placeholder="Enter Mailing Address" >
-                    </div>
-                    <div class="form-group">
                       <label for="masseur_phoneNumber">Phone Number</label>
                       <input type="tel" v-model="edit_phone_number" id="masseur_phoneNumber" class="form-control" name="masseur_phoneNumber" placeholder="Enter Phone Number" pattern="[0-9]{10}" >
                     </div>
@@ -75,12 +71,8 @@
           </div>
         </div>
 
-        <div class="mx-auto mt-3 my-box col-12">
-          <h5 class="text-center">Locate this masseur</h5>
-          <p class="col-12 mx-auto">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Libero deserunt et aspernatur esse id impedit exercitationem delectus optio ad nihil iste, est sunt eos quas quidem nobis, nemo, molestias possimus.
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Libero deserunt et aspernatur esse id impedit exercitationem delectus optio ad nihil iste, est sunt eos quas quidem nobis, nemo, molestias possimus.
-          </p>
+        <div id="map-container">
+          <MapPanel @locationEvent="editMasseurLocation" initType="PROFILE_MAP" :initialLocation="location"/>
         </div>
       </div>
 
@@ -103,7 +95,7 @@
           <div v-if="!this.isAdvertisementListEmpty" class="panel-body" >
             <ul class="list-group" >
               <div v-for="adv in advertisements" :key="adv._id" id="advList">
-                <Advertisement :title=adv.title :body=adv.body> </Advertisement>
+                <Advertisement :title="adv.title" :body="adv.body"> </Advertisement>
               </div>
             </ul>
           </div>
@@ -139,6 +131,7 @@
 <script>
 import axios from 'axios'
 import Advertisement from './Advertisement'
+import MapPanel from './MapPanel'
 
 export default {
   data () {
@@ -151,7 +144,7 @@ export default {
       brand_name:'',
       profile_picture: '',
       email: "",
-      //mailing_address: '',
+      location: '',
       phone_number:'',
       expertise: '',
       advertisements: [],
@@ -160,7 +153,6 @@ export default {
       isAdvertisementListEmpty: true,
 
       edit_brand_name: '',
-      edit_mailing_address: '',
       edit_phone_number: '',
       edit_expertise: '',
 
@@ -172,18 +164,15 @@ export default {
 
       axios.post('http://localhost:3000/masseurs/edit', {
         edit_brand_name: vm.edit_brand_name,
-        edit_mailing_address: vm.edit_mailing_address,
         edit_phone_number: vm.edit_phone_number,
         edit_expertise: vm.edit_expertise
       }, { withCredentials: true }).then(res => {
         if (!res.data.error) {
           vm.edit_brand_name = ''
-          vm.edit_mailing_address = ''
           vm.edit_phone_number = ''
           vm.edit_expertise = ''
 
           vm.brand_name = res.data.updatedUser.brand_name
-          vm.mailing_address = res.data.updatedUser.mailing_address
           vm.phone_number = res.data.updatedUser.phone_number
           vm.expertise = res.data.updatedUser.expertise
         } else {
@@ -222,17 +211,15 @@ export default {
       axios.get('http://localhost:3000/masseurs/profile', { withCredentials: true })
         .then(res => {
           if (!res.data.error) {
-            console.log(res.data)
             vm.brand_name = res.data.brand_name
             vm.profile_picture = res.data.profile_picture
             vm.email = res.data.email
-            //vm.mailing_address = res.data.mailing_address
+            vm.location = res.data.location
             vm.phone_number = res.data.phone_number
             vm.expertise = res.data.expertise
             vm.advertisements = res.data.advertisements
 
             vm.isAdvertisementListEmpty = res.data.advertisements.length == 0
-            console.log(vm.isAdvertisementListEmpty)
             //aggiungere campi in base a necessità !!!
           } else {
             console.log(res.data.error)
@@ -240,6 +227,21 @@ export default {
         }).catch(err => {
           console.log(err)
         })
+    },
+
+    editMasseurLocation: function(location) {
+      const vm = this;
+      axios.put('http://localhost:3000/masseurs/editLocation', {
+        new_coordinates: location
+      }, { withCredentials: true }).then(res => {
+        if (!res.data.error) {
+          vm.location = location
+        } else {
+          console.log(res.data.error)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     }
 
   },
@@ -261,7 +263,8 @@ export default {
     }
   },
   components: {
-    Advertisement
+    Advertisement,
+    MapPanel
   }
 }
 </script>
@@ -299,11 +302,16 @@ b {
   font-weight: 500;
 }
 
-.list-group{
+.list-group {
     max-height: 400px;
     margin-bottom: 10px;
     overflow-y:scroll;
     -webkit-overflow-scrolling: touch;
+}
+
+#map-container {
+  width: 100%;
+  height: 300px;
 }
 
 </style>
