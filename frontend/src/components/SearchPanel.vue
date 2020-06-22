@@ -4,7 +4,7 @@
       <form class="text-center col-4">
         <div class="form-group">
           <label for="searchCity" class="hidden">Città</label>
-          <input @keyup="getSuggestions" v-model="city" type="search" id="searchCity" class="form-control" placeholder="Città" autocomplete="off" autofocus required>
+          <autocomplete :search="getSuggestions" placeholder="Search for a municipality" aria-label="Search for a municipality" :get-result-value="getResultValue"></autocomplete>
           <label for="searchCity" id="error" v-if="isSubmittedWithoutCity">Compila questo campo</label>
         </div>
         <button @click.prevent="onSubmit" type="submit" class="btn ml-auto btn-primary">Cerca</button> <!-- Intentionally "prevent" omitted -->
@@ -14,14 +14,18 @@
 </template>
 
 <script>
-  import * as geocoding from 'esri-leaflet-geocoder';
+  import * as geocoding from 'esri-leaflet-geocoder'
+  import Autocomplete from '@trevoreyre/autocomplete-vue'
+  import '@trevoreyre/autocomplete-vue/dist/style.css'
 
   export default {
     name: 'Home',
+    components: {
+      Autocomplete
+    },
     data() {
       return {
         city: "",
-        suggestions: [],
         isSubmittedWithoutCity: false
       }
     },
@@ -33,16 +37,19 @@
           this.isSubmittedWithoutCity = true;
         }
       },
-      getSuggestions: function() {
-        if (this.city != "") {
-          const vm = this;
+      getSuggestions: function(input) {
+        this.city = input;
+        return new Promise(resolve => {
+          if (input.length < 1) { return resolve([]) }
           geocoding.suggest()
-          .text(this.city)
-          .run(function(error, response) {
-            vm.suggestions = response.suggestions.map(elem => elem.text);
-            //console.log(vm.suggestions);
-          });
-        }
+            .text(input)
+            .run(function(error, response) {
+              resolve(response.suggestions.map(elem => elem.text))
+            });
+        })
+      },
+      getResultValue(result) {
+        return result
       },
     },
   }
