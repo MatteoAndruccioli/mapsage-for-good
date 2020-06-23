@@ -31,9 +31,11 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true, us
 var usersRoutes = require("./routes/usersRoutes")
 var customersRoutes = require("./routes/customersRoutes")
 var masseursRoutes = require("./routes/masseursRoutes")
+var chatsRoutes = require("./routes/chatsRoutes")
 usersRoutes(app)
 customersRoutes(app)
 masseursRoutes(app)
+chatsRoutes(app)
 
 io.on('connection', function(socket) {
   console.log('a user connected');
