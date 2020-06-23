@@ -11,14 +11,15 @@
 <script>
 export default {
   props: [
-    'fullName', 
+    'fullName',
     'imagePath',
     '_id',
-    'blink'
+    'blink',
+    'receiver_id'
   ],
   methods: {
     showChat: function() {
-      this.$emit('openChat', this.$props._id, this.$props.fullName, this.$props.imagePath)
+      this.$emit('openChat', this.$props.receiver_id, this.$props.fullName, this.$props.imagePath)
     }
   }
 }
@@ -37,7 +38,7 @@ export default {
     height: 2rem;
     border-radius: 50%;
     border: 1px solid #eee;
-  } 
+  }
 
   .my-list-item:hover {
     color: #222;
@@ -66,5 +67,5 @@ export default {
       opacity: 0;
     }
   }
-  
+
 </style>

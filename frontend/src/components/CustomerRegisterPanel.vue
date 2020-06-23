@@ -51,7 +51,11 @@ export default {
       axios.post('http://localhost:3000/customers/register', formData, { withCredentials: true })
           .then(res => {
             if (!res.data.error) {
-              var currentUser = { logged_in: true, profile_type: 'Customer'}
+              var currentUser = {
+                logged_in: true,
+                profile_type: 'Customer',
+                user_id: res.data._id
+              }
               this.$cookies.set('currentUser', currentUser);
               this.$router.push({ name: 'Home_view' })
             } else {

@@ -58,7 +58,7 @@ exports.handleRegisterRequest = function(req, res) {
                 signed: true
               }
               res.cookie('jwt', token, cookieConfig)
-              res.send('set cookie')
+              res.send({ _id: user._id })
             }).catch(err => {
               res.json({ error: err })
             })

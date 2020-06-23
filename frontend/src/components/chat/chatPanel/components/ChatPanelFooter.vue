@@ -16,10 +16,7 @@ export default {
   },
   methods: {
     sendMessage: function() {
-      let toSend = this.messageBody.trim()
-      if(toSend != ''){
-        alert("messageBody == " + toSend)
-      }
+      this.$emit('sendMessage', this.messageBody.trim())
       this.messageBody = ''
     }
   }

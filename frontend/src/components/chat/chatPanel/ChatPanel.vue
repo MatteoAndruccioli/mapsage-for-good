@@ -1,26 +1,24 @@
 <template>
   <div style="width: 21rem;">
     <div style="height: 40px">
-      <ChatPanelHeader 
-        :fullName=this.fullName 
-        :imagePath=this.imagePath 
+      <ChatPanelHeader
+        :fullName="this.fullName"
+        :imagePath="this.imagePath"
         @backToChatList="onBackToChatList()"
       />
     </div>
 
-    
-
     <div>
       <ul class="list-group" >
         <div v-for="msg in messages" :key="msg._id">
-          <ChatMessage :messageBody=msg.messageBody :isUserMessage=msg.isUserMessage /> 
+          <ChatMessage :messageBody="msg.messageBody" :isUserMessage="msg.isUserMessage" />
         </div>
       </ul>
     </div>
 
     <div class="container row col-12 px-0 mx-auto">
       <div style="height: 40px; width: 100%;">
-        <ChatPanelFooter />
+        <ChatPanelFooter @sendMessage="sendMessage"/>
       </div>
     </div>
 
@@ -34,9 +32,9 @@ import ChatMessage from './components/ChatMessage'
 
 export default {
   props: [
-    //di questi rimarrà solo receiver_id, che per ora è l'unico non utilizzato 
+    //di questi rimarrà solo receiver_id, che per ora è l'unico non utilizzato
     'receiver_id', //è l'id del destinatario e verrà usato con una chiamata axios in initFields per popolare la chat con i messaggi e caricare nome e foto destinatario
-    'receiver_FullName', 
+    'receiver_FullName',
     'receiver_imagePath'
   ],
   data () {
@@ -53,7 +51,7 @@ export default {
       this.$emit('backToChatList')
     },
 
-    //questo metodo verrà modificato in produzione: 
+    //questo metodo verrà modificato in produzione:
     //prenderà un id e farà una richiesta axios al server con getbyid per tirar su cose
     //nota in seguito alla richiesta axios il server deve sapere che i messaggi sono stati tutti letti da quell'utente
     initFields: function(id, receiverFullName, receiverImagePath) {
@@ -63,59 +61,63 @@ export default {
       //nota devono essere ordinati
       this.messages = [
         {
-          messageBody: "mio messaggio piu vecchio", 
+          messageBody: "mio messaggio piu vecchio",
           isUserMessage: true,
           _id: 1
         },
         {
-          messageBody: "tuo messaggio piu vecchio", 
+          messageBody: "tuo messaggio piu vecchio",
           isUserMessage: false,
           _id: 2
         },
         {
-          messageBody: "[mio] Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente, eos.", 
+          messageBody: "[mio] Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente, eos.",
           isUserMessage: true,
           _id: 3
         },
         {
-          messageBody: "[tuo] Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente, eos.", 
+          messageBody: "[tuo] Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente, eos.",
           isUserMessage: false,
           _id: 4
         },
         {
-          messageBody: "[mio] Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente, eos.", 
+          messageBody: "[mio] Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente, eos.",
           isUserMessage: true,
           _id: 5
         },
         {
-          messageBody: "[mio] Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente, eos.", 
+          messageBody: "[mio] Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente, eos.",
           isUserMessage: true,
           _id: 6
         },
         {
-          messageBody: "[tuo] Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente, eos.", 
+          messageBody: "[tuo] Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente, eos.",
           isUserMessage: false,
           _id: 7
         },
         {
-          messageBody: "mio messaggio piu recente", 
+          messageBody: "mio messaggio piu recente",
           isUserMessage: true,
           _id: 8
         },
         {
-          messageBody: "[tuo] Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente, eos.", 
+          messageBody: "[tuo] Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente, eos.",
           isUserMessage: false,
           _id: 9
         },
         {
-          messageBody: "tuo messaggio piu recente", 
+          messageBody: "tuo messaggio piu recente",
           isUserMessage: false,
           _id: 10
         },
       ]
+    },
+
+    sendMessage: function(message) {
+      this.$emit('sendMessage', message)
     }
   },
-  
+
   mounted() {
     this.initFields(this.$props.receiver_id ,this.$props.receiver_FullName ,this.$props.receiver_imagePath )
   },
@@ -134,20 +136,20 @@ export default {
     margin-bottom: 10px;
     overflow-y:scroll;
     -webkit-overflow-scrolling: touch;
-  }  
-  
-  
+  }
+
+
   .propic {
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
     border: 1px solid #eee;
-  } 
+  }
 
   .my-his-message {
     border: 1px solid rgb(191, 101, 194);
     border-radius: 20px 20px 20px 0px;
-    width: 80%; 
+    width: 80%;
     background-color: white;
     padding: 5px 5px 5px 0px;
     margin-right: auto;
@@ -156,7 +158,7 @@ export default {
   .my-my-message {
     border: 1px solid rgb(133, 152, 255);
     border-radius: 20px 20px 0px 20px;
-    width: 80%; 
+    width: 80%;
     background-color: rgb(205, 242, 248);
     padding: 5px 5px 0px 5px;
     margin-left: auto;

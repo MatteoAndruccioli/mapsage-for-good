@@ -22,9 +22,11 @@
     "leaflet": "^1.6.0",
     "leaflet-easybutton": "^2.4.0",
     "popper.js": "^1.16.1",
+    "socket.io-client": "^2.3.0",
     "vue": "^2.6.11",
     "vue-cookies": "^1.7.0",
-    "vue-router": "^3.2.0"
+    "vue-router": "^3.2.0",
+    "vue-socket.io": "^3.0.9"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.7.0",

@@ -29,7 +29,7 @@ exports.handleLoginRequest = function(req, res) {
           signed: true
         }
         res.cookie('jwt', token, cookieConfig)
-        res.json({ profile_type: user_type })
+        res.json({ profile_type: user_type, _id: user._id })
       } else {
         console.log("wrong password")
         res.json({ error: 'Wrong password' })

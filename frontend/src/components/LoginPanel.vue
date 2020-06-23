@@ -52,7 +52,11 @@ export default {
         this.email = ''
         this.password = ''
         if (!res.data.error) {
-          var currentUser = { logged_in: true, profile_type: res.data.profile_type}
+          var currentUser = {
+            logged_in: true,
+            profile_type: res.data.profile_type,
+            user_id: res.data._id
+          }
           this.$cookies.set('currentUser', currentUser)
           this.$router.push({ name: 'Home_view' })
         } else {
