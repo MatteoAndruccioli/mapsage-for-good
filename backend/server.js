@@ -28,9 +28,11 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true, us
 var usersRoutes = require("./routes/usersRoutes")
 var customersRoutes = require("./routes/customersRoutes")
 var masseursRoutes = require("./routes/masseursRoutes")
+var chatsRoutes = require("./routes/chatsRoutes")
 usersRoutes(app)
 customersRoutes(app)
 masseursRoutes(app)
+chatsRoutes(app)
 
 app.use('/static', express.static(__dirname + '/public'));
 
