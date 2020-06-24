@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken")
 const Chat = require("../models/chatsModel")
 const Customer = require("../models/customersModel")
 const Masseur = require("../models/masseursModel")
@@ -47,49 +48,8 @@ setCurrentUserVisualized = function(chat, currentUserID){
 
 }
 
-//logged user nofies visualization of messages in chat specified by id
-exports.setVisualized = function(req, res){
-
-  if (req.signedCookies.jwt != null) {
-    const token = req.signedCookies.jwt;
-    try {
-      var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
-
-      Chat.findById(req.body.chat_id, function(err, chat) {
-        if (err) {
-          res.json({ error: err, description: "error in finding chat by id" })
-        } else {
-          if (chat == null) {
-            res.status(404).send({error: 'Chat does not exist'})
-            return
-          } else {
-            // la chat è presente
-
-          const updateQueryPromise = setCurrentUserVisualized(chat, decodedPayload._id)
-
-          updateQueryPromise
-            .then(updateQuery => {
-              if(updateQuery.succeeded){
-                res.json({ chat: updateQuery.chat })
-              } else {
-                res.json({ description: updateQuery.description, error: updateQuery.error })
-              }
-            }).catch( err => res.json({ error: err}))
-          }
-        }
-      })
-
-    } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
-    }
-  } else {
-    res.sendStatus(401); // No JWT specified
-  }
-
-}
-
 //logged user retieves last messages from one of his chat specified by id
-exports.getLastMessages = function(req, res){
+exports.lastMessages = function(req, res){
     if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
     try {
@@ -185,7 +145,7 @@ getUserFullName = function(userType, user){
 }
 
 //logged user retrieves chat-id of his chat with reciver specified by user id 
-exports.getChatInfoByUsersId = function(req, res){
+exports.chatInfoByUsersId = function(req, res){
 
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
@@ -229,10 +189,10 @@ exports.getChatInfoByUsersId = function(req, res){
                 .then(chat => {
 
                   res.json({
-                    currentUserVisualized: true, 
+                    visualized: true, 
                     chat_id: chat._id, 
-                    fullName: getUserFullName(p2.type, p2.user), 
-                    imgPath: p2.user.profile_picture,
+                    receiver_fullName: getUserFullName(p2.type, p2.user), 
+                    receiver_imgPath: p2.user.profile_picture,
                     receiver_id: req.body.receiver
                   })
                 }) .catch(err => {
@@ -249,10 +209,10 @@ exports.getChatInfoByUsersId = function(req, res){
             .then(p => {
 
               res.json({
-                currentUserVisualized: hasSenderVisualized(storedChat, decodedPayload._id), 
+                visualized: hasSenderVisualized(storedChat, decodedPayload._id), 
                 chat_id: storedChat._id, 
-                fullName: getUserFullName(p.type, p.user), 
-                imgPath: p.user.profile_picture,
+                receiver_fullName: getUserFullName(p.type, p.user), 
+                receiver_imgPath: p.user.profile_picture,
                 receiver_id: req.body.receiver
               })
 
@@ -318,7 +278,7 @@ getChatInfo = function(userID, currentUserID, chat){
 }
 
 //logged user retrieves basic info about all his chats with other users
-exports.getChatInfoByUsersId = function(req, res){
+exports.chatInfoByUsersId = function(req, res){
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
     try {
