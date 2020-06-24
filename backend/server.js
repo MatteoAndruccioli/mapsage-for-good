@@ -6,6 +6,10 @@ var app = express()
 var mongoose = require("mongoose")
 var cookieParser = require("cookie-parser")
 var port = process.env.PORT || 3000
+var chatUtil = require('./controllers/utils/chatUtil')
+
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 process.env.SERVER_LOCATION = 'http://localhost:' + port + '/';
 process.env.SECRET_KEY = 'EWl9Lcrav8'; // secret for JWT
@@ -34,12 +38,45 @@ customersRoutes(app)
 masseursRoutes(app)
 chatsRoutes(app)
 
+io.on('connection', function(socket) {
+  console.log('a user connected');
+  socket.on('disconnect', function() {
+      console.log('user disconnected');
+  });
+
+  socket.on("message", (msg) => {
+    console.log(msg)
+    const receiver_id = msg.receiver_id
+
+    //add new msg to database
+    const insertion = chatUtil.addNewMsg(msg.chat_id, msg.sender, msg.receiver, msg.payload)
+
+    if(insertion.succeeded){
+			//notify users about msg insertion
+			io.emit(msg.sender, {
+				succeeded: true,
+				msgSent: msg
+			})
+			io.emit(msg.receiver, msg)
+    } else {
+			//notify sender only about insertion failure
+			io.emit(msg.sender, {
+				succeeded: false,
+				msg: msg,
+				description: insertion.description
+			})
+
+			if(insertion.error) console.log(insertion.error)
+		}
+  })
+});
+
 app.use('/static', express.static(__dirname + '/public'));
 
 app.use(function(req, res) {
     res.status(404).send({url: req.originalUrl + " not found"})
 });
 
-app.listen(port, function () {
+http.listen(port, function () {
     console.log("Server is running on port: " + port)
 })
