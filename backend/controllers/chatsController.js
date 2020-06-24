@@ -278,7 +278,7 @@ getChatInfo = function(userID, currentUserID, chat){
 }
 
 //logged user retrieves basic info about all his chats with other users
-exports.chatInfoByUsersId = function(req, res){
+exports.getUserChats = function(req, res){
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
     try {
