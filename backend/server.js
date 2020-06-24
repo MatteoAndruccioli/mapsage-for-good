@@ -6,7 +6,7 @@ var app = express()
 var mongoose = require("mongoose")
 var cookieParser = require("cookie-parser")
 var port = process.env.PORT || 3000
-var chatUtil = require('./controllers/utils/chatUtil')
+var chatUtil = require('./utils/chatUtil')
 
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
