@@ -1,4 +1,4 @@
-const Chat = require("./models/chatsModel")
+const Chat = require("../models/chatsModel")
 
 
 //add new message with payload specified in messageBody in chat with id chat_id and sent by sented

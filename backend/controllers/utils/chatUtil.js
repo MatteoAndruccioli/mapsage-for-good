@@ -1,6 +1,6 @@
-const Chat = require("../models/chatsModel")
-const Customer = require("../models/customersModel")
-const Masseur = require("../models/masseursModel")
+const Chat = require("../../models/chatsModel")
+const Customer = require("../../models/customersModel")
+const Masseur = require("../../models/masseursModel")
 
 //used by setVisualized and getLastMessages to update user visualized
 // on success => returns  { succeeded: true, chat: {...} }
