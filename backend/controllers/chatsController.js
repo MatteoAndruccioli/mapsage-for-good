@@ -24,16 +24,16 @@ setCurrentUserVisualized = function(chat, currentUserID){
       reject( { succeeded: false, description: "sender doesn't match with any of two users in chat" })
     }
 
-    //aggiungo il nuovo messaggio all'oggetto chat, 
+    //aggiungo il nuovo messaggio all'oggetto chat,
     //aggiorno valore di nextMessagePosition e visualized_by_user1 e visualized_by_user2
-    
+
     Chat.findOneAndUpdate(
       {_id: chat._id},
       {
         visualized_by_user1: new_visualized_by_user1,
         visualized_by_user2: new_visualized_by_user2,
-      }, 
-      {new: true}, 
+      },
+      {new: true},
       (err, updatedChat) => {
         if (err) {
           reject({ succeeded: false, description: "Something wrong when chat data!", error: err })
@@ -56,7 +56,7 @@ exports.lastMessages = function(req, res){
       var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
 
       //maximum number of messages retrieved
-      const message_number = 7 
+      const message_number = 7
 
       Chat.findById(req.body.chat_id, function(err, chat) {
         if (err) {
@@ -89,7 +89,7 @@ exports.lastMessages = function(req, res){
                     res.json({ description: updateQuery.description, error: updateQuery.error })
                   }
                 }).catch( err => res.json({ error: err}))
-              
+
             } else {
               res.json({error: "invalid user_id for specified chat"})
             }
@@ -113,7 +113,7 @@ userWithIdExists = function(userID) {
       if (err) {
         reject({ succeeded: false, error: err, description: "error in masseur search" })
       } else {
-        if (user == null) {      
+        if (user == null) {
           //user is not a masseur but he could be a customer
           Customer.findById(userID, function(err1, user1) {
             if (err1) {
@@ -144,7 +144,7 @@ getUserFullName = function(userType, user){
   return ''
 }
 
-//logged user retrieves chat-id of his chat with reciver specified by user id 
+//logged user retrieves chat-id of his chat with reciver specified by user id
 exports.chatInfoByUsersId = function(req, res){
 
   if (req.signedCookies.jwt != null) {
@@ -174,7 +174,7 @@ exports.chatInfoByUsersId = function(req, res){
           ]).then(([p1, p2]) => {
             if (p1.succeeded && p2.succeeded) {
               //chat doesn't exist but both user exist, a new chat has to be created
-              
+
               const newChat = {
                 user1: decodedPayload._id,
                 user2: req.body.receiver,
@@ -189,9 +189,9 @@ exports.chatInfoByUsersId = function(req, res){
                 .then(chat => {
 
                   res.json({
-                    visualized: true, 
-                    chat_id: chat._id, 
-                    receiver_fullName: getUserFullName(p2.type, p2.user), 
+                    visualized: true,
+                    chat_id: chat._id,
+                    receiver_fullName: getUserFullName(p2.type, p2.user),
                     receiver_imgPath: p2.user.profile_picture,
                     receiver_id: req.body.receiver
                   })
@@ -209,16 +209,16 @@ exports.chatInfoByUsersId = function(req, res){
             .then(p => {
 
               res.json({
-                visualized: hasSenderVisualized(storedChat, decodedPayload._id), 
-                chat_id: storedChat._id, 
-                receiver_fullName: getUserFullName(p.type, p.user), 
+                visualized: hasSenderVisualized(storedChat, decodedPayload._id),
+                chat_id: storedChat._id,
+                receiver_fullName: getUserFullName(p.type, p.user),
                 receiver_imgPath: p.user.profile_picture,
                 receiver_id: req.body.receiver
               })
 
 
             }).catch(err => {
-              res.json({ error: err, description: "error handling check on receiver id"}) 
+              res.json({ error: err, description: "error handling check on receiver id"})
             })
         }
 
@@ -250,7 +250,7 @@ getChatInfo = function(userID, currentUserID, chat){
       .then(promise => {
         if(promise.succeeded){
           let fullName = ''
-          
+
           if (promise.type == "masseur"){
             fullName = promise.user.brand_name
           } else if (promise.type == "customer"){
@@ -261,12 +261,12 @@ getChatInfo = function(userID, currentUserID, chat){
 
           const imgPath = promise.user.profile_picture
 
-          resolve({ succeeded: "true", 
+          resolve({ succeeded: "true",
             currentUserVisualized: hasSenderVisualized(chat, currentUserID),
-            chat_id: chat._id, 
-            receiver_id: userID, 
-            fullName: fullName, 
-            imgPath: imgPath 
+            chat_id: chat._id,
+            receiver_id: userID,
+            fullName: fullName,
+            imgPath: imgPath
           })
         } else {
           reject({ succeeded: "false", description: "failure in user search", moreInfo: promise})
@@ -287,7 +287,7 @@ exports.chatInfoByUsersId = function(req, res){
       Chat.find({
         $or: [
           {user1: decodedPayload._id},
-          {user2: decodedPayload._id} 
+          {user2: decodedPayload._id}
         ]
       }).then(chats => {
         if(chats) {
@@ -297,22 +297,22 @@ exports.chatInfoByUsersId = function(req, res){
           for (i = 0; i < chats.length; i++) {
             const currentChat = chats[i]
 
-            const receiver = currentChat.user1 == decodedPayload._id ? currentChat.user2 : currentChat.user1            
+            const receiver = currentChat.user1 == decodedPayload._id ? currentChat.user2 : currentChat.user1
 
             //inserisco la promise che conterrà l'info sulla chat nell'array
-            chatsInfoPromises.push(getChatInfo(receiver, decodedPayload._id, currentChat))  
+            chatsInfoPromises.push(getChatInfo(receiver, decodedPayload._id, currentChat))
           }
 
           Promise
             .allSettled(chatsInfoPromises)
-            .then(results => { 
+            .then(results => {
               let chatInfoToRet = []
 
               results
                 .forEach((result) => {
                   if(result.status == "fulfilled"){
                     chatInfoToRet.push({
-                      currentUserVisualized: result.value.currentUserVisualized,
+                      visualized: result.value.currentUserVisualized,
                       chat_id: result.value.chat_id,
                       receiver_id: result.value.receiver_id,
                       receiver_fullName: result.value.fullName,
@@ -320,7 +320,7 @@ exports.chatInfoByUsersId = function(req, res){
                     })
                   }
                 })
-              
+
               res.json({chats: chatInfoToRet})
             }).catch(err => {
               res.json({error: err, description: "error handling chat info promises"})

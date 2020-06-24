@@ -10,7 +10,7 @@
             :fullName="chat.receiver_fullName"
             :imagePath="chat.receiver_imgPath"
             :chat_id="chat.chat_id"
-            :blink="chat.visualized"
+            :blink="!chat.visualized"
             :receiver_id="chat.receiver_id"
             @openChat="onOpenChat"
           />

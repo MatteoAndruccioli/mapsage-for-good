@@ -52,18 +52,21 @@ io.on('connection', function(socket) {
     const receiver_id = msg.receiver_id
 
     //add new msg to database
-    const insertion = chatUtil.addNewMsg(msg.chat_id, msg.sender, msg.receiver, msg.payload)
+    chatUtil.addNewMsg(msg.chat_id, msg.sender, msg.receiver, msg.payload)
+      .then(insertion => {
+        if(insertion.succeeded){
+    			//notify users about msg insertion
+    			io.emit(msg.sender, msg)
+    			io.emit(msg.receiver, msg)
+        } else {
+    			//notify sender only about insertion failure
+    			io.emit(msg.sender, { error: insertion.description })
 
-    if(insertion.succeeded){
-			//notify users about msg insertion
-			io.emit(msg.sender, msg)
-			io.emit(msg.receiver, msg)
-    } else {
-			//notify sender only about insertion failure
-			io.emit(msg.sender, { error: insertion.description })
-
-			if(insertion.error) console.log(insertion.error)
-		}
+    			if(insertion.error) console.log(insertion.error)
+    		}
+      }).catch(err => {
+        io.emit(msg.sender, { error: err })
+      })
   })
 });
 

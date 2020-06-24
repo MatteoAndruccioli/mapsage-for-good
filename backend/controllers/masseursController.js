@@ -302,7 +302,6 @@ exports.editMasseurLocation = function(req, res) {
             res.send({ error: 'User does not exist' })
           }
         }).catch(err => {
-          console.log("DIO SPORCO")
           res.send({ error: err })
         })
     } catch (error) {
@@ -311,5 +310,4 @@ exports.editMasseurLocation = function(req, res) {
   } else {
     res.sendStatus(401); // No JWT specified
   }
-}
 }

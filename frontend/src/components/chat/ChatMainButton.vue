@@ -12,8 +12,8 @@
         </div>
         <div v-if="!this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary">
           <ChatPanel @backToChatList="onBackToChatList" @sendMessage="sendMessage"
-            :receiver_id="chatReceiverId" :receiver_fullName="chatReceiverFullName "
-            :receiver_imagePath="chatReceiverImgPath" :messages="messages"/>
+            :receiver_id="actualChatReceiverId" :receiver_fullName="actualChatReceiverFullName"
+            :receiver_imagePath="actualChatReceiverImgPath" :messages="messages"/>
         </div>
       </div>
 
@@ -64,6 +64,11 @@ export default {
       this.actualChatReceiverImgPath = receiver_imgPath
       this.showChatList = false
 
+      var actualChat = this.chats.filter(chat => chat.chat_id == c_id)
+      if (actualChat.length == 1) {
+        actualChat[0].visualized = true
+      }
+
       axios.put('http://localhost:3000/chat/lastMessages', { chat_id: c_id }
         ,{ withCredentials: true })
         .then(res => {
@@ -110,7 +115,7 @@ export default {
             var vm = this;
             this.socket.on(this.$cookies.get('currentUser').user_id, function(msg) {
               // visualization of messages sent by other users to this one
-              if (msg.error != null) {
+              if (msg.error == null) {
                 vm.messages.push({ body: msg.payload, sender: msg.sender})
               } else {
                 alert("Error sending message")
