@@ -50,7 +50,10 @@ exports.handleRegisterRequest = function(req, res) {
 			date: today,
 			profile_picture: profileImagePath,
       location: location,
-      advertisements: []
+      advertisements: [],
+      followers: [],
+      followed: [],
+      notifications: []
 		}
     //console.log(userData)
 
@@ -101,6 +104,9 @@ exports.readMasseurByJwt = function(req, res) {
 						expertise: user.expertise,
             profile_picture: user.profile_picture,
             advertisements: user.advertisements,
+            followed: user.followed,
+            followers: user.followers,
+            notifications: user.notifications,
             location: user.location.geometry.coordinates // GeoJSON
           }
           res.json(userData)
@@ -136,6 +142,9 @@ exports.readMasseurById = function(req, res) {
           expertise: user.expertise,
           profile_picture: user.profile_picture,
           advertisements: user.advertisements,
+          followed: user.followed,
+          followers: user.followers,
+          notifications: user.notifications,
           location: user.location.geometry.coordinates // GeoJSON
         }
         res.json(userData)
