@@ -2,10 +2,11 @@ const Chat = require("../../models/chatsModel")
 const Customer = require("../../models/customersModel")
 const Masseur = require("../../models/masseursModel")
 
+
 //used by setVisualized and getLastMessages to update user visualized
 // on success => returns  { succeeded: true, chat: {...} }
 // on fail    => returns  { succeeded: false, description: "...", error: "..." }
-exports.setCurrentUserVisualized = function(chat, currentUserID){
+setCurrentUserVisualized = function(chat, currentUserID){
 
   return new Promise((resolve, reject) => {
     let new_visualized_by_user1 = chat.visualized_by_user1
@@ -48,7 +49,7 @@ exports.setCurrentUserVisualized = function(chat, currentUserID){
 
 //returns user when succedes in order to support both getChatIdByUsersId and getChatInfoByUsersId
 //check if there is a user (masseur or customer) with specified id
-exports.userWithIdExists = function(userID) {
+userWithIdExists = function(userID) {
   return new Promise((resolve, reject) => {
     Masseur.findById(userID, function(err, user) {
       if (err) {
@@ -79,14 +80,14 @@ exports.userWithIdExists = function(userID) {
 }
 
 //retrieves user full name checking if user is a masseur or a customer
-exports.getUserFullName = function(userType, user){
+getUserFullName = function(userType, user){
   if(userType == 'masseur') return user.brand_name
   if(userType == 'customer') return user.first_name + user.last_name
   return ''
 }
 
 //retrieves sender visualized info
-exports.hasSenderVisualized = function(chat, sender){
+hasSenderVisualized = function(chat, sender){
   if (sender == chat.user1) return chat.visualized_by_user1
   if (sender == chat.user2) return chat.visualized_by_user2
 }
@@ -94,7 +95,7 @@ exports.hasSenderVisualized = function(chat, sender){
 //gets user's imgPath and user's fullname from user with userID specified
 //returns object containing {receiver_imgPath, receiver_fullname, chat_id, receiver_user_id}
 //riutilizzo userWithIdExists aggiungendo il fatto che ritorni l'user
-exports.getChatInfo = function(userID, currentUserID, chat){
+getChatInfo = function(userID, currentUserID, chat){
   return new Promise((resolve, reject) => {
     userWithIdExists(userID)
       .then(promise => {
@@ -126,3 +127,10 @@ exports.getChatInfo = function(userID, currentUserID, chat){
       })
   })
 }
+
+
+exports.setCurrentUserVisualized = setCurrentUserVisualized
+exports.userWithIdExists = userWithIdExists
+exports.getUserFullName = getUserFullName
+exports.hasSenderVisualized = hasSenderVisualized
+exports.getChatInfo = getChatInfo
