@@ -36,10 +36,14 @@ var usersRoutes = require("./routes/usersRoutes")
 var customersRoutes = require("./routes/customersRoutes")
 var masseursRoutes = require("./routes/masseursRoutes")
 var chatsRoutes = require("./routes/chatsRoutes")
+var followersRoutes = require("./routes/followersRoutes")
+var notificationsRoutes = require("./routes/notificationsRoutes")
 usersRoutes(app)
 customersRoutes(app)
 masseursRoutes(app)
 chatsRoutes(app)
+followersRoutes(app)
+notificationsRoutes(app)
 
 io.on('connection', function(socket) {
   console.log('a user connected');

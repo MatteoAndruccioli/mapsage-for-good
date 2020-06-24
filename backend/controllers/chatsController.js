@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken")
 const Chat = require("../models/chatsModel")
-const Customer = require("../models/customersModel")
-const Masseur = require("../models/masseursModel")
+const userUtil = require("./utils/usersUtil")
 var chatUtil = require('./utils/chatUtil')
 
 //logged user retieves last messages from one of his chat specified by id
@@ -86,8 +85,8 @@ exports.chatInfoByUsersId = function(req, res){
           //devo controllare se i due utenti esistono: se esistono creo la nuova chat
 
           Promise.all([
-            chatUtil.userWithIdExists(decodedPayload._id),
-            chatUtil.userWithIdExists(req.body.receiver)
+            userUtil.userWithIdExists(decodedPayload._id),
+            userUtil.userWithIdExists(req.body.receiver)
           ]).then(([p1, p2]) => {
             if (p1.succeeded && p2.succeeded) {
               //chat doesn't exist but both user exist, a new chat has to be created
@@ -122,7 +121,7 @@ exports.chatInfoByUsersId = function(req, res){
           }).catch(err => { res.json({ error: err, description: "error handling check on users id"}) })
 
         } else {
-          chatUtil.userWithIdExists(req.body.receiver)
+          userUtil.userWithIdExists(req.body.receiver)
             .then(p => {
 
               res.json({
