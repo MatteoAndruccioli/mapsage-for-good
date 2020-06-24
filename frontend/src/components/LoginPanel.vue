@@ -58,7 +58,11 @@ export default {
             user_id: res.data._id
           }
           this.$cookies.set('currentUser', currentUser)
-          this.$router.push({ name: 'Home_view' })
+          if (this.$route.params.source == 'from_masseurProfile_view') {
+            this.$router.push({ name: 'MasseurProfile_view', params: { id: this.$route.params.masseur_id } })
+          } else {
+            this.$router.push({ name: 'Home_view' })
+          }
         } else {
           alert("Login failed!! try again");
           console.log(res.data.error)

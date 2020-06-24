@@ -2,7 +2,7 @@
   <div id="app-home">
     <Navbar/>
     <SearchPanel/>
-    <ChatFooterButton v-if="showChatFooterButton" :isMasseurProfile="false"/>
+    <ChatMainButton v-if="showChatFooterButton" :isMasseurProfile="false"/>
     <CookiesBanner v-if="showCookiesBanner" v-on:hideMe="showCookiesBanner=false"/>
   </div>
 </template>
@@ -11,7 +11,7 @@
 // @ is an alias to /src
 import Navbar from '../components/Navbar'
 import SearchPanel from '../components/SearchPanel'
-import ChatFooterButton from '../components/chat/ChatFooterButton'
+import ChatMainButton from '../components/chat/ChatMainButton'
 import CookiesBanner from '../components/CookiesBanner'
 
 export default {
@@ -25,7 +25,7 @@ export default {
   components: {
     Navbar,
     SearchPanel,
-    ChatFooterButton,
+    ChatMainButton,
     CookiesBanner
   },
   mounted() {

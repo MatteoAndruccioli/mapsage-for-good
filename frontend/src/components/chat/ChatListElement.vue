@@ -13,13 +13,13 @@ export default {
   props: [
     'fullName',
     'imagePath',
-    '_id',
+    'chat_id',
     'blink',
     'receiver_id'
   ],
   methods: {
     showChat: function() {
-      this.$emit('openChat', this.$props.receiver_id, this.$props.fullName, this.$props.imagePath)
+      this.$emit('openChat', this.chat_id, this.receiver_id, this.fullName, this.imagePath)
     }
   }
 }

@@ -148,7 +148,7 @@
     mounted() {
       // Timeout is required in case of use in MasseurRegisterPanel and MasseurProfilePanel.
       // It is irrelevant in case of use in SearchVisualizer
-      setTimeout(this.init, 200)
+      setTimeout(this.init, 500)
     }
   }
 </script>

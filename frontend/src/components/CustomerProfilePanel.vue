@@ -21,11 +21,13 @@
                 </tbody>
             </table>
         </div>
+        <ChatMainButton/>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
+import ChatMainButton from '../components/chat/ChatMainButton'
 
 export default {
   data() {
@@ -35,6 +37,9 @@ export default {
       email: '',
       profile_picture: ''
     }
+  },
+  components: {
+    ChatMainButton
   },
   methods: {
     init: function() {

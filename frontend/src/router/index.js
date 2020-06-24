@@ -17,7 +17,7 @@ const routes = [
     component: Home
   },
   {
-    path: '/login',
+    path: '/login/:source?/:masseur_id?',
     name: 'Login_view',
     component: Login
   },

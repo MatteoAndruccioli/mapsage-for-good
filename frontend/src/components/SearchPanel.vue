@@ -3,11 +3,11 @@
     <div class="row justify-content-center">
       <form class="text-center col-4">
         <div class="form-group">
-          <label for="searchCity" class="hidden">Città</label>
+          <label for="searchCity" class="hidden">City</label>
           <autocomplete :search="getSuggestions" placeholder="Search for a municipality" aria-label="Search for a municipality" :get-result-value="getResultValue"></autocomplete>
-          <label for="searchCity" id="error" v-if="isSubmittedWithoutCity">Compila questo campo</label>
+          <label for="searchCity" id="error" v-if="isSubmittedWithoutCity">Fill this field</label>
         </div>
-        <button @click.prevent="onSubmit" type="submit" class="btn ml-auto btn-primary">Cerca</button> <!-- Intentionally "prevent" omitted -->
+        <button @click.prevent="onSubmit" type="submit" class="btn ml-auto btn-primary">Search</button> <!-- Intentionally "prevent" omitted -->
       </form>
     </div>
   </div>
