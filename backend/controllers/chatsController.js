@@ -1,7 +1,6 @@
 const Chat = require("../models/chatsModel")
 const Customer = require("../models/customersModel")
 const Masseur = require("../models/masseursModel")
-var mongoose = require('mongoose')
 
 
 //used by setVisualized and getLastMessages to update user visualized
@@ -87,96 +86,6 @@ exports.setVisualized = function(req, res){
     res.sendStatus(401); // No JWT specified
   }
 
-}
-
-//logged user adds new message to chat specified by chat id
-exports.addNewMsg = function(req, res){
-  if (req.signedCookies.jwt != null) {
-    const token = req.signedCookies.jwt;
-    try {
-      var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
-
-      Chat.findById(req.body.chat_id, function(err, chat) {
-        if (err) {
-          res.send({ error: err, description: "error in finding chat by id" })
-        } else {
-          if (chat == null) {
-            res.status(404).send({ error: 'Chat does not exist'})
-            return
-          } else {
-            // la chat è presente
-
-            //creo il nuovo messaggio con dati presenti in chat e dati inviati
-            const newMessage = {
-              //la posizione dovrà essere settata in base ai nuovi valori
-              position: chat.nextMessagePosition,
-              body: req.body.messageBody,
-              sender: decodedPayload._id,
-            }
-
-            //preparo il nuovo valore per nextMessagePosition
-            const newNextMessagePosition = chat.nextMessagePosition + 1
-
-            /*
-              determino se il sender sia user1 o user2 => 
-                mi serve per settare visualizzato = false per destinatario
-                siccome mi sembra brutto fare due versioni dello stesso codice 
-                in realtà vado a determinare i 2 valori di visualized
-            */
-            let new_visualized_by_user1 = false
-            let new_visualized_by_user2 = false
-
-            if (chat.user1 == decodedPayload._id) {
-              //poichè sender è user1 => user1 ha visualizzato il messaggio
-              new_visualized_by_user1 = true
-            } else if (chat.user2 == decodedPayload._id){
-              //poichè sender è user2 => user2 ha visualizzato il messaggio
-              new_visualized_by_user2 = true
-            } else {
-              //questa eventualità non si dovrebbe mai verificare
-              res.json({error: "sender doesn't match with any of two users in chat" })
-              return
-            }
-
-            //aggiungo il nuovo messaggio all'oggetto chat, 
-            //aggiorno valore di nextMessagePosition e visualized_by_user1 e visualized_by_user2
-            
-            Chat.findOneAndUpdate({_id: req.body.chat_id},
-              {
-                nextMessagePosition: newNextMessagePosition,
-                visualized_by_user1: new_visualized_by_user1,
-                visualized_by_user2: new_visualized_by_user2,
-                //non ho problemi perchè contiene un campo con numero progressivo quindi i messaggi sono tutti diversi tra loro
-                $addToSet: {messages: newMessage}
-              }, 
-              {new: true}, 
-              (err, updatedChat) => {
-                if (err) {
-                  console.log("Something wrong when chat data!");
-                  res.json({ error: "Something wrong when chat data!", description: updatedChat})
-                  return
-                } else {
-                  res.json({ chat: updatedChat, description: "tutto ok chat aggiornata" })
-                }
-              })
-              .catch(err => {
-                res.json({ error: err, description: "Mongoose error while updating chat data" })
-                return
-              })
-
-
-            //triggero l'invio del messaggio via Socket.IO
-
-          }
-        }
-      })
-
-    } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
-    }
-  } else {
-    res.sendStatus(401); // No JWT specified
-  }
 }
 
 //logged user retieves last messages from one of his chat specified by id
@@ -268,8 +177,15 @@ userWithIdExists = function(userID) {
   })
 }
 
+//retrieves user full name checking if user is a masseur or a customer
+getUserFullName = function(userType, user){
+  if(userType == 'masseur') return user.brand_name
+  if(userType == 'customer') return user.first_name + user.last_name
+  return ''
+}
+
 //logged user retrieves chat-id of his chat with reciver specified by user id 
-exports.getChatIdByUsersId = function(req, res){
+exports.getChatInfoByUsersId = function(req, res){
 
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
@@ -311,7 +227,14 @@ exports.getChatIdByUsersId = function(req, res){
               Chat
               .create(newChat)
                 .then(chat => {
-                  res.json({chat_id: chat._id})
+
+                  res.json({
+                    currentUserVisualized: true, 
+                    chat_id: chat._id, 
+                    fullName: getUserFullName(p2.type, p2.user), 
+                    imgPath: p2.user.profile_picture,
+                    receiver_id: req.body.receiver
+                  })
                 }) .catch(err => {
                   res.json({ error: err, description: "mongoose error while adding new chat" })
                 })
@@ -322,11 +245,22 @@ exports.getChatIdByUsersId = function(req, res){
           }).catch(err => { res.json({ error: err, description: "error handling check on users id"}) })
 
         } else {
-          res.json({ chat_id: storedChat._id })
-        }
+          userWithIdExists(req.body.receiver)
+            .then(p => {
 
-        //salvati da parte quando va tutto bene (magari setti a true una variabile)
-        //qua devi aggiungere la emit per la nuova chat!!!
+              res.json({
+                currentUserVisualized: hasSenderVisualized(storedChat, decodedPayload._id), 
+                chat_id: storedChat._id, 
+                fullName: getUserFullName(p.type, p.user), 
+                imgPath: p.user.profile_picture,
+                receiver_id: req.body.receiver
+              })
+
+
+            }).catch(err => {
+              res.json({ error: err, description: "error handling check on receiver id"}) 
+            })
+        }
 
       }).catch(err => {
         res.json({ error: err, description: "mongoose error while checking if chat already exists" })
@@ -341,11 +275,16 @@ exports.getChatIdByUsersId = function(req, res){
 
 }
 
+//retrieves sender visualized info
+hasSenderVisualized = function(chat, sender){
+  if (sender == chat.user1) return chat.visualized_by_user1
+  if (sender == chat.user2) return chat.visualized_by_user2
+}
 
 //gets user's imgPath and user's fullname from user with userID specified
 //returns object containing {receiver_imgPath, receiver_fullname, chat_id, receiver_user_id}
 //riutilizzo userWithIdExists aggiungendo il fatto che ritorni l'user
-getChatInfo = function(userID, chat_id){
+getChatInfo = function(userID, currentUserID, chat){
   return new Promise((resolve, reject) => {
     userWithIdExists(userID)
       .then(promise => {
@@ -363,7 +302,8 @@ getChatInfo = function(userID, chat_id){
           const imgPath = promise.user.profile_picture
 
           resolve({ succeeded: "true", 
-            chat_id: chat_id, 
+            currentUserVisualized: hasSenderVisualized(chat, currentUserID),
+            chat_id: chat._id, 
             receiver_id: userID, 
             fullName: fullName, 
             imgPath: imgPath 
@@ -376,7 +316,6 @@ getChatInfo = function(userID, chat_id){
       })
   })
 }
-
 
 //logged user retrieves basic info about all his chats with other users
 exports.getChatInfoByUsersId = function(req, res){
@@ -398,10 +337,10 @@ exports.getChatInfoByUsersId = function(req, res){
           for (i = 0; i < chats.length; i++) {
             const currentChat = chats[i]
 
-            const receiver = currentChat.user1 == decodedPayload._id ? currentChat.user2 : currentChat.user1
-            
+            const receiver = currentChat.user1 == decodedPayload._id ? currentChat.user2 : currentChat.user1            
+
             //inserisco la promise che conterrà l'info sulla chat nell'array
-            chatsInfoPromises.push(getChatInfo(receiver, currentChat._id))  
+            chatsInfoPromises.push(getChatInfo(receiver, decodedPayload._id, currentChat))  
           }
 
           Promise
@@ -413,6 +352,7 @@ exports.getChatInfoByUsersId = function(req, res){
                 .forEach((result) => {
                   if(result.status == "fulfilled"){
                     chatInfoToRet.push({
+                      currentUserVisualized: result.value.currentUserVisualized,
                       chat_id: result.value.chat_id,
                       receiver_id: result.value.receiver_id,
                       receiver_fullName: result.value.fullName,
