@@ -53,18 +53,11 @@ io.on('connection', function(socket) {
 
     if(insertion.succeeded){
 			//notify users about msg insertion
-			io.emit(msg.sender, {
-				succeeded: true,
-				msgSent: msg
-			})
+			io.emit(msg.sender, msg)
 			io.emit(msg.receiver, msg)
     } else {
 			//notify sender only about insertion failure
-			io.emit(msg.sender, {
-				succeeded: false,
-				msg: msg,
-				description: insertion.description
-			})
+			io.emit(msg.sender, { error: insertion.description })
 
 			if(insertion.error) console.log(insertion.error)
 		}
