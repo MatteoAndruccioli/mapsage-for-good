@@ -1,23 +1,21 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom" >
-    <div class="container d-flex justify-content-end">
-
-      <div class="btn-group dropup" :class="{'show': makeChatVisible}">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
+    <div class="container">
+      <div class="btn-group dropup ml-auto" :class="{'show': isOpen}">
         <!-- data-toggle="dropdown" -->
-        <button @click="chatButtonClicked" type="button" class="btn btn-primary dropdown-toggle" aria-haspopup="true" :aria-expanded="makeChatVisible">
+        <button @click="handleChatButtonClick" type="button" class="btn btn-primary dropdown-toggle" aria-haspopup="true" :aria-expanded="isOpen">
           Chat <span class="badge badge-light" v-if="totPendingNotifications>0">{{ totPendingNotifications }}</span>
         </button>
 
-        <div v-if="this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': makeChatVisible}">
-          <ChatList @openChat="openChat" :chats="chats"/>
+        <div v-if="this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': isOpen}">
+          <ChatList @openChat="handleOpenChat" :chats="chats"/>
         </div>
-        <div v-if="!this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': makeChatVisible}">
-          <ChatPanel @backToChatList="onBackToChatList" @sendMessage="sendMessage"
+        <div v-if="!this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': isOpen}">
+          <ChatPanel @backToChatList="resetConfiguration" @sendMessage="handleSendMessage"
             :receiver_id="actualChatReceiverId" :receiver_fullName="actualChatReceiverFullName"
             :receiver_imagePath="actualChatReceiverImgPath" :messages="messages"/>
         </div>
       </div>
-
     </div>
   </nav>
 </template>
@@ -40,41 +38,48 @@ export default {
     return {
       showChatList: true,
       chats: null,
-      messages: [],
       socket: null,
 
+      // Filled with chat info when a chat from the list is selected
+      messages: [],
       actual_c_id: '',
       actualChatReceiverId: '',
       actualChatReceiverFullName: '',
       actualChatReceiverImgPath: 'http://localhost:3000/static/uploads/defaultImg.png',
 
-      makeChatVisible: false,
+      // Controls the chat opening and closing
+      isOpen: false,
 
       totPendingNotifications: 0
     }
   },
 
   methods: {
-    //this method propagates child-generated backToChatList event to his father
-    onBackToChatList: function() {
+    // Propagated from ChatPanel child when back button in pressed or when the chat is closed
+    resetConfiguration: function() {
       this.showChatList = true
-    },
 
-    openChat: function(c_id, receiver_id, receiver_fullName, receiver_imgPath) {
+      this.actual_c_id = ''
+      this.actualChatReceiverId = ''
+      this.actualChatReceiverFullName = ''
+      this.actualChatReceiverImgPath = ''
+    },
+    // Propagated from ChatList child when a chat from the list is selected
+    handleOpenChat: function(c_id, receiver_id, receiver_fullName, receiver_imgPath) {
       this.actual_c_id = c_id
       this.actualChatReceiverId = receiver_id
       this.actualChatReceiverFullName = receiver_fullName
       this.actualChatReceiverImgPath = receiver_imgPath
-      this.showChatList = false
+      this.showChatList = false // Stop showing chat list, start showing chat panel
 
+      // Handling of "visualized" flag. It causes stop blinking and delete notification.
       var actualChat = this.chats.filter(chat => chat.chat_id == c_id)
       if (actualChat.length == 1 && !actualChat[0].visualized) {
         actualChat[0].visualized = true
         this.totPendingNotifications--
       }
 
-      axios.put('http://localhost:3000/chat/lastMessages', { chat_id: c_id }
-        ,{ withCredentials: true })
+      axios.put('http://localhost:3000/chat/lastMessages', { chat_id: c_id } ,{ withCredentials: true })
         .then(res => {
           if (!res.data.error) {
             this.messages = res.data.messages
@@ -87,8 +92,8 @@ export default {
           console.log(err)
         })
     },
-
-    sendMessage: function(message) {
+    // Propagated from ChatPanel child when send button in pressed
+    handleSendMessage: function(message) {
       if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
         const user_id = this.$cookies.get('currentUser').user_id;
         this.socket.emit("message", {
@@ -97,50 +102,79 @@ export default {
           chat_id: this.actual_c_id,
           payload: message
         })
-        // self-visualization of the user message sent
+        // The visualization of the user message just sent will be performed when the server
+        // will propagate back that message using Socket.IO
       }
     },
-
-    addChat: function(newChat) {
-      // If the new chat was not already in the chat list, then I push it to the chat list
+    // Handles events arriving from event bus. The sender is MasseurProfilePanel
+    handleExternalOpenChat: function(newChat) {
+      // If the new chat was not already in the chat list, then it pushes that chat to the chat list
       if (this.chats.filter(chat => chat.chat_id == newChat.chat_id).length == 0) {
         this.chats.push(newChat)
       }
-
-      this.makeChatVisible = true
-
-      this.openChat(newChat.chat_id, newChat.receiver_id,
+      // Forces chat to open
+      this.isOpen = true
+      // Forces the specific chat panel to open
+      this.handleOpenChat(newChat.chat_id, newChat.receiver_id,
         newChat.receiver_fullName, newChat.receiver_imgPath)
     },
+    // Handles stardard clicks occurring on chat button
+    handleChatButtonClick: function() {
+      this.isOpen = !this.isOpen
+      if (!this.isOpen) {
+        this.resetConfiguration()
+      }
+    },
+    // Handle messages received from socket.io
+    handleMessageReceived: function(msg) {
+      if (msg.error) {
+        alert("Error receiving message: " + msg.error)
+        return;
+      }
 
-    chatButtonClicked: function() {
-      this.makeChatVisible = !this.makeChatVisible
-      if (!this.makeChatVisible) {
-        this.showChatList= true
+      const chatReferredByMsg = this.chats.find(chat => chat.chat_id == msg.chat_id)
+      if (chatReferredByMsg == null) {
+        //console.log("downloading chat...")
+        // The chat referred by the message is not in the chat list - downloads the chat from server
+        axios.put('http://localhost:3000/chat/chatInfo', { receiver: msg.sender }, { withCredentials: true })
+          .then(res => {
+            if (!res.data.error) {
+              this.chats.push(res.data)
+              this.totPendingNotifications++
+            } else {
+              alert(res.data.error)
+              console.log(res.data.error)
+            }
+          }).catch(err => {
+            alert(err)
+            console.log(err)
+          })
+      } else if (chatReferredByMsg != null && chatReferredByMsg.chat_id == this.actual_c_id) {
+        // The chat referred by the message is in the chat list and it is the actual opened
+        this.messages.push({ body: msg.payload, sender: msg.sender})
+        //console.log("chat extists and it is open")
+      } else {
+        // The chat referred by the message is in the chat list - updating existing chat
+        if (chatReferredByMsg.visualized) {
+          chatReferredByMsg.visualized = false
+          this.totPendingNotifications++
+        }
+        // If chat has already a pending notification ('visualized'=false) then do nothing
+        //console.log("chat extists but closed, refreshing visualized field...")
       }
     }
   },
-
   mounted() {
-    EventBus.$on('sendMessageClicked', this.addChat)
+    EventBus.$on('sendMsgClickMasseurProfile', this.handleExternalOpenChat)
     this.socket = io('http://localhost:3000')
     axios.get('http://localhost:3000/chat/chatInfo/allOfUser', { withCredentials: true })
       .then(res => {
         if (!res.data.error) {
           this.chats = res.data.chats
-          console.log(this.chats)
           this.totPendingNotifications = this.chats.filter(chat => chat.visualized==false).length;
 
           if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
-            var vm = this;
-            this.socket.on(this.$cookies.get('currentUser').user_id, function(msg) {
-              // visualization of messages sent by other users to this one
-              if (msg.error == null) {
-                vm.messages.push({ body: msg.payload, sender: msg.sender})
-              } else {
-                alert("Error sending message")
-              }
-            })
+            this.socket.on(this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
           }
         } else {
           alert(res.data.error)

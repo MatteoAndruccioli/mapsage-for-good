@@ -273,10 +273,14 @@ export default {
       }
 
       if (!this.isMyProfile) {
-        axios.put('http://localhost:3000/chat/chatInfo', { receiver: this.masseur_id },
-          { withCredentials: true })
+        axios.put('http://localhost:3000/chat/chatInfo', { receiver: this.masseur_id }, { withCredentials: true })
           .then(res => {
-            EventBus.$emit('sendMessageClicked', res.data)
+            if (!res.data.error) {
+              EventBus.$emit('sendMsgClickMasseurProfile', res.data)
+            } else {
+              alert(res.data.error)
+              console.log(res.data.error)
+            }
           }).catch(err => {
             alert(err)
             console.log(err)
