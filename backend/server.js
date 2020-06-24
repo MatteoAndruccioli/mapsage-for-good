@@ -6,6 +6,10 @@ var app = express()
 var mongoose = require("mongoose")
 var cookieParser = require("cookie-parser")
 var port = process.env.PORT || 3000
+var chatUtil = require('./controllers/utils/chatUtil')
+
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -46,11 +50,20 @@ io.on('connection', function(socket) {
   socket.on("message", (msg) => {
     console.log(msg)
     const receiver_id = msg.receiver_id
-    // CONTROLLI VARI E AGGIORNAMENTI DB
-    io.emit(receiver_id, {
-      sender_id: msg.sender_id,
-      payload: msg.payload
-    })
+
+    //add new msg to database
+    const insertion = chatUtil.addNewMsg(msg.chat_id, msg.sender, msg.receiver, msg.payload)
+
+    if(insertion.succeeded){
+			//notify users about msg insertion
+			io.emit(msg.sender, msg)
+			io.emit(msg.receiver, msg)
+    } else {
+			//notify sender only about insertion failure
+			io.emit(msg.sender, { error: insertion.description })
+
+			if(insertion.error) console.log(insertion.error)
+		}
   })
 });
 
