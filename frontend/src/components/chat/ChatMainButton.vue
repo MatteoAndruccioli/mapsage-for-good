@@ -2,15 +2,16 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom" >
     <div class="container d-flex justify-content-end">
 
-      <div class="btn-group dropup">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Chat
+      <div class="btn-group dropup" :class="{'show': makeChatVisible}">
+        <!-- data-toggle="dropdown" -->
+        <button @click="chatButtonClicked" type="button" class="btn btn-primary dropdown-toggle" aria-haspopup="true" :aria-expanded="makeChatVisible">
+          Chat <span class="badge badge-light" v-if="totPendingNotifications>0">{{ totPendingNotifications }}</span>
         </button>
 
-        <div v-if="this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary">
-          <ChatList @openChat="onOpenChat" :chats="chats"/>
+        <div v-if="this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': makeChatVisible}">
+          <ChatList @openChat="openChat" :chats="chats"/>
         </div>
-        <div v-if="!this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary">
+        <div v-if="!this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': makeChatVisible}">
           <ChatPanel @backToChatList="onBackToChatList" @sendMessage="sendMessage"
             :receiver_id="actualChatReceiverId" :receiver_fullName="actualChatReceiverFullName"
             :receiver_imagePath="actualChatReceiverImgPath" :messages="messages"/>
@@ -35,11 +36,9 @@ export default {
     ChatList,
     ChatPanel
   },
-  props: ['isMasseurProfile'],
   data () {
-    //const loggedUser = this.$cookies.get('current-user')
     return {
-      showChatList: !this.isMasseurProfile,
+      showChatList: true,
       chats: null,
       messages: [],
       socket: null,
@@ -47,7 +46,11 @@ export default {
       actual_c_id: '',
       actualChatReceiverId: '',
       actualChatReceiverFullName: '',
-      actualChatReceiverImgPath: 'http://localhost:3000/static/uploads/defaultImg.png'
+      actualChatReceiverImgPath: 'http://localhost:3000/static/uploads/defaultImg.png',
+
+      makeChatVisible: false,
+
+      totPendingNotifications: 0
     }
   },
 
@@ -57,7 +60,7 @@ export default {
       this.showChatList = true
     },
 
-    onOpenChat: function(c_id, receiver_id, receiver_fullName, receiver_imgPath) {
+    openChat: function(c_id, receiver_id, receiver_fullName, receiver_imgPath) {
       this.actual_c_id = c_id
       this.actualChatReceiverId = receiver_id
       this.actualChatReceiverFullName = receiver_fullName
@@ -65,8 +68,9 @@ export default {
       this.showChatList = false
 
       var actualChat = this.chats.filter(chat => chat.chat_id == c_id)
-      if (actualChat.length == 1) {
+      if (actualChat.length == 1 && !actualChat[0].visualized) {
         actualChat[0].visualized = true
+        this.totPendingNotifications--
       }
 
       axios.put('http://localhost:3000/chat/lastMessages', { chat_id: c_id }
@@ -98,19 +102,35 @@ export default {
     },
 
     addChat: function(newChat) {
+      // If the new chat was not already in the chat list, then I push it to the chat list
       if (this.chats.filter(chat => chat.chat_id == newChat.chat_id).length == 0) {
         this.chats.push(newChat)
       }
-      // FORZARE ESPANSIONE ChatMainButton, REDNERE VISIBILE ChatPanel
+
+      this.makeChatVisible = true
+
+      this.openChat(newChat.chat_id, newChat.receiver_id,
+        newChat.receiver_fullName, newChat.receiver_imgPath)
+    },
+
+    chatButtonClicked: function() {
+      this.makeChatVisible = !this.makeChatVisible
+      if (!this.makeChatVisible) {
+        this.showChatList= true
+      }
     }
   },
 
   mounted() {
+    EventBus.$on('sendMessageClicked', this.addChat)
     this.socket = io('http://localhost:3000')
     axios.get('http://localhost:3000/chat/chatInfo/allOfUser', { withCredentials: true })
       .then(res => {
         if (!res.data.error) {
           this.chats = res.data.chats
+          console.log(this.chats)
+          this.totPendingNotifications = this.chats.filter(chat => chat.visualized==false).length;
+
           if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
             var vm = this;
             this.socket.on(this.$cookies.get('currentUser').user_id, function(msg) {
@@ -130,7 +150,6 @@ export default {
         alert(err)
         console.log(err)
       })
-    EventBus.$on('sendMessageClicked', this.addChat)
   },
 
   beforeDestroy() {

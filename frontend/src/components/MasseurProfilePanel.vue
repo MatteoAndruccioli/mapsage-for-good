@@ -276,7 +276,6 @@ export default {
         axios.put('http://localhost:3000/chat/chatInfo', { receiver: this.masseur_id },
           { withCredentials: true })
           .then(res => {
-            console.log(res.data)
             EventBus.$emit('sendMessageClicked', res.data)
           }).catch(err => {
             alert(err)
@@ -290,7 +289,7 @@ export default {
   mounted() {
     if (this.$cookies.get('currentUser') != null && this.$cookies.get('currentUser').logged_in) {
       this.isCurrentUserLoggedIn = true;
-      if (this.masseur_id == this.$cookies.get('user_id')) {
+      if (this.masseur_id == this.$cookies.get('currentUser').user_id) {
         this.isMyProfile = true
       }
     }
