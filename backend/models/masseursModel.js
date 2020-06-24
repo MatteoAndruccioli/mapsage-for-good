@@ -20,6 +20,12 @@ const MasseurSchema = new Schema({
       title: String,
       body: String
     }],
+    followers: [String],
+    followed: [String],
+    notifications: [{
+      masseur_id: String,
+      masseur_brand: String
+    }],
     date: {
         type: Date,
         default: Date.now

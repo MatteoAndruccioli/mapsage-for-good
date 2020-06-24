@@ -18,7 +18,12 @@ const CustomerSchema = new Schema({
     },
     profile_picture: {
         type: String
-    }
+    },
+    followed: [String],
+    notifications: [{
+      masseur_id: String,
+      masseur_brand: String
+    }]
 })
 
 module.exports = Customer = mongoose.model('customer', CustomerSchema)

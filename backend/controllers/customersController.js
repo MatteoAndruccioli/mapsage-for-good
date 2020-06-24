@@ -35,7 +35,9 @@ exports.handleRegisterRequest = function(req, res) {
       email: req.body.email,
       password: req.body.password,
       date: today,
-      profile_picture: profileImagePath
+      profile_picture: profileImagePath,
+      followed: [],
+      notifications: []
     }
     //console.log(userData)
 
@@ -83,7 +85,9 @@ exports.readCustomerByJwt = function(req, res) {
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
-            profile_picture: user.profile_picture
+            profile_picture: user.profile_picture,
+            followed: user.followed,
+            notifications: user.notifications
           };
           res.json(userData)
         } else {
