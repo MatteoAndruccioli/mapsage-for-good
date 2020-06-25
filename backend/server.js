@@ -7,6 +7,7 @@ var mongoose = require("mongoose")
 var cookieParser = require("cookie-parser")
 var port = process.env.PORT || 3000
 var chatUtil = require('./utils/chatUtil')
+var notificationUtil = require('./utils/notificationUtil')
 
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -60,16 +61,55 @@ io.on('connection', function(socket) {
       .then(insertion => {
         if(insertion.succeeded){
     			//notify users about msg insertion
-    			io.emit(msg.sender, msg)
-    			io.emit(msg.receiver, msg)
+    			io.emit("message_"+msg.sender, msg)
+    			io.emit("message_"+msg.receiver, msg)
         } else {
     			//notify sender only about insertion failure
-    			io.emit(msg.sender, { error: insertion.description })
+    			io.emit("message_"+msg.sender, { error: insertion.description })
 
     			if(insertion.error) console.log(insertion.error)
     		}
       }).catch(err => {
-        io.emit(msg.sender, { error: err })
+        io.emit("message_"+msg.sender, { error: err })
+      })
+  })
+
+
+  
+
+  socket.on("advertisement", (msg) => {
+    console.log(msg)
+    
+    notificationUtil.addAdvertisement(advertisement_title, advertisement_body, masseur_id)
+      .then(promise => {
+        if(promise.succeeded){
+          io.emit("advertisement_"+msg.sender, { succeeded:true })
+          if(promise.notifications.length > 0){
+            var i;
+            for (i = 0; i < promise.notifications.length; i++) {
+              io.emit(
+                "advertisement_"+promise.notifications[i].follower_id, 
+                { 
+                  masseur_id: promise.notifications[i].newNotification.masseur_id,
+                  masseur_brand: promise.notifications[i].newNotification.masseur_brand,
+                  title: promise.notifications[i].newNotification.advertisement_title,
+                  visualized: false,
+                  notification_id: promise.notifications[i].newNotification._id,
+                }
+              )
+            }
+          }
+
+        } else {
+    			//notify sender only about promise failure
+    			io.emit("advertisement_"+msg.sender, { error: promise.description })
+
+    			if(promise.error) console.log(promise.error)
+    			if(promise.description) console.log(promise.description)
+    		}
+
+      }).catch(err => {
+        io.emit("advertisement_"+msg.sender, { error: err })
       })
   })
 });
