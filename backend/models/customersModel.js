@@ -22,7 +22,9 @@ const CustomerSchema = new Schema({
     followed: [String],
     notifications: [{
       masseur_id: String,
-      masseur_brand: String
+      masseur_brand: String,
+      advertisement_title: String,
+      visualized: Boolean
     }]
 })
 
