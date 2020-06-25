@@ -1,0 +1,47 @@
+<template>
+  <ul class="list-group">
+    <div v-for="news in newsList" :key="news._id">
+      <NewsListElement
+        :notification_id="news.notification_id"
+        :masseur_id="news.masseur_id"
+        :masseur_name="news.masseur_name"
+        :advertisement_title="news.advertisement_title"
+        :blink="!news.visualized"
+        @openNews="onOpenNews"/>
+      </div>
+    </ul>
+</template>
+
+<script>
+import sync from 'css-animation-sync';
+import NewsListElement from './NewsListElement'
+
+export default {
+  props: ['newsList'],
+  components: {
+    NewsListElement
+  },
+  methods: {
+    //this method propagates child-generated backToNewsList event to his father
+    onOpenNews: function(notification_id) {
+      this.$emit('openNews', notification_id)
+    },
+  },
+  mounted() {
+    sync('spinner')
+    //https://github.com/bealearts/css-animation-sync
+    //https://stackoverflow.com/questions/4838972/how-to-sync-css-animations-across-multiple-elements
+    const animation = new sync('blinker')
+    animation.start()
+  }
+}
+</script>
+
+<style scoped>
+  .list-group{
+    max-height: 300px;
+    margin-bottom: 10px;
+    overflow-y:scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+</style>

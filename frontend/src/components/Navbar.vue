@@ -28,6 +28,9 @@
                 <li v-if="isUserLoggedIn" class="nav-item">  <!-- TEST ONLY -->
                     <a class="nav-link" v-on:click="getUserInfo">GetUserInfo</a>
                 </li>
+                <li>
+                  <NewsMainButton v-if="showNewsMainButton"/>
+                </li>
             </ul>
         </div>
     </nav>
@@ -35,15 +38,21 @@
 
 <script>
 import axios from 'axios'
+import NewsMainButton from '../components/news/NewsMainButton'
 
 export default {
+  components: {
+    NewsMainButton
+  },
   data () {
     return {
       isUserLoggedIn: false,
       isCustomer: false,
       isMasseur: false,
 
-      currentUserId: ''
+      currentUserId: '',
+
+      showNewsMainButton: false
     }
   },
   methods: {
@@ -58,6 +67,9 @@ export default {
     checkUserLogin() {
       if (this.$cookies.get('currentUser')) {
         this.isUserLoggedIn = this.$cookies.get('currentUser').logged_in
+        if (this.isUserLoggedIn) {
+          this.showNewsMainButton = true
+        }
         this.currentUserId = this.$cookies.get('currentUser').user_id
         if (this.$cookies.get('currentUser').profile_type == "Customer"){
           this.isCustomer = true

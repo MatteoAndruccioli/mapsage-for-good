@@ -24,9 +24,9 @@
 import ChatList from './ChatList'
 import ChatPanel from './ChatPanel'
 import axios from 'axios'
-import io from 'socket.io-client'
 
 import {EventBus} from '../EventBus'
+import {openSocket, closeSocket} from '../socket/serverSocket'
 
 export default {
   name: 'ChatMainButton',
@@ -166,16 +166,15 @@ export default {
   },
   mounted() {
     EventBus.$on('sendMsgClickMasseurProfile', this.handleExternalOpenChat)
-    this.socket = io('http://localhost:3000')
+    this.socket = openSocket()
+    if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
+      this.socket.on(this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
+    }
     axios.get('http://localhost:3000/chat/chatInfo/allOfUser', { withCredentials: true })
       .then(res => {
         if (!res.data.error) {
           this.chats = res.data.chats
           this.totPendingNotifications = this.chats.filter(chat => chat.visualized==false).length;
-
-          if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
-            this.socket.on(this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
-          }
         } else {
           alert(res.data.error)
           console.log(res.data.error)
@@ -187,8 +186,7 @@ export default {
   },
 
   beforeDestroy() {
-    console.log("destroying socket")
-    this.socket.close()
+    closeSocket()
   }
 }
 </script>

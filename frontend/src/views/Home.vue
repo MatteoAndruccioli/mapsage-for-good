@@ -2,7 +2,7 @@
   <div id="app-home">
     <Navbar/>
     <SearchPanel/>
-    <ChatMainButton v-if="showChatFooterButton"/>
+    <ChatMainButton v-if="showChatMainButton"/>
     <CookiesBanner v-if="showCookiesBanner" v-on:hideMe="showCookiesBanner=false"/>
   </div>
 </template>
@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       showCookiesBanner: true,
-      showChatFooterButton: false
+      showChatMainButton: false
     }
   },
   components: {
@@ -33,7 +33,7 @@ export default {
       this.showCookiesBanner = false;
     }
     if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
-      this.showChatFooterButton = true;
+      this.showChatMainButton = true;
     }
   }
 }

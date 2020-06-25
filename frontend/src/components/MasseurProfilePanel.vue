@@ -23,7 +23,8 @@
               <div class="col-md-7 d-flex flex-row justify-content-center justify-content-sm-center justify-content-md-end">
                 <button v-if="isMyProfile" type="button" class="btn btn-info btn-sm my-btn mx-1" data-toggle="modal" data-target="#modalLoginForm">Edit profile</button>
                 <button v-if="!isMyProfile" @click="openChatWithThisMasseur" type="button" class="btn btn-info btn-sm my-btn mx-1">Send Message</button>
-                <button v-if="!isMyProfile" type="button" class="btn btn-info btn-sm my-btn mx-1">Follow</button>
+                <button v-if="!isMyProfile && !isFollow" @click="followThisMasseur" type="button" class="btn btn-info btn-sm my-btn mx-1">Follow</button>
+                <button v-if="!isMyProfile && isFollow" @click="unfollowThisMasseur" type="button" class="btn btn-info btn-sm my-btn mx-1">Unfollow</button>
               </div>
 
               <!-- MODAL STARTS HERE -->
@@ -165,6 +166,7 @@ export default {
       edit_phone_number: '',
       edit_expertise: '',
 
+      isFollow: false
     }
   },
   methods: {
@@ -265,7 +267,7 @@ export default {
       }
     },
 
-    openChatWithThisMasseur() {
+    openChatWithThisMasseur: function() {
       if (!this.isCurrentUserLoggedIn) {
         this.$router.push({ name: 'Login_view',
           params: { source: 'from_masseurProfile_view', masseur_id: this.masseur_id } })
@@ -286,8 +288,15 @@ export default {
             console.log(err)
           })
       }
-    }
+    },
 
+    followThisMasseur: function() {
+      
+    },
+
+    unfollowThisMasseur: function() {
+
+    }
   },
 
   mounted() {

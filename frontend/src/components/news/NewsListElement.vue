@@ -1,8 +1,8 @@
 <template>
-  <li v-on:click.prevent.stop="showChat" class="list-group-item container my-list-item">
+  <li v-on:click.prevent.stop="openNews" class="list-group-item container my-list-item">
     <div class="container row d-flex flex-row col-12 my-blinker-father justify-content-between">
-      <img class="propic ml-2" :src="imagePath" alt="Avatar"/>
-      <div class="pt-1 ml-4">{{fullName}}</div>
+      <div class="pt-1 ml-4">{{masseur_name}} has publish a new advertisement:</div>
+      <div> {{advertisement_title}} </div>
       <span class="new-message-dot my-auto ml-4" :class="{ 'my-dot-color-blue': blink, 'my-blink-me': blink }"></span>
     </div>
   </li>
@@ -11,15 +11,15 @@
 <script>
 export default {
   props: [
-    'fullName',
-    'imagePath',
-    'chat_id',
-    'blink',
-    'receiver_id'
+    'notification_id',
+    'masseur_id',
+    'masseur_name',
+    'advertisement_title',
+    'blink'
   ],
   methods: {
-    showChat: function() {
-      this.$emit('openChat', this.chat_id, this.receiver_id, this.fullName, this.imagePath)
+    openNews: function() {
+      this.$emit('openNews', this.notification_id)
     }
   }
 }
@@ -35,13 +35,6 @@ export default {
     margin-bottom: 10px;
     overflow-y:scroll;
     -webkit-overflow-scrolling: touch;
-  }
-
-  .propic {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    border: 1px solid #eee;
   }
 
   .my-list-item:hover {
@@ -60,7 +53,6 @@ export default {
   .my-dot-color-blue {
     background-color: blue;
   }
-
 
   .my-blink-me {
     animation: blinker 2s linear infinite;
