@@ -2,7 +2,7 @@
   <div id="app-home">
     <Navbar/>
     <SearchPanel/>
-    <ChatMainButton v-if="showChatFooterButton" :isMasseurProfile="false"/>
+    <ChatMainButton v-if="showChatFooterButton"/>
     <CookiesBanner v-if="showCookiesBanner" v-on:hideMe="showCookiesBanner=false"/>
   </div>
 </template>

@@ -20,7 +20,7 @@
                     <router-link class="nav-link" to="/customerProfile">Customer Profile</router-link>
                 </li>
                 <li v-if="isMasseur" class="nav-item">
-                    <router-link class="nav-link" to="/masseurProfile/private">Masseur Profile</router-link>
+                    <router-link class="nav-link" :to="'/masseurProfile/' + this.currentUserId">Masseur Profile</router-link>
                 </li>
                 <li v-if="isUserLoggedIn" class="nav-item">
                     <a class="nav-link" href="/" v-on:click="logout">Logout</a>
@@ -41,7 +41,9 @@ export default {
     return {
       isUserLoggedIn: false,
       isCustomer: false,
-      isMasseur:false,
+      isMasseur: false,
+
+      currentUserId: ''
     }
   },
   methods: {
@@ -56,6 +58,7 @@ export default {
     checkUserLogin() {
       if (this.$cookies.get('currentUser')) {
         this.isUserLoggedIn = this.$cookies.get('currentUser').logged_in
+        this.currentUserId = this.$cookies.get('currentUser').user_id
         if (this.$cookies.get('currentUser').profile_type == "Customer"){
           this.isCustomer = true
           this.isMasseur = false

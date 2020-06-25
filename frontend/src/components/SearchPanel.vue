@@ -4,7 +4,7 @@
       <form class="text-center col-4">
         <div class="form-group">
           <label for="searchCity" class="hidden">City</label>
-          <autocomplete :search="getSuggestions" placeholder="Search for a municipality" aria-label="Search for a municipality" :get-result-value="getResultValue"></autocomplete>
+          <autocomplete @submit="handleAutocSelection" :search="getSuggestions" placeholder="Search for a municipality" aria-label="Search for a municipality"></autocomplete>
           <label for="searchCity" id="error" v-if="isSubmittedWithoutCity">Fill this field</label>
         </div>
         <button @click.prevent="onSubmit" type="submit" class="btn ml-auto btn-primary">Search</button> <!-- Intentionally "prevent" omitted -->
@@ -31,14 +31,22 @@
     },
     methods: {
       onSubmit: function() {
+        console.log("prima del submit: " + this.city)
         if (this.city != "") {
           this.$router.push("/search/" + this.city);
         } else {
           this.isSubmittedWithoutCity = true;
         }
       },
+      handleAutocSelection: function(result) {
+        if (result != null) {
+          console.log(result)
+          this.city = result
+        }
+      },
       getSuggestions: function(input) {
-        this.city = input;
+        console.log(input)
+        this.city = input
         return new Promise(resolve => {
           if (input.length < 1) { return resolve([]) }
           geocoding.suggest()
@@ -47,10 +55,7 @@
               resolve(response.suggestions.map(elem => elem.text))
             });
         })
-      },
-      getResultValue(result) {
-        return result
-      },
+      }
     },
   }
 </script>
