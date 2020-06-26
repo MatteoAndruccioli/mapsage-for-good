@@ -1,9 +1,16 @@
 <template>
-  <li v-on:click.prevent.stop="openNews" class="list-group-item container my-list-item">
-    <div class="container row d-flex flex-row col-12 my-blinker-father justify-content-between">
-      <div class="pt-1 ml-4">{{masseur_name}} has publish a new advertisement:</div>
-      <div> {{advertisement_title}} </div>
-      <span class="new-message-dot my-auto ml-4" :class="{ 'my-dot-color-blue': blink, 'my-blink-me': blink }"></span>
+  <li v-on:click.prevent.stop="openNews" class="list-group-item">
+    <div class="container justify-content-between">
+      <div class="row">
+        <section class="col-9">
+          {{masseur_brand}} has publish a new advertisement:
+          <br/>
+          <b>{{advertisement_title}}</b>
+        </section>
+        <span class="container col-3">
+          <div id="message-dot" class="m-auto" :class="{ 'blue-message-dot': blink, 'blink': blink }"></div>
+        </span>
+      </div>
     </div>
   </li>
 </template>
@@ -13,55 +20,42 @@ export default {
   props: [
     'notification_id',
     'masseur_id',
-    'masseur_name',
+    'masseur_brand',
     'advertisement_title',
     'blink'
   ],
   methods: {
     openNews: function() {
+      console.log("dentro element: ",this.notification_id,this.masseur_id,this.masseur_brand,this.advertisement_title,this.blink)
       this.$emit('openNews', this.notification_id)
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   li {
     cursor: pointer;
+    :hover {
+      color: #222;
+      background-color: #efefef;
+    }
   }
-
-  .list-group{
-    max-height: 300px;
-    margin-bottom: 10px;
-    overflow-y:scroll;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .my-list-item:hover {
-    color: #222;
-    background-color: #efefef;
-  }
-
-  .new-message-dot {
-    width: 0.5rem;
-    height: 0.5rem;
+  #message-dot {
+    width: 10px;
+    height: 10px;
     background-color: #efefef;
     border-radius: 50%;
-    display: inline-block;
   }
-
-  .my-dot-color-blue {
-    background-color: blue;
+  .blue-message-dot {
+    background-color: blue !important;
   }
-
-  .my-blink-me {
+  .blink {
     animation: blinker 2s linear infinite;
   }
-
   @keyframes blinker {
     50% {
       opacity: 0;
     }
   }
-
 </style>

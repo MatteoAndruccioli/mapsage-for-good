@@ -4,7 +4,7 @@
       <NewsListElement
         :notification_id="news.notification_id"
         :masseur_id="news.masseur_id"
-        :masseur_name="news.masseur_name"
+        :masseur_brand="news.masseur_brand"
         :advertisement_title="news.advertisement_title"
         :blink="!news.visualized"
         @openNews="onOpenNews"/>
@@ -39,6 +39,7 @@ export default {
 
 <style scoped>
   .list-group{
+    width: 30em;
     max-height: 300px;
     margin-bottom: 10px;
     overflow-y:scroll;

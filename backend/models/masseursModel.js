@@ -20,13 +20,16 @@ const MasseurSchema = new Schema({
       title: String,
       body: String
     }],
-    followers: [String],
+    followers: [{
+      follower_id: String,
+      follower_type: String
+    }],
     followed: [String],
     notifications: [{
       masseur_id: String,
       masseur_brand: String,
       advertisement_title: String,
-      visualized: Boolean     
+      visualized: Boolean
     }],
     date: {
         type: Date,

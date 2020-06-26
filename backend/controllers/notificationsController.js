@@ -4,13 +4,13 @@ const Masseur = require("../models/masseursModel")
 const userUtil = require("./utils/usersUtil")
 
 
-//set user's notification visualized=true 
+//set user's notification visualized=true
 exports.setVisualized = function(req, res){
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
     try {
       var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
-      
+
 
       //prima di tutto devo capire se l'utente è un masseur o un customer
       userUtil.userWithIdExists(decodedPayload._id).then(promise => {
@@ -30,7 +30,7 @@ exports.setVisualized = function(req, res){
               res.json({ succeeded: true })
             })
 
-          
+
         } else {
           res.json({succeeded: false, description: "user not found", error: "user not found"})
         }
@@ -54,31 +54,41 @@ exports.getNotificationSet = function(req, res){
     const token = req.signedCookies.jwt;
     try {
       var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
-      
+
       const nReturnedNotification = 5
       const startIndex = (req.query.firstElement-1) >= 0 ? (req.query.firstElement-1) : 0
       const lastIndex =  req.query.firstElement-1+nReturnedNotification
-      
+
       //prima di tutto devo capire se l'utente è un masseur o un customer
       userUtil.userWithIdExists(decodedPayload._id).then(promise => {
         if(promise != null && promise.type != null && ["customer", "masseur"].includes(promise.type)){
-    
-        
+
+
           //if user's a masseur query on Masseur otherwise on Customer
           const schema = promise.type == "customer" ? Customer : Masseur
-    
+
           schema
             .findOne({ "_id": decodedPayload._id})
               .then(user => {
                 if(user != null){
-                  res.json({ succeeded: true, user: user.notifications.slice(startIndex,lastIndex) })
+                  const notifications = user.notifications.slice(startIndex,lastIndex).map(not => {
+                    return {
+                      notification_id: not._id,
+                      masseur_id: not.masseur_id,
+                      masseur_brand: not.masseur_brand,
+                      advertisement_title: not.advertisement_title,
+                      visualized: not.visualized
+                    }
+                  })
+
+                  res.json({ succeeded: true, notifications: notifications })
                 } else {
                   res.json({ succeeded: false, description: "errore nel recuperare l'utente per le notifiche", error: "errore nel recuperare l'utente per le notifiche"})
                 }
               }).catch(err => {
                 res.json({ succeeded: false, description: "errore nel recuperare l'utente per le notifiche", error: err})
-              }) 
-          
+              })
+
         } else {
           res.json({succeeded: false, description: "user not found", error: "user not found"})
         }

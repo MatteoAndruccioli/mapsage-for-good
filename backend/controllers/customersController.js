@@ -53,7 +53,7 @@ exports.handleRegisterRequest = function(req, res) {
             .then(user => {
               const payload = { _id: user._id }
               // JWT generation
-              const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 30 * 86400}) //expiresIn expressed in secodns
+              const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 30 * 86400}) //expiresIn expressed in seconds
               const cookieConfig = {
                 httpOnly: true,
                 maxAge: 30 * 86400 * 1000, // 30 days cookie

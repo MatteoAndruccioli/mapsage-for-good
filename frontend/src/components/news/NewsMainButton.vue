@@ -34,19 +34,18 @@ export default {
   methods: {
     // Propagated from newsListPanel child when a chat from the list is selected
     handleOpenNews: function(notif_id) {
-      console.log(notif_id)
-      console.log(this.newsList)
       var referredNews = this.newsList.find(news => news.notification_id == notif_id)
       if (!referredNews.visualized) {
-        axios.put('http://localhost:3000/notifications/remove',
+        axios.put('http://localhost:3000/notifications/setVisualized',
           {
             masseur_id: referredNews.masseur_id,
-            notification_id: referredNews.notif_id
+            notification_id: referredNews.notification_id
           },
           { withCredentials: true })
           .then(res => {
             if (!res.data.error) {
               referredNews.visualized = true
+              this.totPendingNotifications--
             } else {
               alert(res.data.error)
               console.log(res.data.error)
@@ -56,7 +55,7 @@ export default {
             console.log(err)
           })
       }
-      this.$router.push({ name: 'MasseurProfile_view', params: { id: referredNews.masseur_id } })
+      this.$router.push({ name: 'MasseurProfile_view', params: { id: referredNews.masseur_id }}, () => {});
     },
     // Handle messages received from socket.io
     handleMessageReceived: function(msg) {
@@ -74,7 +73,7 @@ export default {
     if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
       this.socket.on('advertisement_' + this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
     }
-    axios.get('http://localhost:3000/notifications/getRange/0', { withCredentials: true })
+    axios.get('http://localhost:3000/notifications/getSet?firstElement=0', { withCredentials: true })
       .then(res => {
         if (!res.data.error) {
           this.newsList = res.data.notifications

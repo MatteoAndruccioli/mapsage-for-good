@@ -22,7 +22,7 @@ exports.handleLoginRequest = function(req, res) {
       if (bcrypt.compareSync(req.body.password, user.password)) {
         const payload = { _id: user._id }
         // JWT generation
-        const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 1440})
+        const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 30 * 86400}) //expiresIn expressed in seconds
         const cookieConfig = {
           httpOnly: true,
           maxAge: 30 * 86400 * 1000, // 30 days cookie

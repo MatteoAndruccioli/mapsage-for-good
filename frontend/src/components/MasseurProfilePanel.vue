@@ -146,7 +146,6 @@ export default {
     ChatMainButton
   },
   data () {
-    //const loggedUser = this.$cookies.get('current-user')
     return {
       isMyProfile: false,
       isCurrentUserLoggedIn: false,
@@ -158,6 +157,8 @@ export default {
       phone_number:'',
       expertise: '',
       advertisements: [],
+      followers: [],
+
       advertisementTitle: '',
       advertisementBody: '',
       isAdvertisementListEmpty: true,
@@ -191,8 +192,14 @@ export default {
           vm.phone_number = res.data.phone_number
           vm.expertise = res.data.expertise
           vm.advertisements = res.data.advertisements
-
+          vm.followers = res.data.followers
+          console.log(res.data.followers)
           vm.isAdvertisementListEmpty = res.data.advertisements.length == 0
+
+          if (vm.isCurrentUserLoggedIn && !vm.isMyProfile
+              && vm.followers.map(f => f.follower_id).includes(this.$cookies.get('currentUser').user_id)) {
+            vm.isFollow = true
+          }
           //aggiungere campi in base a necessità !!!
         } else {
           console.log(res.data.error)
@@ -291,11 +298,33 @@ export default {
     },
 
     followThisMasseur: function() {
-      
+      axios.put('http://localhost:3000/follow/add', { masseur_id: this.masseur_id }, { withCredentials: true })
+        .then(res => {
+          if (!res.data.error) {
+            this.isFollow = true
+          } else {
+            alert(res.data.error)
+            console.log(res.data.error)
+          }
+        }).catch(err => {
+          alert(err)
+          console.log(err)
+        })
     },
 
     unfollowThisMasseur: function() {
-
+      axios.put('http://localhost:3000/follow/remove', { masseur_id: this.masseur_id }, { withCredentials: true })
+        .then(res => {
+          if (!res.data.error) {
+            this.isFollow = false
+          } else {
+            alert(res.data.error)
+            console.log(res.data.error)
+          }
+        }).catch(err => {
+          alert(err)
+          console.log(err)
+        })
     }
   },
 
