@@ -36,7 +36,6 @@ exports.handleRegisterRequest = function(req, res) {
       password: req.body.password,
       date: today,
       profile_picture: profileImagePath,
-      followed: [],
       notifications: []
     }
     //console.log(userData)
@@ -86,7 +85,6 @@ exports.readCustomerByJwt = function(req, res) {
             last_name: user.last_name,
             email: user.email,
             profile_picture: user.profile_picture,
-            followed: user.followed,
             notifications: user.notifications
           };
           res.json(userData)

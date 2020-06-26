@@ -24,7 +24,6 @@ const MasseurSchema = new Schema({
       follower_id: String,
       follower_type: String
     }],
-    followed: [String],
     notifications: [{
       masseur_id: String,
       masseur_brand: String,
