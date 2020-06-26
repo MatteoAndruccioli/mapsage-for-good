@@ -2,8 +2,8 @@
   <form v-on:submit.prevent="register">
     <h1 class="h3 mb-3 font-weight-normal">Signing up as Masseur</h1>
     <div class="form-group my_centered">
-          <img style="" :src="masseur_propic" alt="" name="masseur-propic" class="propic">
-          <input @change="handleImage" class="my_custom-input" type="file" accept="image/*" name="masseur-propic_input">
+          <img style="" :src="masseur_propic" alt="" name="masseur-propic" class="propic propic-border">
+          <input @change="handleImage" class="my_custom-input" type="file" accept="image/*" name="masseur-propic_input" style="margin-top: 5px; ">
     </div>
     <div class="form-group">
       <label for="masseur-brandName">Brand Name</label>
@@ -125,5 +125,36 @@ img {
 #mapContainer {
   width: 100%;
   height: 300px;
+}
+
+.propic {
+  width: 20rem;
+  height: 20rem;
+}
+
+.propic-border {
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+@media screen and (max-width: 720px) {
+  .propic {
+    width: 15rem;
+    height: 15rem;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .propic {
+    width: 10rem;
+    height: 10rem;
+  }
+}
+
+@media screen and (max-width: 200px) {
+  .propic {
+    width: 7rem;
+    height: 7rem;
+  }
 }
 </style>

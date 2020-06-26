@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <div class="mt-3 my-box col-12 col-sm-8 col-md-6 col-lg-5 mx-auto">
-            <div class="col-md-10 col-lg-8 mx-auto ">
-                <img class="propic responsive" :src="profile_picture" alt="">
+        <div class="mt-3 my-box col-12 col-sm-8 col-md-6 col-lg-5 mx-auto" style="margin-bottom: 80px">
+            <div style=" display: flex; align-items: center;">
+                <img class="propic propic-border mx-auto" :src="profile_picture" >
             </div>
             <table class="table col-md-10 mt-5 mx-auto text-center">
                 <tbody>
@@ -67,15 +67,6 @@ export default {
 </script>
 
 <style scoped>
-.propic {
-    width: 17rem;
-    border-radius: 5px;
-}
-
-.responsive {
-  width: 100%;
-  height: auto;
-}
 
 .my-box {
   border: 1px solid #eee;
@@ -87,6 +78,39 @@ export default {
 
 th {
     font-weight: 600 !important;
+}
+
+.propic {
+  width: 15rem;
+  height: 15rem;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.propic-border {
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+@media screen and (max-width: 720px) {
+  .propic {
+    width: 15rem;
+    height: 15rem;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .propic {
+    width: 10rem;
+    height: 10rem;
+  }
+}
+
+@media screen and (max-width: 200px) {
+  .propic {
+    width: 7rem;
+    height: 7rem;
+  }
 }
 
 </style>
