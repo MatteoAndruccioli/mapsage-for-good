@@ -18,24 +18,22 @@ exports.follow = function(req, res) {
           //if user's a masseur query on Masseur otherwise on Customer
           const schema = promise.type == "customer" ? Customer : Masseur
 
-          Promise.all([
-            Masseur.findOneAndUpdate(
-              {_id: req.body.masseur_id},
-              {$addToSet: {followers: {follower_id: decodedPayload._id, follower_type: promise.type}}},
-              {new: true}),
-
-            schema.findOneAndUpdate(
-              {_id: decodedPayload._id},
-              {$addToSet: {followed: req.body.masseur_id}},
-              {new: true})
-            ]).then(([masseur, user]) => {
-              if (masseur != null && user != null) {
-                res.json({ description:"ok" })
+          Masseur.findOneAndUpdate(
+            {_id: req.body.masseur_id},
+            {$addToSet: {followers: {follower_id: decodedPayload._id, follower_type: promise.type}}},
+            {new: true},   
+            function(err, user) {
+              if (err) {
+                reject({ succeeded: false, error: err, description: "error in customer search"  })
               } else {
-                res.json({ succeeded: false, error:"follow failed", description: "follow failed" })
+                if (user == null) {
+                  res.json({ succeeded: false, error:"follow failed", description: "follow failed" })
+                } else {
+                  res.json({ description:"ok" })
+                }
               }
-            }).catch(err => { res.json({succeeded: false, error: err, description: "error while updating masseur's followers and user's followed"}) })
-
+            })
+              
         } else {
           res.json({succeeded: false, description: "user not found", error: "user not found"})
         }
@@ -66,24 +64,22 @@ exports.unfollow = function(req, res){
           //if user's a masseur query on Masseur otherwise on Customer
           const schema = promise.type == "customer" ? Customer : Masseur
 
-          Promise.all([
+       
             Masseur.findOneAndUpdate(
               {_id: req.body.masseur_id},
               {$pull: {followers: {follower_id: decodedPayload._id, follower_type: promise.type}}},
-              {new: true}),
-
-            schema.findOneAndUpdate(
-              {_id: decodedPayload._id},
-              {$pull: {followed: req.body.masseur_id}},
-              {new: true})
-          ]).then(([masseur, user]) => {
-            if (masseur != null && user != null) {
-              res.json({ succeeded: true, masseur: masseur, user: user })
-            } else {
-              res.json({ succeeded: false, description: "unfollow failed",  error: "unfollow failed" })
-            }
-          }).catch(err => { res.json({succeeded: false, error: err, description: "error while updating masseur's followers and user's followed"}) })
-
+              {new: true},
+              function(err, user) {
+                if (err) {
+                  reject({ succeeded: false, error: err, description: "error in customer search"  })
+                } else {
+                  if (user == null) {
+                    res.json({ succeeded: false, error:"unfollow failed", description: "unfollow failed" })
+                  } else {
+                    res.json({ description:"ok" })
+                  }
+                }
+              })
 
         } else {
           res.json({succeeded: false, description: "user not found", error: "user not found"})
