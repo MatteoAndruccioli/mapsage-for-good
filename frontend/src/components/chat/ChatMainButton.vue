@@ -26,7 +26,7 @@ import ChatPanel from './ChatPanel'
 import axios from 'axios'
 
 import {EventBus} from '../EventBus'
-import {openSocket, closeSocket} from '../socket/serverSocket'
+import {socket} from '../socket/serverSocket'
 
 export default {
   name: 'ChatMainButton',
@@ -38,7 +38,6 @@ export default {
     return {
       showChatList: true,
       chats: null,
-      socket: null,
 
       // Filled with chat info when a chat from the list is selected
       messages: [],
@@ -96,7 +95,7 @@ export default {
     handleSendMessage: function(message) {
       if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
         const user_id = this.$cookies.get('currentUser').user_id;
-        this.socket.emit("message", {
+        socket.emit("message", {
           sender: user_id,
           receiver: this.actualChatReceiverId,
           chat_id: this.actual_c_id,
@@ -166,9 +165,8 @@ export default {
   },
   mounted() {
     EventBus.$on('sendMsgClickMasseurProfile', this.handleExternalOpenChat)
-    this.socket = openSocket()
     if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
-      this.socket.on(this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
+      socket.on('message_' + this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
     }
     axios.get('http://localhost:3000/chat/chatInfo/allOfUser', { withCredentials: true })
       .then(res => {
@@ -183,10 +181,6 @@ export default {
         alert(err)
         console.log(err)
       })
-  },
-
-  beforeDestroy() {
-    closeSocket()
   }
 }
 </script>

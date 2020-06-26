@@ -216,8 +216,6 @@ exports.addAdvertisement = function(req, res){
           if (err) {
             console.log("Something wrong when updating data!");
           }
-          console.log("primogiro")
-          console.log(updatedUser);
           res.send({ advertisements: updatedUser.advertisements })
         })
         .catch(err => {

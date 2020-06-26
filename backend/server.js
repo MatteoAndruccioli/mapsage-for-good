@@ -75,24 +75,26 @@ io.on('connection', function(socket) {
   })
 
 
-  
+
 
   socket.on("advertisement", (msg) => {
     console.log(msg)
-    
-    notificationUtil.addAdvertisement(advertisement_title, advertisement_body, masseur_id)
+
+    notificationUtil.addAdvertisement(msg.advertisement_title, msg.advertisement_body, msg.masseur_id)
       .then(promise => {
         if(promise.succeeded){
-          io.emit("advertisement_"+msg.sender, { succeeded:true })
+          io.emit("advertisement_" + msg.masseur_id, { title: msg.advertisement_title, body: msg.advertisement_body})
           if(promise.notifications.length > 0){
             var i;
             for (i = 0; i < promise.notifications.length; i++) {
+              console.log(promise.notifications[i].follower_id)
+              console.log(promise.notifications[i].newNotification.advertisement_title)
               io.emit(
-                "advertisement_"+promise.notifications[i].follower_id, 
-                { 
+                "advertisement_"+promise.notifications[i].follower_id,
+                {
                   masseur_id: promise.notifications[i].newNotification.masseur_id,
                   masseur_brand: promise.notifications[i].newNotification.masseur_brand,
-                  title: promise.notifications[i].newNotification.advertisement_title,
+                  advertisement_title: promise.notifications[i].newNotification.advertisement_title,
                   visualized: false,
                   notification_id: promise.notifications[i].newNotification._id,
                 }
@@ -102,14 +104,14 @@ io.on('connection', function(socket) {
 
         } else {
     			//notify sender only about promise failure
-    			io.emit("advertisement_"+msg.sender, { error: promise.description })
+    			io.emit("advertisement_"+msg.masseur_id, { error: promise.description })
 
     			if(promise.error) console.log(promise.error)
     			if(promise.description) console.log(promise.description)
     		}
 
       }).catch(err => {
-        io.emit("advertisement_"+msg.sender, { error: err })
+        io.emit("advertisement_"+msg.masseur_id, { error: err })
       })
   })
 });

@@ -95,7 +95,7 @@
             <!--Questo va mostrato solo se c'è almeno un advertisement-->
             <div v-if="!this.isAdvertisementListEmpty" class="panel-body" >
               <ul class="list-group" >
-                <div v-for="adv in advertisements" :key="adv._id" id="advList">
+                <div v-for="adv in advertisements.reverse()" :key="adv.title" id="advList">
                   <Advertisement :title="adv.title" :body="adv.body"> </Advertisement>
                 </div>
               </ul>
@@ -137,6 +137,7 @@ import Advertisement from './Advertisement'
 import MapPanel from './map/MapPanel'
 import ChatMainButton from './chat/ChatMainButton'
 import {EventBus} from './EventBus'
+import {socket} from './socket/serverSocket'
 
 export default {
   props: ['masseur_id'],
@@ -193,7 +194,7 @@ export default {
           vm.expertise = res.data.expertise
           vm.advertisements = res.data.advertisements
           vm.followers = res.data.followers
-          console.log(res.data.followers)
+
           vm.isAdvertisementListEmpty = res.data.advertisements.length == 0
 
           if (vm.isCurrentUserLoggedIn && !vm.isMyProfile
@@ -237,24 +238,16 @@ export default {
 
     addAdvertisement: function() {
       if (this.isMyProfile) {
-        axios.post('http://localhost:3000/masseurs/adverisement', {
-          advertisementTitle: this.advertisementTitle,
-          advertisementBody: this.advertisementBody
-        }, { withCredentials: true }).then(res => {
-          if (!res.data.error) {
-            this.advertisementTitle = ''
-            this.advertisementBody = ''
-            //console.log(res.data)
-            this.advertisements = res.data.advertisements
-            this.isAdvertisementListEmpty = res.data.advertisements.length == 0
-          } else {
-            alert("Login failed!! try again");
-            console.log(res.data.error)
-          }
-        }).catch(err => {
-          console.log(err)
+        socket.emit("advertisement", {
+          advertisement_title: this.advertisementTitle,
+          advertisement_body: this.advertisementBody,
+          masseur_id: this.masseur_id
         })
       }
+      this.advertisementTitle = ''
+      this.advertisementBody = ''
+      // The visualization of the advertisement just sent will be performed when the server
+      // will propagate back that advertisement using Socket.IO
     },
 
     editMasseurLocation: function(location) {
@@ -325,6 +318,14 @@ export default {
           alert(err)
           console.log(err)
         })
+    },
+
+    handleMessageReceived: function(msg) {
+      if (msg.error) {
+        alert("Error receiving message: " + msg.error)
+        return;
+      }
+      this.advertisements.unshift(msg)
     }
   },
 
@@ -336,6 +337,7 @@ export default {
       }
     }
     this.initProfile();
+    socket.on('advertisement_' + this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
   }
 }
 </script>

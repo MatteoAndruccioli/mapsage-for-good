@@ -14,7 +14,7 @@
 import NewsListPanel from './NewsListPanel'
 import axios from 'axios'
 
-import {openSocket, closeSocket} from '../socket/serverSocket'
+import {socket} from '../socket/serverSocket'
 
 export default {
   name: 'NewsMainButton',
@@ -24,7 +24,6 @@ export default {
   data () {
     return {
       newsList: null,
-      socket: null,
       // Controls the news panel opening and closing
       isOpen: false,
       totPendingNotifications: 0
@@ -64,14 +63,13 @@ export default {
         return;
       }
       // Assumes msg is a new notification
-      this.newList.push(msg.notifications)
+      this.newsList.unshift(msg)
       this.totPendingNotifications++
     }
   },
   mounted() {
-    this.socket = openSocket()
     if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
-      this.socket.on('advertisement_' + this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
+      socket.on('advertisement_' + this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
     }
     axios.get('http://localhost:3000/notifications/getSet?firstElement=0', { withCredentials: true })
       .then(res => {
@@ -86,9 +84,6 @@ export default {
         alert(err)
         console.log(err)
       })
-  },
-  beforeDestroy() {
-    closeSocket()
   }
 }
 </script>

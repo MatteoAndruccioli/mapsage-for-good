@@ -71,7 +71,7 @@ exports.getNotificationSet = function(req, res){
             .findOne({ "_id": decodedPayload._id})
               .then(user => {
                 if(user != null){
-                  const notifications = user.notifications.slice(startIndex,lastIndex).map(not => {
+                  const notifications = user.notifications.reverse().slice(startIndex,lastIndex).map(not => {
                     return {
                       notification_id: not._id,
                       masseur_id: not.masseur_id,

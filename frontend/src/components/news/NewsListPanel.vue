@@ -1,6 +1,6 @@
 <template>
   <ul class="list-group">
-    <div v-for="news in newsList" :key="news._id">
+    <div v-for="news in newsList" :key="news.notification_id">
       <NewsListElement
         :notification_id="news.notification_id"
         :masseur_id="news.masseur_id"
