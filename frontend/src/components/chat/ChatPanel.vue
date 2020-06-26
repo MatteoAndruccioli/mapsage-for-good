@@ -10,6 +10,13 @@
 
     <main>
       <ul class="list-group" >
+        <div  v-if="this.messages.length == 0" class="align-self-stretch" style="height: 100%;">
+          <div class="jumbotron jumbotron-fluid align-self-stretch">
+            <div class="container">
+              <p class="lead">There is still no message to show :(</p>
+            </div>
+          </div>
+        </div>
         <div v-for="msg in messages" :key="msg._id">
           <ChatMessage :messageBody="msg.body" :isUserMessage="isUserMessage(msg.sender)" />
         </div>

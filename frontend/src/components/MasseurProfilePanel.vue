@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <div class="container">
+    <div class="container" style="padding-bottom: 80px">
       <div class="row">
         <div class="mx-auto mt-3 col-lg-8 col-md-12">
           <div class="mx-auto mt-1 my-box col-12">
@@ -82,7 +82,7 @@
             <h5 class="text-center">Last advertisement</h5>
           </div>
 
-          <div class="col-12 mx-auto mt-3 d-flex flex-column justify-content-between" style="height: 90%">
+          <div :class="{ voidBackgroundColor: this.isAdvertisementListEmpty && !isMyProfile }" class="col-12 mx-auto mt-3 d-flex flex-column justify-content-between" style="height: 90%">
             <!--mostri questo in caso non ci siano adv (si potrebbe fare che la frase cambia se l'utente è il masseur) -->
             <div  v-if="this.isAdvertisementListEmpty" class="align-self-stretch" style="height: 100%;">
               <div class="jumbotron jumbotron-fluid align-self-stretch">
@@ -385,6 +385,11 @@ b {
 #map-container {
   width: 100%;
   height: 300px;
+}
+
+.voidBackgroundColor {
+  background-color: #e9ecef;
+  border: #fff 3px solid;
 }
 
 </style>
