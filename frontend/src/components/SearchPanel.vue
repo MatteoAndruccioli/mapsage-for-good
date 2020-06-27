@@ -4,7 +4,15 @@
       <form class="text-center col-4">
         <div class="form-group">
           <label for="searchCity" class="hidden">City</label>
-          <autocomplete @submit="handleAutocSelection" :search="getSuggestions" placeholder="Search for a municipality" aria-label="Search for a municipality"></autocomplete>
+          <div id="searchField">
+            <div id="autocomplete" class="autocomplete">
+              <input id="autocomplete-input" class="autocomplete-input" placeholder="Search for a municipality" aria-label="Search for a country"/>
+              <ul class="autocomplete-result-list"></ul>
+            </div>
+            <button @click.prevent="locateMe" type="button">
+              <i class="fas fa-map-marked-alt"></i>
+            </button>
+          </div>
           <label for="searchCity" id="error" v-if="isSubmittedWithoutCity">Fill this field</label>
         </div>
         <button @click.prevent="onSubmit" type="submit" class="btn ml-auto btn-primary">Search</button> <!-- Intentionally "prevent" omitted -->
@@ -14,24 +22,22 @@
 </template>
 
 <script>
+  import L from 'leaflet'
   import * as geocoding from 'esri-leaflet-geocoder'
-  import Autocomplete from '@trevoreyre/autocomplete-vue'
-  import '@trevoreyre/autocomplete-vue/dist/style.css'
+  import Autocomplete from '@trevoreyre/autocomplete-js'
+  import '@trevoreyre/autocomplete-js/dist/style.css'
 
   export default {
     name: 'Home',
-    components: {
-      Autocomplete
-    },
     data() {
       return {
         city: "",
-        isSubmittedWithoutCity: false
+        isSubmittedWithoutCity: false,
+        autocomplete: null
       }
     },
     methods: {
       onSubmit: function() {
-        console.log("prima del submit: " + this.city)
         if (this.city != "") {
           this.$router.push("/search/" + this.city);
         } else {
@@ -55,8 +61,33 @@
               resolve(response.suggestions.map(elem => elem.text))
             });
         })
+      },
+      locateMe: function() {
+        if(!("geolocation" in navigator)) {
+          alert('Error: geolocation is not available.');
+          return;
+        }
+        // get position
+        var vm = this
+        navigator.geolocation.getCurrentPosition(pos => {
+          console.log(pos)
+          geocoding.reverseGeocode()
+            .latlng(L.latLng(pos.coords.latitude, pos.coords.longitude))
+            .run(function (error, result) {
+            document.getElementById("autocomplete-input").value = result.address.LongLabel;
+            vm.city = result.address.LongLabel
+          });
+        }, err => {
+          console.log(err)
+        })
       }
     },
+    mounted() {
+      this.autocomplete = new Autocomplete('#autocomplete', {
+        search: this.getSuggestions,
+        onSubmit: this.handleAutocSelection
+      })
+    }
   }
 </script>
 
@@ -67,6 +98,25 @@ form {
   }
   #error {
     color: red;
+  }
+  #searchField {
+    display: flex;
+    #autocomplete {
+      background-color: #e9ecef;
+      border-radius: 10px 0px 0px 10px;
+      flex-grow: 5;
+    }
+    button {
+      background-color: #e9ecef;
+      width: 3em;
+      border: none;
+      border-radius: 0px 10px 10px 0px;
+      outline: none;
+      flex-grow: 1;
+      &:hover {
+        background-color: #CCCDD1;
+      }
+    }
   }
 }
 </style>

@@ -22,7 +22,7 @@
       <input type="tel" v-model="masseur_phoneNumber" id="masseur_phoneNumber" class="form-control" name="masseur_phoneNumber" placeholder="Enter Phone Number" pattern="[0-9]{10}" required>
     </div>
     <div class="form-group">
-      <label for="masseur-location">Location</label>
+      <label for="masseur-location">Choose your location</label>
       <div id="mapContainer">
         <MapPanel name="masseur-location" @locationEvent="locationChosed" initType="REGISTER_PANEL_MAP"/>
       </div>
