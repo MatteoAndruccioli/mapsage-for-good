@@ -1,9 +1,9 @@
 <template>
   <form v-on:submit.prevent="register">
-    <h1 class="h3 mb-3 font-weight-normal">Signing up as customer</h1>
+    <h3 class="header-text">Signing up as Customer</h3>
     <div class="form-group my_centered">
-          <img style="" :src="customer_propic" alt="" name="customer-propic" class="propic propic-border">
-          <input @change="handleImage" class="my_custom-input" type="file" accept="image/*" name="customer-propic_input" style="margin-top: 5px;" >
+      <img :src="customer_propic" alt="" name="customer-propic" class="propic propic-border">
+      <input @change="handleImage" class="propic-input" type="file" accept="image/*" name="customer-propic_input" >
     </div>
     <div class="form-group">
       <label for="customer-first_name">First Name</label>
@@ -21,7 +21,7 @@
       <label for="customer-password">Password</label>
       <input type="password" v-model="customer_password" class="form-control" name="customer-password" placeholder="Enter Password" required>
     </div>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+    <button class="btn submit-button" type="submit">Register</button>
   </form>
 </template>
 
@@ -83,13 +83,38 @@ export default {
 
 <style scoped>
 
+.submit-button:hover {
+    color: #fff;
+    background-color: #138496;
+    border-color: #117a8b;
+}
+
+.submit-button {
+  display: block;
+  width: 100%;
+  padding: .5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: .3rem;
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.header-text{
+  font-weight: 400;
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+}
+
 .my_centered {
   text-align: center;
 }
 
-.my_custom-input {
+.propic-input {
   display: flex;
   justify-content: center;
+  margin-top: 5px;
 }
 
 .propic {

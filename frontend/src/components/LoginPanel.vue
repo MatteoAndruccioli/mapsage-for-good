@@ -1,31 +1,36 @@
 <template>
     <div class="container ">
-        <div class="row pt-5">
-            <div class="col-lg-4 d-none d-lg-block ">
-              <img class="card image px-auto my-cover" src="../assets/images/copertina.png" alt="Card image">
-            </div>
-            <div class=" col-md-6 col-lg-4 d-none d-md-block ">
-              <img class="card image px-auto my-cover" src="../assets/images/cover.jpg" alt="Card image">
-              <img class="card image px-auto my-cover mt-5" src="../assets/images/cover2.jpg" alt="Card image">
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-4 my-box">
-                <h1 class="h3 mb-3 font-weight-5 text-center mt-5">Mapsage</h1>
-                <form v-on:submit.prevent="login" class="mx-5 mt-5">
+        <div class="row login-elements-container">
+            <aside class="col-lg-4 d-none d-lg-block ">
+              <img class="card my-cover lone-image" src="../assets/images/copertina.png" alt="Cover massage image 1">
+            </aside>
+
+            <aside class="col-md-6 col-lg-4 d-none d-md-block ">
+              <img class="card my-cover" src="../assets/images/cover.jpg" alt="Cover massage image 2 up">
+              <img class="card my-cover bottom-image" src="../assets/images/cover2.jpg" alt="Cover massage image 2 down">
+            </aside>
+
+            <main class="col-sm-12 col-md-6 col-lg-4 my-box">
+                <h3 class="main-header">Mapsage</h3>
+
+                <form v-on:submit.prevent="login">
                     <div class="form-group">
                         <input type="email" v-model="email" class="form-control" name="email" placeholder="Enter Email">
                     </div>
                     <div class="form-group">
                         <input type="password" v-model="password" class="form-control" name="password" placeholder="Enter Password">
                     </div>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+                    <button class="btn submit-button" type="submit">Log in</button>
                 </form>
-                <hr class="mx-3 mt-5">
-                <div class="mt-4 text-center">
+
+                <hr class="dividing-element">
+
+                <footer>
                   <p>Don't have an account?
-                    <router-link class="" to="/register">Sign up</router-link>
+                    <router-link class="signup-style" to="/register">Sign up</router-link>
                   </p>
-                </div>
-            </div>
+                </footer>
+            </main>
         </div>
     </div>
 </template>
@@ -77,6 +82,58 @@ export default {
 
 
 <style scoped>
+
+.submit-button:hover {
+    color: #fff;
+    background-color: #138496;
+    border-color: #117a8b;
+}
+
+.submit-button {
+  display: block;
+  width: 100%;
+  padding: .5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: .3rem;
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+form {
+  margin-left: 3rem;
+  margin-right: 3rem;
+  margin-top: 3rem;
+}
+footer {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+.main-header {
+  text-align: center;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+}
+.dividing-element {
+  margin-right: 1rem;
+  margin-left: 1rem;
+  margin-top: 3rem;
+}
+.lone-image {
+  height:420px;
+}
+.bottom-image {
+  margin-top: 3rem;
+}
+.login-elements-container {
+  padding-top: 3rem!important;
+}
+.signup-style {
+  color: #17a2b8;
+  font-weight: 500;
+}
+
 .my-background{
   background-color: #f5f5f5;
 }
@@ -97,10 +154,9 @@ input.form-control{
 }
 
 .btn-primary {
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
-
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
 }
 
 img {

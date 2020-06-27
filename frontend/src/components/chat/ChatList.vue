@@ -1,14 +1,14 @@
 <template>
-  <div style="width: 21rem;">
+  <div class="outer-container">
 
-    <h5 class="text-center" style="color:white">Your chat</h5>
+    <h5 class="text-header">Your chat</h5>
 
-    <div>
+    <main>
       <ul class="list-group">
-        <div v-if="!anyChatIsPresent()" class="align-self-stretch" style="height: 100%;">
+        <div v-if="!anyChatIsPresent()" class="align-self-stretch jumbotron-container">
           <div class="jumbotron jumbotron-fluid align-self-stretch">
-            <div class="container">
-              <p class="lead">There is still no chat to show :(</p>
+            <div class="jumbotron-content">
+              <p>There is still no chat to show :(</p>
             </div>
           </div>
         </div>
@@ -25,7 +25,7 @@
           />
         </div>
       </ul>
-    </div>
+    </main>
 
   </div>
 </template>
@@ -61,6 +61,34 @@ export default {
 </script>
 
 <style scoped>
+  .text-header {
+    color:white;
+    text-align: center;
+  }
+
+  .outer-container {
+    width: 21rem;
+  }
+
+  p {
+    font-size: 1.25rem;
+    font-weight: 300;
+    margin: auto;
+  }
+
+  .jumbotron-content {
+    display: flex;
+  }
+
+  main {
+    background-color: #e9ecef !important;
+    text-align: center;
+  }
+
+  .jumbotron-container {
+    height: 100%; 
+  }
+
   .list-group{
     max-height: 300px;
     margin-bottom: 10px;

@@ -1,23 +1,23 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
-    <div class="container">
-      <div class="btn-group dropup ml-auto" :class="{'show': isOpen}">
-        <!-- data-toggle="dropdown" -->
-        <button @click="handleChatButtonClick" type="button" class="btn btn-primary dropdown-toggle" aria-haspopup="true" :aria-expanded="isOpen">
-          Chat <span class="badge badge-light" v-if="totPendingNotifications>0">{{ totPendingNotifications }}</span>
-        </button>
+  <aside class="aside-flex-container">
 
-        <div v-if="this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': isOpen}">
-          <ChatList @openChat="handleOpenChat" :chats="chats"/>
-        </div>
-        <div v-if="!this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': isOpen}">
-          <ChatPanel @backToChatList="resetConfiguration" @sendMessage="handleSendMessage"
-            :receiver_id="actualChatReceiverId" :receiver_fullName="actualChatReceiverFullName"
-            :receiver_imagePath="actualChatReceiverImgPath" :messages="messages"/>
-        </div>
+    <div class="btn-group dropup ml-auto" :class="{'show': isOpen}">
+      <!-- data-toggle="dropdown" -->
+      <button @click="handleChatButtonClick" type="button" class="btn btn-primary dropdown-toggle chat" aria-haspopup="true" :aria-expanded="isOpen">
+        Chat <span class="badge badge-light" v-if="totPendingNotifications>0">{{ totPendingNotifications }}</span>
+      </button>
+
+      <div v-if="this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': isOpen}">
+        <ChatList @openChat="handleOpenChat" :chats="chats"/>
+      </div>
+      <div v-if="!this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': isOpen}">
+        <ChatPanel @backToChatList="resetConfiguration" @sendMessage="handleSendMessage"
+          :receiver_id="actualChatReceiverId" :receiver_fullName="actualChatReceiverFullName"
+          :receiver_imagePath="actualChatReceiverImgPath" :messages="messages"/>
       </div>
     </div>
-  </nav>
+
+  </aside>
 </template>
 
 <script>
@@ -192,6 +192,26 @@ export default {
 
 
 <style scoped>
+
+.chat {
+  width: 120px;
+  height: 40px;
+  border-radius: 2px 2px 0 0;
+}
+
+aside {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1030;
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  padding-right: 10%;
+}
+
 .my-visibility{
   margin-bottom: 90px;
 }
