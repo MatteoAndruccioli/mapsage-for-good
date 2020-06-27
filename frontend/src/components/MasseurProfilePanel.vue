@@ -95,7 +95,7 @@
             <!--Questo va mostrato solo se c'è almeno un advertisement-->
             <div v-if="!this.isAdvertisementListEmpty" class="panel-body" >
               <ul class="list-group" >
-                <div v-for="adv in advertisements.reverse()" :key="adv.title" id="advList">
+                <div v-for="adv in advertisements" :key="adv.title" id="advList">
                   <Advertisement :title="adv.title" :body="adv.body"> </Advertisement>
                 </div>
               </ul>
@@ -192,7 +192,7 @@ export default {
           vm.location = res.data.location
           vm.phone_number = res.data.phone_number
           vm.expertise = res.data.expertise
-          vm.advertisements = res.data.advertisements
+          vm.advertisements = res.data.advertisements.reverse()
           vm.followers = res.data.followers
 
           vm.isAdvertisementListEmpty = res.data.advertisements.length == 0
@@ -337,7 +337,7 @@ export default {
       }
     }
     this.initProfile();
-    socket.on('advertisement_' + this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
+    socket.on('new_advertisement', this.handleMessageReceived)
   }
 }
 </script>

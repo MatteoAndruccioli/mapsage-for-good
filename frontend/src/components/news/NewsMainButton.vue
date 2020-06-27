@@ -69,7 +69,7 @@ export default {
   },
   mounted() {
     if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
-      socket.on('advertisement_' + this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
+      socket.on('notification_' + this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
     }
     axios.get('http://localhost:3000/notifications/getSet?firstElement=0', { withCredentials: true })
       .then(res => {

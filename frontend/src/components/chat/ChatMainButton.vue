@@ -78,10 +78,15 @@ export default {
         this.totPendingNotifications--
       }
 
-      axios.put('http://localhost:3000/chat/lastMessages', { chat_id: c_id } ,{ withCredentials: true })
+      axios.put('http://localhost:3000/chat/lastMessages',
+          {
+            chat_id: c_id,
+            firstElement: 0
+          },
+          { withCredentials: true })
         .then(res => {
           if (!res.data.error) {
-            this.messages = res.data.messages
+            this.messages = res.data.messages.reverse()
           } else {
             alert(res.data.error)
             console.log(res.data.error)

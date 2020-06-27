@@ -15,7 +15,7 @@ export function buildGeoJsonLayer(lng, lat, geoJsonLayer) {
       } else {
         console.log("NO MASSEUR IN THE SPECIFIED CITY")
       }
-      //console.log(coordinates)
+      console.log(coordinates)
       const geoJson = L.geoJSON({
         type: "FeatureCollection",
         features: coordinates

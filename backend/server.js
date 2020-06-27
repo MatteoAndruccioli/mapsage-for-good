@@ -83,22 +83,22 @@ io.on('connection', function(socket) {
     notificationUtil.addAdvertisement(msg.advertisement_title, msg.advertisement_body, msg.masseur_id)
       .then(promise => {
         if(promise.succeeded){
-          io.emit("advertisement_" + msg.masseur_id, { title: msg.advertisement_title, body: msg.advertisement_body})
+          io.emit("new_advertisement", {
+            title: msg.advertisement_title,
+            body: msg.advertisement_body
+          })
           if(promise.notifications.length > 0){
             var i;
             for (i = 0; i < promise.notifications.length; i++) {
               console.log(promise.notifications[i].follower_id)
               console.log(promise.notifications[i].newNotification.advertisement_title)
-              io.emit(
-                "advertisement_"+promise.notifications[i].follower_id,
-                {
-                  masseur_id: promise.notifications[i].newNotification.masseur_id,
-                  masseur_brand: promise.notifications[i].newNotification.masseur_brand,
-                  advertisement_title: promise.notifications[i].newNotification.advertisement_title,
-                  visualized: false,
-                  notification_id: promise.notifications[i].newNotification._id,
-                }
-              )
+              io.emit("notification_" + promise.notifications[i].follower_id, {
+                masseur_id: promise.notifications[i].newNotification.masseur_id,
+                masseur_brand: promise.notifications[i].newNotification.masseur_brand,
+                advertisement_title: promise.notifications[i].newNotification.advertisement_title,
+                visualized: false,
+                notification_id: promise.notifications[i].newNotification._id,
+              })
             }
           }
 

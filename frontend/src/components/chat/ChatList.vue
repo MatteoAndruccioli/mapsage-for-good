@@ -5,7 +5,7 @@
 
     <div>
       <ul class="list-group">
-        <div  v-if="this.chats.length == 0" class="align-self-stretch" style="height: 100%;">
+        <div v-if="!anyChatIsPresent()" class="align-self-stretch" style="height: 100%;">
           <div class="jumbotron jumbotron-fluid align-self-stretch">
             <div class="container">
               <p class="lead">There is still no chat to show :(</p>
@@ -42,6 +42,9 @@ export default {
     onOpenChat: function(chat_id, receiver_id, receiver_fullName, receiver_imgPath) {
       this.$emit('openChat', chat_id, receiver_id, receiver_fullName, receiver_imgPath)
     },
+    anyChatIsPresent: function() {
+      return this.chats != null && this.chats.length > 0
+    }
   },
 
   mounted() {

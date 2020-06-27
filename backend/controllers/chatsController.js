@@ -12,10 +12,10 @@ exports.lastMessages = function(req, res){
 
       //maximum number of messages retrieved
       const message_number = 7
-       
-      //const startIndex = (req.body.firstElement-1) >= 0 ? (req.body.firstElement-1) : 0
-      //const lastIndex =  req.body.firstElement-1+message_number
-      
+
+      const startIndex = (req.body.firstElement-1) >= 0 ? (req.body.firstElement-1) : 0
+      const lastIndex =  req.body.firstElement-1+message_number
+
 
       Chat.findById(req.body.chat_id, function(err, chat) {
         if (err) {
@@ -31,16 +31,15 @@ exports.lastMessages = function(req, res){
 
             if ([chat.user1, chat.user2].includes(decodedPayload._id)){
               //ok uno dei due utenti è chi sta effettuando la richiesta quindi tutto ok
-              
-              // COMMENTA DA QUA
+
+              /*// COMMENTA DA QUA
               if(chat.messages.length<message_number){
                 messagesToReturn = chat.messages
               } else {
                 messagesToReturn = chat.messages.slice((chat.messages.length - message_number), chat.messages.length)
               }
-              //COMMENTA FINO A QUA 
-
-              //messagesToReturn = chat.messages.slice(startIndex,lastIndex)
+              //COMMENTA FINO A QUA */
+              messagesToReturn = chat.messages.reverse().slice(startIndex,lastIndex)
 
 
               const updateQueryPromise = chatUtil.setCurrentUserVisualized(chat, decodedPayload._id)
