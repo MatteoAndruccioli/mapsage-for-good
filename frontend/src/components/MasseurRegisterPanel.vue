@@ -1,9 +1,9 @@
 <template>
   <form v-on:submit.prevent="register">
-    <h1 class="h3 mb-3 font-weight-normal">Signing up as Masseur</h1>
+    <h3 class="header-text">Signing up as Masseur</h3>
     <div class="form-group my_centered">
-          <img style="" :src="masseur_propic" alt="" name="masseur-propic" class="propic propic-border">
-          <input @change="handleImage" class="my_custom-input" type="file" accept="image/*" name="masseur-propic_input" style="margin-top: 5px; ">
+          <img :src="masseur_propic" alt="" name="masseur-propic" class="propic propic-border">
+          <input @change="handleImage" class="propic-input" type="file" accept="image/*" name="masseur-propic_input">
     </div>
     <div class="form-group">
       <label for="masseur-brandName">Brand Name</label>
@@ -32,7 +32,7 @@
       <textarea  type="text" v-model="masseur_expertise" class="form-control" name="masseur-expertise" cols="30" rows="4"
         placeholder="Here you can write a short text to describe yourself to your costumers" />
     </div>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+    <button class="btn submit-button" type="submit">Register</button>
   </form>
 </template>
 
@@ -109,6 +109,31 @@ export default {
 </script>
 
 <style scoped>
+
+.submit-button:hover {
+    color: #fff;
+    background-color: #138496;
+    border-color: #117a8b;
+}
+
+.submit-button {
+  display: block;
+  width: 100%;
+  padding: .5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: .3rem;
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.header-text{
+  font-weight: 400;
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+}
+
 img {
   width: 17rem;
 }
@@ -117,9 +142,10 @@ img {
   text-align: center;
 }
 
-.my_custom-input {
+.propic-input {
   display: flex;
   justify-content: center;
+  margin-top: 5px;
 }
 
 #mapContainer {

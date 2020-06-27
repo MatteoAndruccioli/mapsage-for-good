@@ -20,7 +20,7 @@
                     <div class="form-group">
                         <input type="password" v-model="password" class="form-control" name="password" placeholder="Enter Password">
                     </div>
-                    <button class="btn btn-lg btn-info btn-block" type="submit">Log in</button>
+                    <button class="btn submit-button" type="submit">Log in</button>
                 </form>
 
                 <hr class="dividing-element">
@@ -82,6 +82,24 @@ export default {
 
 
 <style scoped>
+
+.submit-button:hover {
+    color: #fff;
+    background-color: #138496;
+    border-color: #117a8b;
+}
+
+.submit-button {
+  display: block;
+  width: 100%;
+  padding: .5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: .3rem;
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
 
 form {
   margin-left: 3rem;

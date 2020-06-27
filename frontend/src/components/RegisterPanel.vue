@@ -48,4 +48,9 @@ export default {
     margin-left: auto;
     margin-right: auto;
   }
+
+  .nav-item a{
+    color: #17a2b8;
+    font-weight: 480;
+  }
 </style>
