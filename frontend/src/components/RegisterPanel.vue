@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-md-6 mt-5 mx-auto">
+      <div class="col-md-6 outer-container">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item">
             <a @click="profile_type='Customer'" class="nav-link active" id="customer-tab" data-toggle="tab" href="#customer" role="tab" aria-controls="customer" aria-selected="true">Customer</a>
@@ -11,14 +11,14 @@
           </li>
         </ul>
 
-        <div class="tab-content" id="myTabContent">
+        <main class="tab-content" id="myTabContent">
           <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
             <CustomerRegisterPanel v-if="profile_type=='Customer'"/>
           </div>
           <div class="tab-pane fade" id="masseur" role="tabpanel" aria-labelledby="masseur-tab">
             <MasseurRegisterPanel v-if="profile_type=='Masseur'"/>
           </div>
-        </div>
+        </main>
       </div>
     </div>
   </div>
@@ -43,25 +43,9 @@ export default {
 </script>
 
 <style scoped>
-.my_container {
-  display: flex;
-  justify-content: center;
-}
-
-.my_mt-10 {
-  margin-top: 10rem;
-}
-
-.my_bg-white{
-  background: #fff;
-}
-
-.my_card {
-  height: 10rem;
-  width: 20rem;
-  border-radius: 10px;
-  padding: 20px;
-  text-align: center;
-}
-
+  .outer-container{
+    margin-top: 3rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
 </style>

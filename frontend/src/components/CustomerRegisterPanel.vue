@@ -1,6 +1,6 @@
 <template>
   <form v-on:submit.prevent="register">
-    <h1 class="h3 mb-3 font-weight-normal">Signing up as customer</h1>
+    <h1 class="h3 mb-3 font-weight-normal">Signing up as Customer</h1>
     <div class="form-group my_centered">
           <img style="" :src="customer_propic" alt="" name="customer-propic" class="propic propic-border">
           <input @change="handleImage" class="my_custom-input" type="file" accept="image/*" name="customer-propic_input" style="margin-top: 5px;" >
