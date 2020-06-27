@@ -32,7 +32,7 @@
       }
     },
     methods: {
-      init: function() {
+      init() {
         // Map initialization
         this.map = L.map('map').setView([43.991830, 12.607960], 8);
         var streetsTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -56,6 +56,7 @@
             this.initSearchControl(this.initType)
           break;
           case 'REGISTER_PANEL_MAP':
+            this.initGPSLocationButton(this.initType)
             this.initSearchControl(this.initType)
           break;
           case 'PROFILE_MAP':
@@ -73,7 +74,7 @@
         if (initType == 'PROFILE_MAP') {
           const latLng = L.latLng(location[1], location[0]);
           this.geoJsonLayer.addLayer(L.marker(latLng));
-          this.map.flyTo(latLng);
+          this.map.setView(latLng);
         } else if (initType == 'SEARCH_MAP') {
           var geocoder = geocoding.geocodeService();
           geocoder.geocode().text(this.initialCity).run(function (error, response) {
@@ -122,26 +123,57 @@
       // Builds and configures the "edit location" button
       initEditLocationButton() {
         const vm = this;
-        L.easyButton({states: [{
+        L.easyButton({
+          states: [{
                 stateName: 'edit-location',
-                icon: '<i class="far fa-edit fa-lg" style="color:#0000FF;"><!-- icon --></i>',
-                title: 'edit location',
+                icon: '<i class="far fa-edit fa-lg"></i>',
+                title: 'Edit location',
                 onClick: function(control) {
+                  vm.initGPSLocationButton(vm.initType)
                   vm.initSearchControl(vm.initType)
                   control.state('confirm-location')
                 }
               },{
                 stateName: 'confirm-location',
-                icon: '<i class="far fa-check-circle fa-lg" style="color:#00FF00;"><!-- icon --></i>',
-                title: 'confirm location',
+                icon: '<i class="far fa-check-circle fa-lg" style="color:#00FF00;"></i>',
+                title: 'Confirm location',
                 onClick: function(control) {
                   control.state('edit-location');
                   if (vm.new_location != null)
                     vm.$emit('locationEvent', vm.new_location);
                   vm.$router.go();
                 }
-              }
-            ]
+              }]
+        }).addTo(this.map)
+      },
+      // Builds and configures the "GPS location" button
+      initGPSLocationButton(initType) {
+        const vm = this;
+        L.easyButton({
+          states: [{
+                stateName: 'gps-location',
+                icon: '<i class="fas fa-map-marker-alt fa-lg"></i>',
+                title: 'GPS location',
+                onClick: function() {
+                  if(!("geolocation" in navigator)) {
+                    alert('Error: geolocation is not available.');
+                    return;
+                  }
+                  // get position
+                  navigator.geolocation.getCurrentPosition(pos => {
+                    console.log(pos)
+                    const latlng = L.latLng(pos.coords.latitude, pos.coords.longitude)
+                    vm.geoJsonLayer.clearLayers();
+                    vm.geoJsonLayer.addLayer(L.marker(latlng))
+                    vm.map.flyTo(latlng)
+                    if (initType == 'PROFILE_MAP') {
+                      vm.new_location = [latlng.lng, latlng.lat]
+                    } else if (initType == 'REGISTER_PANEL_MAP') {
+                      vm.$emit('locationEvent', [latlng.lng, latlng.lat])
+                    }
+                  })
+                }
+              }]
         }).addTo(this.map)
       }
     },

@@ -9,7 +9,7 @@
               <input id="autocomplete-input" class="autocomplete-input" placeholder="Search for a municipality" aria-label="Search for a country"/>
               <ul class="autocomplete-result-list"></ul>
             </div>
-            <button @click.prevent="locateMe" type="button">
+            <button @click.prevent="getGPSLocation" type="button" title="GPS location">
               <i class="fas fa-map-marked-alt"></i>
             </button>
           </div>
@@ -62,7 +62,7 @@
             });
         })
       },
-      locateMe: function() {
+      getGPSLocation: function() {
         if(!("geolocation" in navigator)) {
           alert('Error: geolocation is not available.');
           return;
