@@ -5,8 +5,8 @@
 
     <main>
       <ul class="list-group">
-        <div v-if="!anyChatIsPresent()" class="align-self-stretch jumbotron-container">
-          <div class="jumbotron jumbotron-fluid align-self-stretch">
+        <div v-if="!anyChatIsPresent()" class="jumbotron-container">
+          <div class="jumbotron custom-jumbotron">
             <div class="jumbotron-content">
               <p>There is still no chat to show :(</p>
             </div>
@@ -87,6 +87,14 @@ export default {
 
   .jumbotron-container {
     height: 100%; 
+    align-self: stretch!important;
+  }
+
+  .custom-jumbotron {
+    padding-right: 0;
+    padding-left: 0;
+    border-radius: 0;
+    align-self: stretch!important;
   }
 
   .list-group{
@@ -94,5 +102,11 @@ export default {
     margin-bottom: 10px;
     overflow-y:scroll;
     -webkit-overflow-scrolling: touch;
+  }
+
+  @media screen and (max-width: 420px) {
+    .outer-container {
+      width: 15rem;
+    }
   }
 </style>

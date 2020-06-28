@@ -1,37 +1,34 @@
 <template>
-  <div style="width: 21rem;">
-    <header>
-      <div class="container d-flex justify-content-start row my-auto ml-1">
-        <span v-on:click.prevent.stop="onBackToChatList" class="my-arrow-button" style=''>&#129128;</span>
-        <img class="propic ml-3" :src="receiver_imagePath" alt="Avatar">
-        <h5 class="text-center my-auto  ml-3" style="color: white">{{receiver_fullName}}</h5>
-      </div>
+  <div class="outer-container">
+ 
+    <header class="container d-flex justify-content-start row">
+      <span v-on:click.prevent.stop="onBackToChatList" class="my-arrow-button">&#129128;</span>
+      <img class="propic" :src="receiver_imagePath" alt="Avatar">
+      <h5>{{receiver_fullName}}</h5>
     </header>
+    
 
     <main>
       <ul class="list-group" >
-        <div  v-if="this.messages.length == 0" class="align-self-stretch" style="height: 100%;">
-          <div class="jumbotron jumbotron-fluid align-self-stretch">
+        <div  v-if="this.messages.length == 0" class="jumbotron-container">
+          <div class="jumbotron custom-jumbotron">
             <div class="container">
               <p class="lead">There is still no message to show :(</p>
             </div>
           </div>
         </div>
+
         <div v-for="msg in messages" :key="msg._id">
           <ChatMessage :messageBody="msg.body" :isUserMessage="isUserMessage(msg.sender)" />
         </div>
       </ul>
     </main>
 
-    <footer class="container row col-12 px-0 mx-auto">
-      <div style="height: 40px; width: 100%;">
-        <div class="input-group col-12" style="height: 100%;">
-          <textarea v-model="messageBody" class="form-control" aria-label="With textarea" style="height: 90%; resize: none;"></textarea>
-          <div class="input-group-append " style="height: 90%">
-            <span v-on:click.prevent.stop="sendMessage" class="input-group-text my-send-button" style="cursor: pointer">Send</span>
-          </div>
-        </div>
-      </div>
+    <footer class="container row col-12">
+      <form class="input-group col-12" v-on:submit.prevent="sendMessage">
+        <textarea v-model="messageBody" class="form-control" aria-label="With textarea"></textarea>
+        <button class="my-send-button" type="submit">Send</button>
+      </form>  
     </footer>
   </div>
 </template>
@@ -94,8 +91,82 @@ export default {
 
 <style scoped>
 
+  .custom-jumbotron {
+    padding-right: 0;
+    padding-left: 0;
+    border-radius: 0;
+    align-self: stretch!important;
+  }
+
+  .jumbotron-container {
+    align-self: stretch!important;
+    height: 100%;
+  }
+
+  .my-send-button {
+    display: flex;
+    align-items: center;
+    padding: .375rem .75rem;
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    white-space: nowrap;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    cursor: pointer;
+    background-color: #e9ecef;
+    color: #495057;
+    height: 90%;
+  }
+
+  .input-group-append {
+    height: 90%;
+  }
+
+  textarea {
+    height: 90%; 
+    resize: none;
+  }
+
+  form {
+    height: 100%;
+  }
+
+  footer {
+    height: 40px; 
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  header img {
+    margin-top: 2px;
+    margin-left: 1rem;
+  }
+
+  header h5 {
+    margin-top: 6px;
+    margin-left: 1rem;
+    text-align: center;
+    color: white;
+  }
+
   header {
     height: 40px;
+    margin-left: .25rem;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .outer-container {
+    width: 21rem;
+  }
+
+  main {
+    background-color: #e9ecef;
   }
 
   .list-group{
@@ -156,4 +227,15 @@ export default {
     background-color: #ccc;
     border-radius: 0.25 rem;
   }
+
+  @media screen and (max-width: 420px) {
+    .outer-container {
+      width: 15rem;
+    }
+
+    header img {
+      display: none;
+    }
+  }
+
 </style>
