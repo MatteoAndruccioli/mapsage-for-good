@@ -23,7 +23,7 @@
                     <router-link class="nav-link" :to="'/masseurProfile/' + this.currentUserId">Masseur Profile</router-link>
                 </li>
                 <li v-if="isUserLoggedIn" class="nav-item">
-                    <a class="nav-link" href="/" v-on:click="logout">Logout</a>
+                    <a class="nav-link" v-on:click="logout">Logout</a>
                 </li>
                 <li v-if="isUserLoggedIn" class="nav-item">  <!-- TEST ONLY -->
                     <a class="nav-link" v-on:click="getUserInfo">GetUserInfo</a>
@@ -66,6 +66,7 @@ export default {
               this.isUserLoggedIn = false
               this.isCustomer = false
               this.isMasseur = false
+              this.$router.go()
             } else {
               alert(res.data.error)
               console.log(res.data.error)
