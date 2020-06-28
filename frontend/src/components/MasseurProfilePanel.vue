@@ -1,9 +1,9 @@
 <template>
 
   <div>
-    <div class="container" style="padding-bottom: 80px">
+    <div class="container outer-container">
       <div class="row">
-        <div class="mx-auto mt-3 col-lg-8 col-md-12">
+        <main class="col-lg-8 col-md-12">
           <div class="mx-auto mt-1 my-box col-12">
 
             <div class="row col-12 mx-auto">
@@ -75,35 +75,32 @@
           <div id="map-container">
             <MapPanel @locationEvent="editMasseurLocation" initType="PROFILE_MAP" :initialLocation="location" :enableEditLocationButton="isMyProfile"/>
           </div>
-        </div>
+        </main>
 
-        <div class="mx-auto mt-3 my-box col-lg-4 col-md-12">
-          <div class="col-12 mx-auto mt-2">
-            <h5 class="text-center">Last advertisement</h5>
-          </div>
-
-          <div :class="{ voidBackgroundColor: this.isAdvertisementListEmpty && !isMyProfile }" class="col-12 mx-auto mt-3 d-flex flex-column justify-content-between" style="height: 90%">
+        <aside class="my-box col-lg-4 col-md-12">
+          
+          <h5>Last advertisements</h5>
+        
+          <div :class="{ voidBackgroundColor: this.isAdvertisementListEmpty && !isMyProfile }" class="col-12 aside-main">
             <!--mostri questo in caso non ci siano adv (si potrebbe fare che la frase cambia se l'utente è il masseur) -->
-            <div  v-if="this.isAdvertisementListEmpty" class="align-self-stretch" style="height: 100%;">
-              <div class="jumbotron jumbotron-fluid align-self-stretch">
-                <div class="container">
-                  <p class="lead">There is still no advertisement to show :(</p>
-                </div>
+            <div  v-if="this.isAdvertisementListEmpty" class="jumbotron-container">
+              <div class="jumbotron custom-jumbotron">
+                <p>There is still no advertisement to show :(</p>
               </div>
             </div>
 
             <!--Questo va mostrato solo se c'è almeno un advertisement-->
-            <div v-if="!this.isAdvertisementListEmpty" class="panel-body" >
-              <ul class="list-group" >
+            <div v-if="!this.isAdvertisementListEmpty" class="align-self-stretch" style="height: 100%;">
+              <ul :class="{ list_group_height_masseur: isMyProfile, list_group_height_customer: !isMyProfile }" class="list-group align-self-stretch" style="height: 100%">
                 <div v-for="adv in advertisements" :key="adv.title" id="advList">
                   <Advertisement :title="adv.title" :body="adv.body"> </Advertisement>
                 </div>
               </ul>
             </div>
 
-            <div v-if="isMyProfile" class="col-12 mx-auto mt-3 align-self-end" style="display: table">
+            <div v-if="isMyProfile" class="col-12 mx-auto mt-3 align-self-end form-container" style="display: table">
               <form v-on:submit.prevent="addAdvertisement">
-                <h5 class="text-center">Add a new advertisement</h5>
+                <h5 class="text-center mb-3">Add a new advertisement</h5>
                 <div class="form-group">
                   <input type="text" v-model="advertisementTitle" class="form-control" name="advertisementTitle" placeholder="Advertisement Title" required>
                 </div>
@@ -111,19 +108,12 @@
                   <textarea  type="text" v-model="advertisementBody" class="form-control" name="advertisementBody" cols="30" rows="4"
                     placeholder="Here you can write a short text for the advertisement" required/>
                 </div>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Add advertisement</button>
+                <button class="btn submit-button" type="submit">Add advertisement</button>
               </form>
             </div>
           </div>
 
-          <!--questo va mostrato quando c'è almeno un advertisement-->
-          <div class="col-12 mx-auto mt-2" style="display:none">
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam facilis a, cumque aliquam provident laborum. Quidem quia magnam itaque, omnis sunt harum rem delectus consectetur voluptates saepe, provident officia ad.
-            </p>
-          </div>
-
-        </div>
+        </aside>
       </div>
     </div>
     <ChatMainButton v-if="isCurrentUserLoggedIn"/>
@@ -343,6 +333,93 @@ export default {
 </script>
 
 <style scoped>
+
+.form-container {
+  display: table;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.submit-button:hover {
+    color: #fff;
+    background-color: #138496;
+    border-color: #117a8b;
+}
+
+.submit-button {
+  display: block;
+  width: 100%;
+  padding: .5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: .3rem;
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.jumbotron p {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+.custom-jumbotron {
+  padding-right: 0;
+  padding-left: 0;
+  border-radius: 0;
+  align-self: stretch;
+}
+
+.jumbotron-container {
+  height: 100%;
+  align-self: stretch;
+}
+
+.aside-main {
+  height: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1rem;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+}
+
+.outer-container {
+  padding-bottom: 80px
+}
+
+aside > h5 {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.5rem;
+
+  background-color: #fff;
+  margin-left: 15px;
+  margin-right: 15px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  padding: 2px;
+}
+
+main {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1rem;
+}
+
+aside {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1rem;
+
+  background-color: #f0f0f0 !important;
+}
+
 .propic {
     width: 10rem;
     height: 10rem;
@@ -376,11 +453,19 @@ b {
 }
 
 .list-group {
-    max-height: 400px;
-    margin-bottom: 10px;
-    overflow-y:scroll;
-    -webkit-overflow-scrolling: touch;
+  margin-bottom: 10px;
+  overflow-y:scroll;
+  -webkit-overflow-scrolling: touch;
 }
+
+.list_group_height_masseur {
+  max-height: 250px;
+}
+
+.list_group_height_customer {
+  max-height: 550px;
+}
+
 
 #map-container {
   width: 100%;
