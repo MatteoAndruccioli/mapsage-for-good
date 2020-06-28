@@ -58,10 +58,22 @@ export default {
   methods: {
     logout() {
       if (this.$cookies.get('currentUser')) {
-        this.$cookies.remove('currentUser')
-        this.isUserLoggedIn = false
-        this.isCustomer = false
-        this.isMasseur = false
+        axios.get('http://localhost:3000/users/logout', { withCredentials: true })
+          .then(res => {
+            if (!res.data.error) {
+              console.log(res.data.description)
+              this.$cookies.remove('currentUser')
+              this.isUserLoggedIn = false
+              this.isCustomer = false
+              this.isMasseur = false
+            } else {
+              alert(res.data.error)
+              console.log(res.data.error)
+            }
+          }).catch(err => {
+            alert(err)
+            console.log(err)
+          })
       }
     },
     checkUserLogin() {

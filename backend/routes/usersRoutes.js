@@ -3,4 +3,7 @@ module.exports = function(app) {
 
   app.route('/users/login')
     .post(usersController.handleLoginRequest)
+
+	app.route('/users/logout')
+		.get(usersController.handleLogoutRequest)
 };
