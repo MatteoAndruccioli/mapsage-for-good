@@ -72,4 +72,14 @@ export default {
     }
   }
 
+  @media screen and (max-width: 420px) {
+    img {
+      display: none;
+    }
+
+    .new-message-dot {
+      display: none;
+    }
+  }
+
 </style>
