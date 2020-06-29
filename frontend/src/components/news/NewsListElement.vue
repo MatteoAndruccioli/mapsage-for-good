@@ -33,14 +33,16 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
   li {
     cursor: pointer;
-    :hover {
-      color: #222;
-      background-color: #efefef;
-    }
   }
+
+  li :hover{
+    color: #222;
+    background-color: #efefef;
+  } 
+
   #message-dot {
     width: 10px;
     height: 10px;

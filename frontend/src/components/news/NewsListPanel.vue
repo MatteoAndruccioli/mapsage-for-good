@@ -8,8 +8,8 @@
         :advertisement_title="news.advertisement_title"
         :blink="!news.visualized"
         @openNews="onOpenNews"/>
-      </div>
-    </ul>
+    </div>
+  </ul>
 </template>
 
 <script>
@@ -39,7 +39,7 @@ export default {
 
 <style scoped>
   .list-group{
-    width: 30em;
+    width: 25em;
     max-height: 300px;
     margin-bottom: 10px;
     overflow-y:scroll;

@@ -107,7 +107,7 @@ section > p {
 section {
   background-color:#f0f0f0; 
   height: 80px; 
-  width:300px
+  width: 300px
 }
 
 .my-visibility{
