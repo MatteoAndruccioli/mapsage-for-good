@@ -228,6 +228,8 @@ export default {
     border-radius: 0.25 rem;
   }
 
+
+
   @media screen and (max-width: 420px) {
     .outer-container {
       width: 15rem;
