@@ -1,12 +1,16 @@
 <template>
   <div class="dropdown" :class="{'show': isOpen}">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" :aria-expanded="isOpen">
+    <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" :aria-expanded="isOpen"> 
       News <span class="badge badge-light" v-if="totPendingNotifications>0">{{ totPendingNotifications }}</span>
     </button>
 
-    <div class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': isOpen}">
-      <NewsListPanel @openNews="handleOpenNews" :newsList="newsList"/>
-    </div>
+    <main class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': isOpen}">
+      <section v-if="newsList==null || (newsList!=null && newsList.length==0)">
+        <p>You've seen all news</p>
+      </section>
+      
+      <NewsListPanel v-if="newsList!=null && newsList.length>0" @openNews="handleOpenNews" :newsList="newsList"/>
+    </main>
   </div>
 </template>
 
@@ -90,6 +94,22 @@ export default {
 
 
 <style scoped>
+
+button {
+  background-color: #343a40!important;
+}
+
+section > p {
+  text-align: center;
+  padding-top: 1.5rem;
+}
+
+section {
+  background-color:#f0f0f0; 
+  height: 80px; 
+  width:300px
+}
+
 .my-visibility{
   margin-bottom: 90px;
 }

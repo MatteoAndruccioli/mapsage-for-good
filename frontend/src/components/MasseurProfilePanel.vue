@@ -411,7 +411,7 @@ header {
 }
 
 .follow-button-style {
-  width: 70px;
+  width: 75px;
 }
 
 .brand-name {
