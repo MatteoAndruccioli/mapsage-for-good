@@ -122,7 +122,7 @@
             <!--mostri questo in caso non ci siano adv (si potrebbe fare che la frase cambia se l'utente è il masseur) -->
             <div  v-if="this.isAdvertisementListEmpty" class="jumbotron-container">
               <div class="jumbotron custom-jumbotron">
-                <p>There is still no advertisement to show :(</p>
+                <p>There is still no advertisement to show</p>
               </div>
             </div>
 
