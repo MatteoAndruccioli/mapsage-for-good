@@ -9,6 +9,7 @@
   import 'leaflet/dist/leaflet.css'
   import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css'
   import 'leaflet-easybutton'
+  import 'leaflet-easybutton/src/easy-button.css'
   // Code required to display leaflet markers with Vue.js Webpack (comments included)
   // eslint-disable-next-line
   delete L.Icon.Default.prototype._getIconUrl
@@ -73,7 +74,7 @@
         const vm = this;
         if (initType == 'PROFILE_MAP') {
           const latLng = L.latLng(location[1], location[0]);
-          this.geoJsonLayer.addLayer(L.marker(latLng));
+          this.geoJsonLayer.addLayer(L.marker(latLng).bindPopup("I'm here!", { closeButton: false }));
           this.map.setView(latLng);
         } else if (initType == 'SEARCH_MAP') {
           var geocoder = geocoding.geocodeService();
@@ -86,8 +87,10 @@
               const lng = response.results[0].latlng.lng;
               const lat = response.results[0].latlng.lat;
               buildGeoJsonLayer(lng, lat, vm.geoJsonLayer);
+              vm.map.fitBounds(response.results[0].bounds);
+            } else {
+              alert("Sorry! No results found")
             }
-            vm.map.fitBounds(response.results[0].bounds);
           });
         }
       },
@@ -109,11 +112,11 @@
               buildGeoJsonLayer(lng, lat, vm.geoJsonLayer);
               break;
             case 'REGISTER_PANEL_MAP':
-              vm.geoJsonLayer.addLayer(L.marker(data.results[0].latlng));
+              vm.geoJsonLayer.addLayer(L.marker(data.results[0].latlng).bindPopup("I'm here!", { closeButton: false }));
               vm.$emit('locationEvent', [lng, lat])
               break;
             case 'PROFILE_MAP':
-              vm.geoJsonLayer.addLayer(L.marker(data.results[0].latlng));
+              vm.geoJsonLayer.addLayer(L.marker(data.results[0].latlng).bindPopup("I'm here!", { closeButton: false }));
               vm.new_location = [lng, lat]
               break;
             default:
@@ -164,7 +167,7 @@
                     console.log(pos)
                     const latlng = L.latLng(pos.coords.latitude, pos.coords.longitude)
                     vm.geoJsonLayer.clearLayers();
-                    vm.geoJsonLayer.addLayer(L.marker(latlng))
+                    vm.geoJsonLayer.addLayer(L.marker(latlng).bindPopup("I'm here!", { closeButton: false }))
                     vm.map.flyTo(latlng)
                     if (initType == 'PROFILE_MAP') {
                       vm.new_location = [latlng.lng, latlng.lat]

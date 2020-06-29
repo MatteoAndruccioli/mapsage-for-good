@@ -42,3 +42,18 @@ exports.handleLoginRequest = function(req, res) {
     res.json({ error: err })
   })
 }
+
+exports.handleLogoutRequest = function(req, res) {
+  if (req.signedCookies.jwt != null) {
+    const token = req.signedCookies.jwt;
+    try {
+      jwt.verify(token, process.env.SECRET_KEY);
+      res.clearCookie("jwt");
+      res.json({ description: "Logout succeded" })
+    } catch (error) {
+      res.sendStatus(401); // The JWT is not valid - verify method failed
+    }
+  } else {
+    res.sendStatus(401); // No JWT specified
+  }
+}

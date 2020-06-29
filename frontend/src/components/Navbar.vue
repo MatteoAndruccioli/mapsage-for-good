@@ -5,7 +5,7 @@
         aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-
+      
       <div class="collapse navbar-collapse" id="navbar1">
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -24,7 +24,7 @@
               <router-link class="nav-link" :to="'/masseurProfile/' + this.currentUserId">Masseur Profile</router-link>
           </li>
           <li v-if="isUserLoggedIn" class="nav-item">
-              <a class="nav-link" href="/" v-on:click="logout">Logout</a>
+              <a class="nav-link" v-on:click="logout">Logout</a>
           </li>
           <li v-if="isUserLoggedIn" class="nav-item">  <!-- TEST ONLY -->
               <a class="nav-link" v-on:click="getUserInfo">GetUserInfo</a>
@@ -58,10 +58,26 @@ export default {
   methods: {
     logout() {
       if (this.$cookies.get('currentUser')) {
-        this.$cookies.remove('currentUser')
-        this.isUserLoggedIn = false
-        this.isCustomer = false
-        this.isMasseur = false
+        axios.get('http://localhost:3000/users/logout', { withCredentials: true })
+          .then(res => {
+            if (!res.data.error) {
+              console.log(res.data.description)
+              this.$cookies.remove('currentUser')
+              this.isUserLoggedIn = false
+              this.isCustomer = false
+              this.isMasseur = false
+              if (this.$router.currentRoute.name != 'Home_view')
+                this.$router.push({ name: 'Home_view' })
+              else
+                this.$router.go()
+            } else {
+              alert(res.data.error)
+              console.log(res.data.error)
+            }
+          }).catch(err => {
+            alert(err)
+            console.log(err)
+          })
       }
     },
     checkUserLogin() {

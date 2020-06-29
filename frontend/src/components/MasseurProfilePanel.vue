@@ -203,8 +203,6 @@ export default {
     initProfile: function() {
       var vm = this;
       var call;
-      // QUESTO IF VA SOSTITUITO CON UN UNICA CHIAMATA A http://localhost:3000/masseurs/
-      // NON APPENA SARA' DISPONIBILE IL CLIENT COOKIE CHE MEMEORIZZA L'ID DEL MASSEUR LOGGATO
       if (this.isMyProfile) {
         call = axios.get('http://localhost:3000/masseurs/profile', { withCredentials: true })
       } else {
@@ -318,6 +316,12 @@ export default {
     },
 
     followThisMasseur: function() {
+      if (!this.isCurrentUserLoggedIn) {
+        this.$router.push({ name: 'Login_view',
+          params: { source: 'from_masseurProfile_view', masseur_id: this.masseur_id } })
+        return
+      }
+      
       axios.put('http://localhost:3000/follow/add', { masseur_id: this.masseur_id }, { withCredentials: true })
         .then(res => {
           if (!res.data.error) {
@@ -353,6 +357,7 @@ export default {
         return;
       }
       this.advertisements.unshift(msg)
+      this.isAdvertisementListEmpty = this.advertisements == 0
     }
   },
 
