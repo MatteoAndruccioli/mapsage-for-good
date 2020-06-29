@@ -27,7 +27,7 @@
     <footer class="container row col-12">
       <form class="input-group col-12" v-on:submit.prevent="sendMessage">
         <textarea v-model="messageBody" class="form-control" aria-label="With textarea"></textarea>
-        <button class="my-send-button" type="submit">Send</button>
+        <button class="my-send-button btn" type="submit">Send</button>
       </form>  
     </footer>
   </div>
