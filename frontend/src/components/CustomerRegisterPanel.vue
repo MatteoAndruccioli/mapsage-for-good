@@ -1,10 +1,14 @@
 <template>
   <form v-on:submit.prevent="register">
     <h3 class="header-text">Signing up as Customer</h3>
-    <div class="form-group my_centered">
-      <img :src="customer_propic" alt="" name="customer-propic" class="propic propic-border">
-      <input @change="handleImage" class="propic-input" type="file" accept="image/*" name="customer-propic_input" >
+
+    <div class="image-chooser-panel">
+      <ImageCropper :src="profileImage" @cropEvent="handleCropEvent"/>
+      <p v-if="profileImage==null">No image specified</p>
+      <label for="imageChooser" class="custom-image-chooser">Upload Image</label>
+      <input id="imageChooser" @change="handleImage" type="file" accept="image/*" name="customer-propic_input">
     </div>
+
     <div class="form-group">
       <label for="customer-first_name">First Name</label>
       <input type="text" v-model="customer_first_name" class="form-control" name="customer-first_name" placeholder="Enter Fist Name" required>
@@ -27,9 +31,13 @@
 
 <script>
 import axios from 'axios'
-import { hex_sha512 } from "../assets/js/sha512.js"
+import { hex_sha512 } from '../assets/js/sha512.js'
+import ImageCropper from './ImageCropper'
 
 export default {
+  components: {
+    ImageCropper
+  },
   data() {
     return {
       customer_first_name: '',
@@ -37,58 +45,58 @@ export default {
       customer_email: '',
       customer_password: '',
       customer_propic: '',
-      customer_profileImage: null,
+      customer_croppedProfileImage: null,
+
+      profileImage: null
     }
   },
   methods: {
     register () {
-      const formData = new FormData();
-      formData.append('first_name', this.customer_first_name)
-      formData.append('last_name', this.customer_last_name)
-      formData.append('email', this.customer_email)
-      formData.append('password', hex_sha512(this.customer_password))
-      formData.append('profile_picture', this.customer_profileImage)
-      axios.post('http://localhost:3000/customers/register', formData, { withCredentials: true })
-          .then(res => {
-            if (!res.data.error) {
-              var currentUser = {
-                logged_in: true,
-                profile_type: 'Customer',
-                user_id: res.data._id
-              }
-              this.$cookies.set('currentUser', currentUser);
-              this.$router.push({ name: 'Home_view' })
-            } else {
-              alert(res.data.error)
+      let userData = {
+        first_name: this.customer_first_name,
+        last_name: this.customer_last_name,
+        email: this.customer_email,
+        password: hex_sha512(this.customer_password)
+      }
+      if (this.customer_croppedProfileImage != null) {
+        userData.profile_picture = this.customer_croppedProfileImage
+      }
+      axios.post('http://localhost:3000/customers/register', userData, { withCredentials: true })
+        .then(res => {
+          if (!res.data.error) {
+            var currentUser = {
+              logged_in: true,
+              profile_type: 'Customer',
+              user_id: res.data._id
             }
-      }).catch(err => {
-        console.log(err)
-      })
+            this.$cookies.set('currentUser', currentUser);
+            this.$router.push({ name: 'Home_view' })
+          } else {
+            alert(res.data.error)
+            console.log(res.data.error)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
     },
-    handleImage(e) {
-      const selectedImage = e.target.files[0]
-      this.customer_profileImage = selectedImage
-      this.createBase64Image(selectedImage)
+    handleImage(input) {
+      var vm = this
+      if (input.target.files && input.target.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          vm.profileImage = e.target.result;
+        }
+        reader.readAsDataURL(input.target.files[0]); // convert to base64 string
+      }
     },
-    createBase64Image(fileObject) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.customer_propic = e.target.result;
-      };
-      reader.readAsDataURL(fileObject)
+    handleCropEvent(croppedImage) {
+      this.customer_croppedProfileImage = croppedImage
     }
   }
 }
 </script>
 
-<style scoped>
-
-.submit-button:hover {
-    color: #fff;
-    background-color: #138496;
-    border-color: #117a8b;
-}
-
+<style lang="scss" scoped>
 .submit-button {
   display: block;
   width: 100%;
@@ -98,7 +106,11 @@ export default {
   border-radius: .3rem;
   color: #fff;
   background-color: #17a2b8;
-  border-color: #17a2b8;
+  &:hover {
+    color: #fff;
+    background-color: #138496;
+    border-color: #117a8b;
+  }
 }
 
 .header-text{
@@ -107,44 +119,29 @@ export default {
   font-size: 1.75rem;
 }
 
-.my_centered {
-  text-align: center;
-}
-
-.propic-input {
+.image-chooser-panel {
   display: flex;
-  justify-content: center;
-  margin-top: 5px;
-}
-
-.propic {
-  width: 20rem;
-  height: 20rem;
-}
-
-.propic-border {
-  border-radius: 50%;
-  border: 2px solid #fff;
-}
-
-@media screen and (max-width: 720px) {
-  .propic {
-    width: 15rem;
-    height: 15rem;
+  flex-direction: column;
+  #imageChooser {
+    display: none
+  }
+  p {
+    margin: auto;
+  }
+  .custom-image-chooser {
+    border: 1px solid #ccc;
+    border-radius: .3rem;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    margin: auto;
+    margin-top: 10px;
+    &:hover {
+      color: #fff;
+      background-color: #138496;
+      border-color: #117a8b;
+    }
   }
 }
 
-@media screen and (max-width: 420px) {
-  .propic {
-    width: 10rem;
-    height: 10rem;
-  }
-}
-
-@media screen and (max-width: 200px) {
-  .propic {
-    width: 7rem;
-    height: 7rem;
-  }
-}
 </style>

@@ -15,11 +15,11 @@ var io = require('socket.io')(http);
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-process.env.SERVER_LOCATION = 'http://localhost:' + port + '/';
+process.env.SERVER_LOCATION = 'http://localhost:' + port;
 process.env.SECRET_KEY = 'EWl9Lcrav8'; // secret for JWT
 app.use(cookieParser('ztVX2HQJP0')); // secret for cokieParser
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '50mb', extended: true},))
 app.use(cors({
     origin: 'http://localhost:8080',
     credentials: true
@@ -53,9 +53,7 @@ io.on('connection', function(socket) {
   });
 
   socket.on("message", (msg) => {
-    console.log(msg)
     const receiver_id = msg.receiver_id
-
     //add new msg to database
     chatUtil.addNewMsg(msg.chat_id, msg.sender, msg.receiver, msg.payload)
       .then(insertion => {
@@ -66,7 +64,6 @@ io.on('connection', function(socket) {
         } else {
     			//notify sender only about insertion failure
     			io.emit("message_"+msg.sender, { error: insertion.description })
-
     			if(insertion.error) console.log(insertion.error)
     		}
       }).catch(err => {
@@ -74,12 +71,7 @@ io.on('connection', function(socket) {
       })
   })
 
-
-
-
   socket.on("advertisement", (msg) => {
-    console.log(msg)
-
     notificationUtil.addAdvertisement(msg.advertisement_title, msg.advertisement_body, msg.masseur_id)
       .then(promise => {
         if(promise.succeeded){
@@ -101,15 +93,12 @@ io.on('connection', function(socket) {
               })
             }
           }
-
         } else {
     			//notify sender only about promise failure
     			io.emit("advertisement_"+msg.masseur_id, { error: promise.description })
-
     			if(promise.error) console.log(promise.error)
     			if(promise.description) console.log(promise.description)
     		}
-
       }).catch(err => {
         io.emit("advertisement_"+msg.masseur_id, { error: err })
       })

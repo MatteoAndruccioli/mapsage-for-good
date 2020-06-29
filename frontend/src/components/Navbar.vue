@@ -66,7 +66,10 @@ export default {
               this.isUserLoggedIn = false
               this.isCustomer = false
               this.isMasseur = false
-              this.$router.go()
+              if (this.$router.currentRoute.name != 'Home_view')
+                this.$router.push({ name: 'Home_view' })
+              else
+                this.$router.go()
             } else {
               alert(res.data.error)
               console.log(res.data.error)
