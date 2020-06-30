@@ -1,6 +1,5 @@
 <template>
   <aside class="aside-flex-container">
-
     <div class="btn-group dropup ml-auto" :class="{'show': isOpen}">
       <!-- data-toggle="dropdown" -->
       <button @click="handleChatButtonClick" type="button" class="btn btn-primary dropdown-toggle chat" aria-haspopup="true" :aria-expanded="isOpen">
@@ -16,7 +15,6 @@
           :receiver_imagePath="actualChatReceiverImgPath" :messages="messages"/>
       </div>
     </div>
-
   </aside>
 </template>
 
@@ -190,9 +188,7 @@ export default {
 }
 </script>
 
-
 <style scoped>
-
 .chat {
   width: 120px;
   height: 40px;

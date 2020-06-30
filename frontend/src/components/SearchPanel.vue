@@ -15,7 +15,7 @@
           </div>
           <label for="searchCity" id="error" v-if="isSubmittedWithoutCity">Fill this field</label>
         </div>
-        <button @click.prevent="onSubmit" type="submit" class="btn ml-auto btn-primary">Search</button> <!-- Intentionally "prevent" omitted -->
+        <button @click.prevent="onSubmit" type="submit" class="btn ml-auto submit-button">Search</button>
       </form>
     </div>
   </div>
@@ -46,12 +46,12 @@
       },
       handleAutocSelection: function(result) {
         if (result != null) {
-          console.log(result)
+          //console.log(result)
           this.city = result
         }
       },
       getSuggestions: function(input) {
-        console.log(input)
+        //console.log(input)
         this.city = input
         return new Promise(resolve => {
           if (input.length < 1) { return resolve([]) }
@@ -70,7 +70,7 @@
         // get position
         var vm = this
         navigator.geolocation.getCurrentPosition(pos => {
-          console.log(pos)
+          //console.log(pos)
           geocoding.reverseGeocode()
             .latlng(L.latLng(pos.coords.latitude, pos.coords.longitude))
             .run(function (error, result) {
@@ -118,5 +118,18 @@ form {
       }
     }
   }
+  .submit-button {
+    padding: .5rem 1rem;
+    line-height: 1.5;
+    border-radius: .3rem;
+    color: #fff;
+    background-color: #17a2b8;
+    :hover {
+      color: #fff;
+      background-color: #138496;
+      border-color: #117a8b;
+    }
+  }
 }
+
 </style>

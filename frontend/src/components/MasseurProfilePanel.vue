@@ -1,21 +1,17 @@
 <template>
-
   <div>
     <div class="container outer-container">
       <div class="row d-flex align-items-stretch">
         <main class="col-lg-8 col-md-12">
-
           <section class="masseur-info-upper my-box col-12" >
-
             <div class="row">
-
               <section class="left-upper-card card col-lg-5">
                 <img class="card-img-top" :src="profile_picture" alt="Avatar">
                 <ul class="list-group list-group-flush">
 
                   <li class="list-group-item d-flex justify-content-between brand-group-small-screen row">
                     <h5 class="text-center my-auto">{{brand_name}}</h5>
-                    
+
                     <div class="d-flex justify-content-between row info-button-container mx-1">
                       <button v-if="isMyProfile" type="button" class="btn info-button" data-toggle="modal" data-target="#modalLoginForm">Edit profile</button>
                       <button v-if="!isMyProfile" @click="openChatWithThisMasseur" type="button" class="btn info-button">Send Message</button>
@@ -23,8 +19,7 @@
                       <button v-if="!isMyProfile && isFollow" @click="unfollowThisMasseur" type="button" class="btn info-button">Unfollow</button>
                     </div>
                   </li>
-                  
-                
+
                   <li class="list-group-item brand-group-no-sm-screen">
                     <h5 class="brand-name">{{brand_name}}</h5>
                   </li>
@@ -34,14 +29,13 @@
                       <button v-if="!isFollow" @click="followThisMasseur" type="button" class="btn info-button follow-button-style">Follow</button>
                       <button v-if="isFollow" @click="unfollowThisMasseur" type="button" class="btn info-button follow-button-style">Unfollow</button>
                     </div>
-                    
+
                     <div v-if="isMyProfile" class="d-flex justify-content-center row">
                       <button type="button" class="btn info-button large-edit-profile" data-toggle="modal" data-target="#modalLoginForm">Edit profile</button>
                     </div>
                   </li>
                 </ul>
               </section>
-
 
               <!-- MODAL STARTS HERE -->
               <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -80,25 +74,21 @@
               </div>
               <!-- MODAL ENDS HERE -->
 
-
               <section class="card col-lg-5 right-upper-card col">
                 <div class="expertise-container">
                   <h5 class="card-title">Why you'll choose me</h5>
                   <p class="card-text" >{{expertise}}</p>
                 </div>
 
-
                 <ul class="list-group list-group-flush bottom-right-masseur-info">
                   <li class="list-group-item"><b>Phone Number:</b> {{phone_number}}</li>
                   <li class="list-group-item"><b>Email:</b> {{email}}</li>
-                  
                   <li class="list-group-item brand-group-lg-screen">
                     <div v-if="!isMyProfile" class="d-flex justify-content-around row">
                       <button @click="openChatWithThisMasseur" type="button" class="btn info-button send-message-btn">Send Message</button>
                       <button v-if="!isFollow" @click="followThisMasseur" type="button" class="btn info-button follow-button-style">Follow</button>
                       <button v-if="isFollow" @click="unfollowThisMasseur" type="button" class="btn info-button follow-button-style">Unfollow</button>
                     </div>
-                    
                     <div v-if="isMyProfile" class="d-flex justify-content-center row">
                       <button type="button" class="btn info-button large-edit-profile" data-toggle="modal" data-target="#modalLoginForm">Edit profile</button>
                     </div>
@@ -114,10 +104,9 @@
           </section>
         </main>
 
-        <aside class="my-box col-lg-4 col-md-12">
-          
+        <aside class="advertisementsBox my-box col-lg-4 col-md-12">
           <h5>Last advertisements</h5>
-        
+
           <div :class="{ voidBackgroundColor: this.isAdvertisementListEmpty && !isMyProfile }" class="col-12 aside-main">
             <!--mostri questo in caso non ci siano adv (si potrebbe fare che la frase cambia se l'utente è il masseur) -->
             <div  v-if="this.isAdvertisementListEmpty" class="jumbotron-container">
@@ -234,7 +223,6 @@ export default {
         console.log(err)
       })
     },
-
     editMasseurInfo: function() {
       if (this.isMyProfile) {
         var vm = this;
@@ -260,7 +248,6 @@ export default {
         })
       }
     },
-
     addAdvertisement: function() {
       if (this.isMyProfile) {
         socket.emit("advertisement", {
@@ -274,7 +261,6 @@ export default {
       // The visualization of the advertisement just sent will be performed when the server
       // will propagate back that advertisement using Socket.IO
     },
-
     editMasseurLocation: function(location) {
       if (this.isMyProfile) {
         const vm = this;
@@ -291,7 +277,6 @@ export default {
         })
       }
     },
-
     openChatWithThisMasseur: function() {
       if (!this.isCurrentUserLoggedIn) {
         this.$router.push({ name: 'Login_view',
@@ -314,14 +299,13 @@ export default {
           })
       }
     },
-
     followThisMasseur: function() {
       if (!this.isCurrentUserLoggedIn) {
         this.$router.push({ name: 'Login_view',
           params: { source: 'from_masseurProfile_view', masseur_id: this.masseur_id } })
         return
       }
-      
+
       axios.put('http://localhost:3000/follow/add', { masseur_id: this.masseur_id }, { withCredentials: true })
         .then(res => {
           if (!res.data.error) {
@@ -335,7 +319,6 @@ export default {
           console.log(err)
         })
     },
-
     unfollowThisMasseur: function() {
       axios.put('http://localhost:3000/follow/remove', { masseur_id: this.masseur_id }, { withCredentials: true })
         .then(res => {
@@ -350,7 +333,6 @@ export default {
           console.log(err)
         })
     },
-
     handleMessageReceived: function(msg) {
       if (msg.error) {
         alert("Error receiving message: " + msg.error)
@@ -360,7 +342,6 @@ export default {
       this.isAdvertisementListEmpty = this.advertisements == 0
     }
   },
-
   mounted() {
     if (this.$cookies.get('currentUser') != null && this.$cookies.get('currentUser').logged_in) {
       this.isCurrentUserLoggedIn = true;
@@ -544,7 +525,7 @@ header {
   padding-bottom: 80px
 }
 
-aside > h5 {
+.advertisementsBox > h5 {
   text-align: center;
   margin-left: auto;
   margin-right: auto;
@@ -564,7 +545,7 @@ main {
   margin-top: 1rem;
 }
 
-aside {
+.advertisementsBox {
   margin-left: auto;
   margin-right: auto;
   margin-top: 1rem;
