@@ -124,7 +124,7 @@ form {
     border-radius: .3rem;
     color: #fff;
     background-color: #17a2b8;
-    :hover {
+    &:hover {
       color: #fff;
       background-color: #138496;
       border-color: #117a8b;

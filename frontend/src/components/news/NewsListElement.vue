@@ -33,7 +33,13 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
+<style scoped>
+  .ellipsis {
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+  }
+
   li {
     cursor: pointer;
   }
@@ -41,7 +47,7 @@ export default {
   li :hover{
     color: #222;
     background-color: #efefef;
-  } 
+  }
 
   #message-dot {
     width: 10px;
@@ -49,12 +55,15 @@ export default {
     background-color: #efefef;
     border-radius: 50%;
   }
+
   .blue-message-dot {
     background-color: blue !important;
   }
+
   .blink {
     animation: blinker 2s linear infinite;
   }
+
   @keyframes blinker {
     50% {
       opacity: 0;

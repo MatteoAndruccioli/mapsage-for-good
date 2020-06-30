@@ -39,9 +39,10 @@ export default {
 
 <style scoped>
   .list-group{
+    display: flex;
+    margin: auto;
     width: 25em;
     max-height: 300px;
-    margin-bottom: 10px;
     overflow-y:scroll;
     -webkit-overflow-scrolling: touch;
   }

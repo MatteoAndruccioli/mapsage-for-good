@@ -11,8 +11,9 @@
       </div>
       <div v-if="!this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': isOpen}">
         <ChatPanel @backToChatList="resetConfiguration" @sendMessage="handleSendMessage"
-          :receiver_id="actualChatReceiverId" :receiver_fullName="actualChatReceiverFullName"
-          :receiver_imagePath="actualChatReceiverImgPath" :messages="messages"/>
+          @previousMessagesEvent="getPreviousSetOfMessages" :receiver_id="actualChatReceiverId"
+          :receiver_fullName="actualChatReceiverFullName" :receiver_imagePath="actualChatReceiverImgPath"
+          :messages="messages"/>
       </div>
     </div>
   </aside>
@@ -76,15 +77,25 @@ export default {
         this.totPendingNotifications--
       }
 
+      this.messages = []
+      this.getPreviousSetOfMessages(0);
+    },
+    // Retrieves the next set of messages for the actual chat starting
+    // from "startIndex" to "stratIndex + N"
+    getPreviousSetOfMessages: function(startIndex) {
       axios.put('http://localhost:3000/chat/lastMessages',
           {
-            chat_id: c_id,
-            firstElement: 0
+            chat_id: this.actual_c_id,
+            firstElement: startIndex
           },
           { withCredentials: true })
         .then(res => {
           if (!res.data.error) {
-            this.messages = res.data.messages.reverse()
+            var tmp = this.messages.reverse()
+            res.data.messages.forEach(item => {
+              tmp.push(item)
+            });
+            this.messages = tmp.reverse()
           } else {
             alert(res.data.error)
             console.log(res.data.error)

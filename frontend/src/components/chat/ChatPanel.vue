@@ -1,14 +1,14 @@
 <template>
   <div class="outer-container">
-    <header class="container d-flex justify-content-start row">
+    <header class="container justify-content-start row">
       <span v-on:click.prevent.stop="onBackToChatList" class="my-arrow-button">&#129128;</span>
       <img class="propic" :src="receiver_imagePath" alt="Avatar">
-      <h5>{{receiver_fullName}}</h5>
+      <h5>{{this.receiver_fullName}}</h5>
     </header>
 
     <main>
       <ul class="list-group" >
-        <div  v-if="this.messages.length == 0" class="jumbotron-container">
+        <div  v-if="messages.length == 0" class="jumbotron-container">
           <div class="jumbotron custom-jumbotron">
             <div class="container">
               <p class="lead">There is still no message to show</p>
@@ -16,6 +16,7 @@
           </div>
         </div>
 
+        <button v-if="!previousMessagesAvailable()" @click="getPreviousMessages" type="button" class="next-messages-button"><span>Previous messages</span></button>
         <div v-for="msg in messages" :key="msg._id">
           <ChatMessage :messageBody="msg.body" :isUserMessage="isUserMessage(msg.sender)" />
         </div>
@@ -41,9 +42,14 @@ export default {
     'receiver_imagePath',
     'messages'
   ],
+  components: {
+    ChatMessage
+  },
   data() {
     return {
-      messageBody: ''
+      messageBody: '',
+
+      oldMessages: []
     }
   },
   methods: {
@@ -59,19 +65,60 @@ export default {
       if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
         return sender == this.$cookies.get('currentUser').user_id
       }
+    },
+    getPreviousMessages() {
+      this.oldMessages = this.messages.slice(0) // array clone
+      this.$emit('previousMessagesEvent', this.messages.length)
+    },
+    previousMessagesAvailable() {
+      return this.messages.length < 6 ||
+        this.messages.length == this.oldMessages.length
     }
   },
   updated() {
-    const elem = this.$el.querySelector(".list-group");
-    elem.scrollTop = elem.clientHeight;
-  },
-  components: {
-    ChatMessage
+    const elem = this.$el.querySelector(".list-group")
+    elem.scrollTop = elem.clientHeight
   }
 }
 </script>
 
 <style scoped>
+
+  .next-messages-button {
+    border: none;
+    color: #17a2b8;
+    text-decoration: underline;
+    transition: all 0.5s;
+  }
+
+  .next-messages-button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+  }
+
+  .next-messages-button span:after {
+    content: '\2191';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+  }
+
+  .next-messages-button:hover span {
+    padding-right: 20px;
+  }
+
+  .next-messages-button:hover span:after {
+    opacity: 1;
+    right: 0;
+  }
+
+  .next-messages-button:hover {
+    color: #117a8b;
+  }
 
   .custom-jumbotron {
     padding-right: 0;
@@ -134,6 +181,9 @@ export default {
     margin-left: 1rem;
     text-align: center;
     color: white;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
   }
 
   header {
@@ -141,6 +191,7 @@ export default {
     margin-left: .25rem;
     margin-top: auto;
     margin-bottom: auto;
+    flex-wrap: nowrap;
   }
 
   .outer-container {
