@@ -6,10 +6,10 @@
 
     <main class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': isOpen}">
       <section v-if="newsList==null || (newsList!=null && newsList.length==0)">
-        <p>We will notify you as soon as news is available!</p>
+        <p>We will notify you as soon as a news is available!</p>
       </section>
 
-      <NewsListPanel v-if="newsList!=null && newsList.length>0" @openNews="handleOpenNews" :newsList="newsList"/>
+      <NewsListPanel v-if="newsList!=null && newsList.length>0" @openNews="handleOpenNews" @pastNewsEvent="getPastNews" :newsList="newsList"/>
     </main>
   </div>
 </template>
@@ -18,7 +18,7 @@
 import NewsListPanel from './NewsListPanel'
 import axios from 'axios'
 
-import {socket} from '../socket/serverSocket'
+import {socket} from '../utils/serverSocket'
 
 export default {
   name: 'NewsMainButton',
@@ -27,7 +27,7 @@ export default {
   },
   data () {
     return {
-      newsList: null,
+      newsList: [],
       // Controls the news panel opening and closing
       isOpen: false,
       totPendingNotifications: 0
@@ -69,25 +69,32 @@ export default {
       // Assumes msg is a new notification
       this.newsList.unshift(msg)
       this.totPendingNotifications++
+    },
+    // Retrieves the next set of news starting from "startIndex" to "stratIndex + N"
+    getPastNews: function(startIndex) {
+      axios.get('http://localhost:3000/notifications/getSet?firstElement=' + startIndex, { withCredentials: true })
+        .then(res => {
+          if (!res.data.error) {
+            res.data.notifications.forEach(item => {
+              this.newsList.push(item)
+            });
+            this.totPendingNotifications = this.newsList.filter(chat => chat.visualized==false).length;
+            console.log(this.newsList)
+          } else {
+            alert(res.data.error)
+            console.log(res.data.error)
+          }
+        }).catch(err => {
+          alert(err)
+          console.log(err)
+        })
     }
   },
   mounted() {
     if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
       socket.on('notification_' + this.$cookies.get('currentUser').user_id, this.handleMessageReceived)
     }
-    axios.get('http://localhost:3000/notifications/getSet?firstElement=0', { withCredentials: true })
-      .then(res => {
-        if (!res.data.error) {
-          this.newsList = res.data.notifications
-          this.totPendingNotifications = this.newsList.filter(chat => chat.visualized==false).length;
-        } else {
-          alert(res.data.error)
-          console.log(res.data.error)
-        }
-      }).catch(err => {
-        alert(err)
-        console.log(err)
-      })
+    this.getPastNews(0)
   }
 }
 </script>

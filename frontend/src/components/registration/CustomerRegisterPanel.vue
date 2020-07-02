@@ -31,7 +31,7 @@
 
 <script>
 import axios from 'axios'
-import { hex_sha512 } from '../assets/js/sha512.js'
+import { hex_sha512 } from '../../assets/js/sha512.js'
 import ImageCropper from './ImageCropper'
 
 export default {

@@ -8,7 +8,7 @@
 <script>
 // @ is an alias to /src
 import Navbar from '../components/Navbar'
-import MasseurProfilePanel from '../components/MasseurProfilePanel'
+import MasseurProfilePanel from '../components/profile/MasseurProfilePanel'
 export default {
   name: 'MasseurProfile_view',
   components: {

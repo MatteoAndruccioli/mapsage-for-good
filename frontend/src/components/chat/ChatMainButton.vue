@@ -24,8 +24,8 @@ import ChatList from './ChatList'
 import ChatPanel from './ChatPanel'
 import axios from 'axios'
 
-import {EventBus} from '../EventBus'
-import {socket} from '../socket/serverSocket'
+import {EventBus} from '../utils/eventBus'
+import {socket} from '../utils/serverSocket'
 
 export default {
   name: 'ChatMainButton',
@@ -78,7 +78,7 @@ export default {
       }
 
       this.messages = []
-      this.getPreviousSetOfMessages(0);
+      this.getPreviousSetOfMessages(0)
     },
     // Retrieves the next set of messages for the actual chat starting
     // from "startIndex" to "stratIndex + N"

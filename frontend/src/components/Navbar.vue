@@ -35,7 +35,7 @@
 
 <script>
 import axios from 'axios'
-import NewsMainButton from '../components/news/NewsMainButton'
+import NewsMainButton from './news/NewsMainButton'
 
 export default {
   components: {

@@ -27,7 +27,7 @@
 
 <script>
 import axios from 'axios'
-import ChatMainButton from '../components/chat/ChatMainButton'
+import ChatMainButton from '../chat/ChatMainButton'
 
 export default {
   data() {

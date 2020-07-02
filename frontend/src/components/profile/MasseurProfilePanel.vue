@@ -150,10 +150,10 @@
 <script>
 import axios from 'axios'
 import Advertisement from './Advertisement'
-import MapPanel from './map/MapPanel'
-import ChatMainButton from './chat/ChatMainButton'
-import {EventBus} from './EventBus'
-import {socket} from './socket/serverSocket'
+import MapPanel from '../map/MapPanel'
+import ChatMainButton from '../chat/ChatMainButton'
+import {EventBus} from '../utils/eventBus'
+import {socket} from '../utils/serverSocket'
 
 export default {
   props: ['masseur_id'],

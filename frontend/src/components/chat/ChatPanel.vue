@@ -77,7 +77,9 @@ export default {
   },
   updated() {
     const elem = this.$el.querySelector(".list-group")
-    elem.scrollTop = elem.clientHeight
+    if(elem.scrollTop !== 0) {
+      elem.scrollTop = elem.scrollHeight
+    }
   }
 }
 </script>
@@ -99,7 +101,7 @@ export default {
   }
 
   .next-messages-button span:after {
-    content: '\2191';
+    content: '\21A5';
     position: absolute;
     opacity: 0;
     top: 0;

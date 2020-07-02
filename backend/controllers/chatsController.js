@@ -13,8 +13,6 @@ exports.lastMessages = function(req, res){
       //maximum number of messages retrieved
       const message_number = 7
 
-      //const startIndex = (req.body.firstElement-1) >= 0 ? (req.body.firstElement-1) : 0
-      //const lastIndex =  req.body.firstElement-1+message_number
       const startIndex = req.body.firstElement
       const lastIndex =  req.body.firstElement + (message_number - 1)
 

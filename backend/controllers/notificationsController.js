@@ -56,8 +56,10 @@ exports.getNotificationSet = function(req, res){
       var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
 
       const nReturnedNotification = 5
-      const startIndex = (req.query.firstElement-1) >= 0 ? (req.query.firstElement-1) : 0
-      const lastIndex =  req.query.firstElement-1+nReturnedNotification
+      //const startIndex = (req.query.firstElement-1) >= 0 ? (req.query.firstElement-1) : 0
+      //const lastIndex =  req.query.firstElement-1+nReturnedNotification
+      const startIndex = req.query.firstElement
+      const lastIndex =  req.query.firstElement + (nReturnedNotification - 1)
 
       //prima di tutto devo capire se l'utente è un masseur o un customer
       userUtil.userWithIdExists(decodedPayload._id).then(promise => {
