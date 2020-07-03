@@ -75,7 +75,7 @@ io.on('connection', function(socket) {
     notificationUtil.addAdvertisement(msg.advertisement_title, msg.advertisement_body, msg.masseur_id)
       .then(promise => {
         if(promise.succeeded){
-          io.emit("new_advertisement", {
+          io.emit("new_advertisement_" + msg.masseur_id, {
             title: msg.advertisement_title,
             body: msg.advertisement_body
           })
@@ -94,12 +94,12 @@ io.on('connection', function(socket) {
             }
           }
         } else {
-    			io.emit("new_advertisement", { error: promise.description })
+    			io.emit("new_advertisement_" + msg.masseur_id, { error: promise.description })
     			if(promise.error) console.log(promise.error)
     			if(promise.description) console.log(promise.description)
     		}
       }).catch(err => {
-        io.emit("new_advertisement", { error: err })
+        io.emit("new_advertisement_" + msg.masseur_id, { error: err })
       })
   })
 });

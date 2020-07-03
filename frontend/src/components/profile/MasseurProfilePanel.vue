@@ -108,14 +108,12 @@
           <h5>Last advertisements</h5>
 
           <div :class="{ voidBackgroundColor: this.isAdvertisementListEmpty && !isMyProfile }" class="col-12 aside-main">
-            <!--mostri questo in caso non ci siano adv (si potrebbe fare che la frase cambia se l'utente è il masseur) -->
             <div  v-if="this.isAdvertisementListEmpty" class="jumbotron-container">
               <div class="jumbotron custom-jumbotron">
                 <p>There is still no advertisement to show</p>
               </div>
             </div>
 
-            <!--Questo va mostrato solo se c'è almeno un advertisement-->
             <div v-if="!this.isAdvertisementListEmpty" class="adv-list-container">
               <ul :class="{ list_group_height_masseur: isMyProfile, list_group_height_customer: !isMyProfile }" class="list-group">
                 <div v-for="adv in advertisements" :key="adv.title" id="advList">
@@ -144,7 +142,6 @@
     </div>
     <ChatMainButton v-if="isCurrentUserLoggedIn"/>
   </div>
-
 </template>
 
 <script>
@@ -198,7 +195,6 @@ export default {
         call = axios.get('http://localhost:3000/masseurs/' + this.masseur_id)
       }
       call.then(res => {
-        console.log(res.data)
         if (!res.data.error) {
           vm.brand_name = res.data.brand_name
           vm.profile_picture = res.data.profile_picture
@@ -215,7 +211,6 @@ export default {
               && vm.followers.map(f => f.follower_id).includes(this.$cookies.get('currentUser').user_id)) {
             vm.isFollow = true
           }
-          //aggiungere campi in base a necessità !!!
         } else {
           console.log(res.data.error)
         }
@@ -353,7 +348,10 @@ export default {
       }
     }
     this.initProfile();
-    socket.on('new_advertisement', this.handleMessageReceived)
+    socket.on('new_advertisement_' + this.masseur_id, this.handleMessageReceived)
+  },
+  beforeDestroy() {
+    socket.off('new_advertisement_' + this.masseur_id);
   }
 }
 </script>
@@ -591,7 +589,7 @@ b {
 
 .list-group {
   margin-bottom: 10px;
-  overflow-y:scroll;
+  overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -602,7 +600,6 @@ b {
 .list_group_height_customer {
   max-height: 550px;
 }
-
 
 #map-container {
   width: 100%;
@@ -618,14 +615,11 @@ b {
     width: 0px;
 }
 
-
 @media screen and (min-width: 992px) {
   .brand-group-small-screen {
     display: none !important;
   }
 }
-
-
 
 @media screen and (min-width: 1200px) {
   .brand-group-md-screen {
@@ -655,7 +649,6 @@ b {
   }
 }
 
-
 @media screen and (max-width: 992px) {
   .brand-group-md-screen {
     display: none;
@@ -669,7 +662,6 @@ b {
     display: none;
   }
 }
-
 
 @media screen and (max-width: 420px) {
   .brand-group-small-screen {

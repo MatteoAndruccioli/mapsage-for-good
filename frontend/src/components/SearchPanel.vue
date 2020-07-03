@@ -6,7 +6,7 @@
           <label for="searchCity" class="hidden">City</label>
           <div id="searchField">
             <div id="autocomplete" class="autocomplete">
-              <input id="autocomplete-input" class="autocomplete-input" placeholder="Search for a municipality" aria-label="Search for a country"/>
+              <input id="autocomplete-input" class="autocomplete-input" :placeholder="autocompletePlaceholder" aria-label="Search for a country"/>
               <ul class="autocomplete-result-list"></ul>
             </div>
             <button @click.prevent="getGPSLocation" type="button" aria-label="Get GPS location" title="GPS location">
@@ -15,7 +15,7 @@
           </div>
           <label for="searchCity" id="error" v-if="isSubmittedWithoutCity">Fill this field</label>
         </div>
-        <button @click.prevent="onSubmit" type="submit" class="btn ml-auto submit-button">Search</button>
+        <button @click.prevent="onSubmit" type="submit" class="btn ml-auto submit-button"><span>Search</span></button>
       </form>
     </div>
   </div>
@@ -33,7 +33,8 @@
       return {
         city: "",
         isSubmittedWithoutCity: false,
-        autocomplete: null
+        autocomplete: null,
+        autocompletePlaceholder: 'Search for a municipality'
       }
     },
     methods: {
@@ -80,13 +81,29 @@
         }, err => {
           console.log(err)
         })
+      },
+      setAutocompletePlaceholder: function() {
+        if (window.innerWidth < 768) {
+          this.autocompletePlaceholder = 'City'
+        } else if (window.innerWidth < 1024) {
+          this.autocompletePlaceholder = 'Municipality'
+        } else {
+          this.autocompletePlaceholder = 'Search for a municipality'
+        }
       }
+    },
+    created() {
+      window.addEventListener("resize", this.setAutocompletePlaceholder);
+      this.setAutocompletePlaceholder();
     },
     mounted() {
       this.autocomplete = new Autocomplete('#autocomplete', {
         search: this.getSuggestions,
         onSubmit: this.handleAutocSelection
       })
+    },
+    destroyed() {
+      window.removeEventListener("resize", this.setAutocompletePlaceholder);
     }
   }
 </script>
@@ -124,10 +141,32 @@ form {
     border-radius: .3rem;
     color: #fff;
     background-color: #17a2b8;
+    transition: all 0.5s;
+    span {
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      transition: 0.5s;
+      &:after {
+        content: '\00bb';
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+      }
+    }
     &:hover {
       color: #fff;
       background-color: #138496;
       border-color: #117a8b;
+      span {
+        padding-right: 15px;
+        &:after {
+          opacity: 1;
+          right: 0;
+        }
+      }
     }
   }
 }

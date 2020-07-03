@@ -79,7 +79,6 @@ export default {
               this.newsList.push(item)
             });
             this.totPendingNotifications = this.newsList.filter(chat => chat.visualized==false).length;
-            console.log(this.newsList)
           } else {
             alert(res.data.error)
             console.log(res.data.error)

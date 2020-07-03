@@ -26,7 +26,6 @@ export default {
   ],
   methods: {
     openNews: function() {
-      console.log("dentro element: ",this.notification_id,this.masseur_id,this.masseur_brand,this.advertisement_title,this.blink)
       this.$emit('openNews', this.notification_id)
     }
   }
