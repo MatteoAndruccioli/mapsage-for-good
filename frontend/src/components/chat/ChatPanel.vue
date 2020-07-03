@@ -1,7 +1,7 @@
 <template>
   <div class="outer-container">
     <header class="container justify-content-start row">
-      <span v-on:click.prevent.stop="onBackToChatList" class="my-arrow-button">&#129128;</span>
+      <span v-on:click.prevent.stop="onBackToChatList" class="my-arrow-button" aria-label="Back to chat list" title="Back to chat list">&#129128;</span>
       <img class="propic" :src="receiver_imagePath" alt="Avatar">
       <h5>{{this.receiver_fullName}}</h5>
     </header>
@@ -26,7 +26,9 @@
     <footer class="container row col-12">
       <form class="input-group col-12" v-on:submit.prevent="sendMessage">
         <textarea v-model="messageBody" class="form-control" aria-label="With textarea"></textarea>
-        <button class="my-send-button btn" type="submit">Send</button>
+        <button class="my-send-button btn" type="submit" aria-label="Send message" title="Send message">
+          <span class="fas fa-paper-plane"></span>
+        </button>
       </form>
     </footer>
   </div>
@@ -58,8 +60,10 @@ export default {
       this.$emit('backToChatList')
     },
     sendMessage() {
-      this.$emit('sendMessage', this.messageBody.trim())
-      this.messageBody = ''
+      if (this.messageBody != '') {
+        this.$emit('sendMessage', this.messageBody.trim())
+        this.messageBody = ''
+      }
     },
     isUserMessage(sender) {
       if (this.$cookies.get('currentUser') && this.$cookies.get('currentUser').logged_in) {
@@ -159,6 +163,11 @@ export default {
   textarea {
     height: 90%;
     resize: none;
+    overflow: hidden;
+  }
+
+  textarea:focus {
+    box-shadow: none;
   }
 
   form {

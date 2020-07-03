@@ -9,7 +9,7 @@
         :blink="!news.visualized"
         @openNews="onOpenNews"/>
     </div>
-    <button v-if="!pastNewsAvailable()" @click="getPastNews" type="button" class="next-messages-button"><span>Load past news</span></button>
+    <button v-if="!pastNewsAvailable()" @click.stop="getPastNews" type="button" class="next-messages-button"><span>Load past news</span></button>
   </ul>
 </template>
 

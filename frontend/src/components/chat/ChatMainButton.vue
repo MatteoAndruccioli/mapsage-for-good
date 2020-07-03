@@ -3,7 +3,7 @@
     <div class="btn-group dropup ml-auto" :class="{'show': isOpen}">
       <!-- data-toggle="dropdown" -->
       <button @click="handleChatButtonClick" type="button" class="btn btn-primary dropdown-toggle chat" aria-haspopup="true" :aria-expanded="isOpen">
-        Chat <span class="badge badge-light" v-if="totPendingNotifications>0">{{ totPendingNotifications }}</span>
+        Chat <span class="fas fa-comment-alt"></span> <span class="badge badge-light" v-if="totPendingNotifications>0">{{ totPendingNotifications }}</span>
       </button>
 
       <div v-if="this.showChatList" class="dropdown-menu dropdown-menu-right bg-primary" :class="{'show': isOpen}">

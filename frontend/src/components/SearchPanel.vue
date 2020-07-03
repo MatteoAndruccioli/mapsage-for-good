@@ -9,7 +9,7 @@
               <input id="autocomplete-input" class="autocomplete-input" placeholder="Search for a municipality" aria-label="Search for a country"/>
               <ul class="autocomplete-result-list"></ul>
             </div>
-            <button @click.prevent="getGPSLocation" type="button" title="GPS location">
+            <button @click.prevent="getGPSLocation" type="button" aria-label="Get GPS location" title="GPS location">
               <i class="fas fa-map-marked-alt"></i>
             </button>
           </div>
