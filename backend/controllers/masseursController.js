@@ -198,10 +198,6 @@ exports.editMasseurInfo = async function(req, res){
     const token = req.signedCookies.jwt;
     try {
       var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
-      var newAdv = {
-        title: req.body.advertisementTitle,
-        body: req.body.advertisementBody
-      }
 
       Masseur.findOne({ _id: decodedPayload._id })
         .then(user => {
