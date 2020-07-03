@@ -193,36 +193,6 @@ exports.readMasseursByLocation = function(req, res) {
   }).catch(err => { res.json({ error: err}) })
 }
 
-exports.addAdvertisement = function(req, res){
-  if (req.signedCookies.jwt != null) {
-    const token = req.signedCookies.jwt;
-    try {
-      var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
-      var newAdv = {
-        title: req.body.advertisementTitle,
-        body: req.body.advertisementBody
-      }
-      Masseur.findOneAndUpdate({_id: decodedPayload._id},
-        {$addToSet: {advertisements: newAdv}},
-        {new: true},
-        (err, updatedUser) => {
-          if (err) {
-            console.log("Something wrong when updating data!");
-          }
-          res.send({ advertisements: updatedUser.advertisements })
-        })
-        .catch(err => {
-          res.send({ error: err })
-        });
-
-    } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
-    }
-  } else {
-    res.sendStatus(401); // No JWT specified
-  }
-}
-
 exports.editMasseurInfo = async function(req, res){
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;

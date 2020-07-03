@@ -94,20 +94,3 @@ exports.readCustomerByJwt = function(req, res) {
     res.sendStatus(401); // No JWT specified
   }
 }
-
-exports.readCustomerById = function(req, res) {
-  // No JWT check because no need for authentication searching a masseur
-  Customer.findById(req.params.id, function(err, user) {
-    if (err) {
-      res.send({ error: err })
-    } else {
-      if (user == null) {
-        res.status(404).send({
-          error: 'Masseur does not exist'
-        })
-      } else {
-        res.json(user)
-      }
-    }
-  })
-}

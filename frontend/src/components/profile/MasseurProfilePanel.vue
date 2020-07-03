@@ -335,7 +335,10 @@ export default {
     },
     handleMessageReceived: function(msg) {
       if (msg.error) {
-        alert("Error receiving message: " + msg.error)
+        if (this.isMyProfile)
+          alert("Error receiving message: " + msg.error)
+        else
+          console.log("Error receiving message: " + msg.error)
         return;
       }
       this.advertisements.unshift(msg)

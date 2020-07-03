@@ -94,13 +94,12 @@ io.on('connection', function(socket) {
             }
           }
         } else {
-    			//notify sender only about promise failure
-    			io.emit("advertisement_"+msg.masseur_id, { error: promise.description })
+    			io.emit("new_advertisement", { error: promise.description })
     			if(promise.error) console.log(promise.error)
     			if(promise.description) console.log(promise.description)
     		}
       }).catch(err => {
-        io.emit("advertisement_"+msg.masseur_id, { error: err })
+        io.emit("new_advertisement", { error: err })
       })
   })
 });
