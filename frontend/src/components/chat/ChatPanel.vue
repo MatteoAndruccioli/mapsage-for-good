@@ -16,7 +16,7 @@
           </div>
         </div>
 
-        <button v-if="!previousMessagesAvailable()" @click="getPreviousMessages" type="button" class="next-messages-button"><span>Previous messages</span></button>
+        <button ref="previousMessagesButton" v-if="!previousMessagesAvailable()" @click.prevent.stop="getPreviousMessages" type="button" class="next-messages-button"><span>Previous messages</span></button>
         <div v-for="msg in messages" :key="msg._id">
           <ChatMessage :messageBody="msg.body" :isUserMessage="isUserMessage(msg.sender)" />
         </div>
@@ -81,6 +81,7 @@ export default {
   },
   updated() {
     const elem = this.$el.querySelector(".list-group")
+    console.log("updated")
     if(elem.scrollTop !== 0) {
       elem.scrollTop = elem.scrollHeight
     }

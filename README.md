@@ -1,80 +1,63 @@
 # Mapsage
 
-* This is a MEVN web application 
-* Mapsage is a social network for masseurs and their costumers 
+* This is a MEVN web application
+* Mapsage is a social network for masseurs and their costumers
 * Backend server based on node/express
 * Frontend based on vue-cli
 
-# Git workflow
+# Installation
 
-* Create new branch
+* Clone or download repository
+
 ```
-git checkout -b childBranch fatherBranch
-```
-
-* push > Merge and push > childBranch delete
-```
-git push
-
-git checkout fatherBranch
-
-git merge --no-ff childBranch
-
-git branch -d childBranch
+git clone https://github.com/nem3s1s/mapsage-for-good.git
 ```
 
-# Launch:
+# Set up:
 
 ### Frontend Set Up
 ```
-cd mapsage
+cd mapsage-for-good
 cd frontend
 npm install
 ```
 
 ### Backend Set Up
 ```
-cd mapsage
+cd mapsage-for-good
 cd backend
 npm install
 ```
 
-# Load Application:
+# Run Application:
 
 
-### Backend server load:
+### Run Backend server:
 ```
-cd mapsage
+cd mapsage-for-good
 cd backend
-npm run devStart
+node index.js
 ```
 
-#
-
-### Frontend load:
-
-* open terminal 
-* launch following command
+### Run Frontend:
 ```
-vue cli
+cd mapsage-for-good
+cd frontend
+npm run serve
 ```
-* in browser: task > serve > avvia il task > Apri l'app
 
+# Technologies and Packages
 
-#
-
-# Packages
-
-npm packages:
-* mongoose
-* express
-* axios
-* body-parser
-* ejs
-
-
-npm packages used for login and authorization:
-* [bcrypt](https://www.npmjs.com/package/bcrypt): encrypts passwords which will be stored in database
-* [hashing_function_sha512](http://pajhome.org.uk/crypt/md5/sha512.html): hashes passwords which will be sent to server for login/registration 
-* [jwt-decode](https://www.npmjs.com/package/jwt-decode): decodes json web token
-* [jwt](https://www.npmjs.com/package/jsonwebtoken): decodes json web token
+* [Vue CLI](https://cli.vuejs.org/)
+* [Bootstrap 4](https://getbootstrap.com/)
+* [Mongoose](https://mongoosejs.com/)
+* [bcrypt](https://github.com/kelektiv/node.bcrypt.js)
+* [Json Web Token](https://github.com/auth0/node-jsonwebtoken)
+* [Axios](https://github.com/axios/axios)
+* [Socket.IO](https://socket.io/)
+* [Leaflet](https://leafletjs.com/)
+* [Esri Leaflet](https://esri.github.io/esri-leaflet/)
+* [Esri-Leaflet-Geocoder](https://github.com/Esri/esri-leaflet-geocoder)
+* [ArcGIS](https://developers.arcgis.com/javascript/)
+* [vue-cookies](https://github.com/cmp-cc/vue-cookies)
+* [Cropper.js](https://github.com/fengyuanchen/cropperjs)
