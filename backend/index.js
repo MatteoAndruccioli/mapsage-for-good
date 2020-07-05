@@ -8,17 +8,14 @@ var cookieParser = require("cookie-parser")
 var port = process.env.PORT || 3000
 var chatUtil = require('./utils/chatUtil')
 var notificationUtil = require('./utils/notificationUtil')
-
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 process.env.SERVER_LOCATION = 'http://localhost:' + port;
 process.env.SECRET_KEY = 'EWl9Lcrav8'; // secret for JWT
 app.use(cookieParser('ztVX2HQJP0')); // secret for cokieParser
-
 app.use(bodyParser.json({limit: '50mb', extended: true},))
 app.use(cors({
     origin: 'http://localhost:8080',
@@ -27,7 +24,6 @@ app.use(cors({
 app.use(bodyParser.urlencoded({ extended: false }))
 
 const mongoURI = 'mongodb://localhost:27017/mapsage'
-
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
     .then(() => console.log("MongoDB Connected"))
     .catch(err => console.log(err))
@@ -46,23 +42,22 @@ chatsRoutes(app)
 followersRoutes(app)
 notificationsRoutes(app)
 
+//Real time functionalities
 io.on('connection', function(socket) {
-  console.log('a user connected');
+  console.log('user connected');
+  //disconnection management
   socket.on('disconnect', function() {
       console.log('user disconnected');
   });
-
+  //istant messaging management
   socket.on("message", (msg) => {
     const receiver_id = msg.receiver_id
-    //add new msg to database
     chatUtil.addNewMsg(msg.chat_id, msg.sender, msg.receiver, msg.payload)
       .then(insertion => {
         if(insertion.succeeded){
-    			//notify users about msg insertion
     			io.emit("message_"+msg.sender, msg)
     			io.emit("message_"+msg.receiver, msg)
         } else {
-    			//notify sender only about insertion failure
     			io.emit("message_"+msg.sender, { error: insertion.description })
     			if(insertion.error) console.log(insertion.error)
     		}
@@ -70,7 +65,7 @@ io.on('connection', function(socket) {
         io.emit("message_"+msg.sender, { error: err })
       })
   })
-
+  //advertisement and notification management
   socket.on("advertisement", (msg) => {
     notificationUtil.addAdvertisement(msg.advertisement_title, msg.advertisement_body, msg.masseur_id)
       .then(promise => {
@@ -82,8 +77,6 @@ io.on('connection', function(socket) {
           if(promise.notifications.length > 0){
             var i;
             for (i = 0; i < promise.notifications.length; i++) {
-              console.log(promise.notifications[i].follower_id)
-              console.log(promise.notifications[i].newNotification.advertisement_title)
               io.emit("notification_" + promise.notifications[i].follower_id, {
                 masseur_id: promise.notifications[i].newNotification.masseur_id,
                 masseur_brand: promise.notifications[i].newNotification.masseur_brand,
@@ -105,11 +98,9 @@ io.on('connection', function(socket) {
 });
 
 app.use('/static', express.static(__dirname + '/public'));
-
 app.use(function(req, res) {
     res.status(404).send({url: req.originalUrl + " not found"})
 });
-
 http.listen(port, function () {
     console.log("Server is running on port: " + port)
 })
