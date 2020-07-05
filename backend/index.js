@@ -17,15 +17,15 @@ process.env.SERVER_LOCATION = 'http://localhost:' + port;
 process.env.SECRET_KEY = 'EWl9Lcrav8'; // secret for JWT
 app.use(cookieParser('ztVX2HQJP0')); // secret for cokieParser
 app.use(bodyParser.json({limit: '50mb', extended: true},))
-app.use(cors({
-    origin: 'http://localhost:8080',
-    credentials: true
-  }))
+app.use(cors({ origin: 'http://localhost:8080', credentials: true }))
 app.use(bodyParser.urlencoded({ extended: false }))
 
 const mongoURI = 'mongodb://localhost:27017/mapsage'
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
-    .then(() => console.log("MongoDB Connected"))
+mongoose
+    .connect(
+      mongoURI, 
+      {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}
+    ).then(() => console.log("MongoDB Connected"))
     .catch(err => console.log(err))
 
 // APIs registration
@@ -54,22 +54,21 @@ io.on('connection', function(socket) {
     const receiver_id = msg.receiver_id
     chatUtil.addNewMsg(msg.chat_id, msg.sender, msg.receiver, msg.payload)
       .then(insertion => {
-        if(insertion.succeeded){
+        if(!insertion.error){
     			io.emit("message_"+msg.sender, msg)
     			io.emit("message_"+msg.receiver, msg)
         } else {
-    			io.emit("message_"+msg.sender, { error: insertion.description })
-    			if(insertion.error) console.log(insertion.error)
+    			io.emit("message_"+msg.sender, { error: insertion.error })
     		}
       }).catch(err => {
-        io.emit("message_"+msg.sender, { error: err })
+        io.emit("message_"+msg.sender, { error: "error adding new message" })
       })
   })
   //advertisement and notification management
   socket.on("advertisement", (msg) => {
     notificationUtil.addAdvertisement(msg.advertisement_title, msg.advertisement_body, msg.masseur_id)
       .then(promise => {
-        if(promise.succeeded){
+        if(!promise.error){
           io.emit("new_advertisement_" + msg.masseur_id, {
             title: msg.advertisement_title,
             body: msg.advertisement_body
@@ -87,9 +86,7 @@ io.on('connection', function(socket) {
             }
           }
         } else {
-    			io.emit("new_advertisement_" + msg.masseur_id, { error: promise.description })
-    			if(promise.error) console.log(promise.error)
-    			if(promise.description) console.log(promise.description)
+    			io.emit("new_advertisement_" + msg.masseur_id, { error: promise.error })
     		}
       }).catch(err => {
         io.emit("new_advertisement_" + msg.masseur_id, { error: err })
