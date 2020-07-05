@@ -19,6 +19,7 @@ const CustomerSchema = new Schema({
     profile_picture: {
         type: String
     },
+    //notifications about advertisement published by masseurs' followed by this user
     notifications: [{
       masseur_id: String,
       masseur_brand: String,

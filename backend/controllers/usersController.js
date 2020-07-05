@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt")
 const Customer = require("../models/customersModel")
 const Masseur = require("../models/masseursModel")
 
+//login request management
 exports.handleLoginRequest = function(req, res) {
   Promise.all([
     Customer.findOne({ email: req.body.email }),
@@ -43,6 +44,7 @@ exports.handleLoginRequest = function(req, res) {
   })
 }
 
+//logout request management
 exports.handleLogoutRequest = function(req, res) {
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
