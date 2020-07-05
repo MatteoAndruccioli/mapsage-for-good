@@ -13,10 +13,19 @@
                     <h5 class="text-center my-auto">{{brand_name}}</h5>
 
                     <div class="d-flex justify-content-between row info-button-container mx-1">
-                      <button v-if="isMyProfile" type="button" class="btn info-button" data-toggle="modal" data-target="#modalLoginForm">Edit profile</button>
-                      <button v-if="!isMyProfile" @click="openChatWithThisMasseur" type="button" class="btn info-button">Send Message</button>
-                      <button v-if="!isMyProfile && !isFollow" @click="followThisMasseur" type="button" class="btn info-button">Follow</button>
-                      <button v-if="!isMyProfile && isFollow" @click="unfollowThisMasseur" type="button" class="btn info-button">Unfollow</button>
+                      <button v-if="isMyProfile" type="button" class="btn info-button" data-toggle="modal" data-target="#modalLoginForm">
+                        Edit profile
+                        <span class="far fa-edit"></span>
+                      </button>
+                      <button v-if="!isMyProfile" @click="openChatWithThisMasseur" type="button" class="btn info-button">
+                        Message <span class="fas fa-comment-alt"></span>
+                      </button>
+                      <button v-if="!isMyProfile && !isFollow" @click="followThisMasseur" type="button" class="btn info-button" key="follow">
+                        Follow <span class="fas fa-user-plus"></span>
+                      </button>
+                      <button v-if="!isMyProfile && isFollow" @click="unfollowThisMasseur" type="button" class="btn info-button" key="unfollow">
+                        Unfollow <span class="fas fa-user-minus"></span>
+                      </button>
                     </div>
                   </li>
 
@@ -25,13 +34,22 @@
                   </li>
                   <li class="list-group-item brand-group-md-screen">
                     <div v-if="!isMyProfile" class="d-flex justify-content-around row">
-                      <button @click="openChatWithThisMasseur" type="button" class="btn info-button send-message-btn">Send Message</button>
-                      <button v-if="!isFollow" @click="followThisMasseur" type="button" class="btn info-button follow-button-style">Follow</button>
-                      <button v-if="isFollow" @click="unfollowThisMasseur" type="button" class="btn info-button follow-button-style">Unfollow</button>
+                      <button @click="openChatWithThisMasseur" type="button" class="btn info-button">
+                        Message <span class="fas fa-comment-alt"></span>
+                      </button>
+                      <button v-if="!isFollow" @click="followThisMasseur" type="button" class="btn info-button" key="follow">
+                        Follow <span class="fas fa-user-plus"></span>
+                      </button>
+                      <button v-if="isFollow" @click="unfollowThisMasseur" type="button" class="btn info-button" key="unfollow">
+                        Unfollow <span class="fas fa-user-minus"></span>
+                      </button>
                     </div>
 
                     <div v-if="isMyProfile" class="d-flex justify-content-center row">
-                      <button type="button" class="btn info-button large-edit-profile" data-toggle="modal" data-target="#modalLoginForm">Edit profile</button>
+                      <button type="button" class="btn info-button large-edit-profile" data-toggle="modal" data-target="#modalLoginForm">
+                        Edit profile
+                        <span class="far fa-edit"></span>
+                      </button>
                     </div>
                   </li>
                 </ul>
@@ -85,12 +103,21 @@
                   <li class="list-group-item"><b>Email:</b> {{email}}</li>
                   <li class="list-group-item brand-group-lg-screen">
                     <div v-if="!isMyProfile" class="d-flex justify-content-around row">
-                      <button @click="openChatWithThisMasseur" type="button" class="btn info-button send-message-btn">Send Message</button>
-                      <button v-if="!isFollow" @click="followThisMasseur" type="button" class="btn info-button follow-button-style">Follow</button>
-                      <button v-if="isFollow" @click="unfollowThisMasseur" type="button" class="btn info-button follow-button-style">Unfollow</button>
+                      <button @click="openChatWithThisMasseur" type="button" class="btn info-button">
+                        Message <span class="fas fa-comment-alt"></span>
+                      </button>
+                      <button v-if="!isFollow" @click="followThisMasseur" type="button" class="btn info-button" key="follow">
+                        Follow <span class="fas fa-user-plus"></span>
+                      </button>
+                      <button v-if="isFollow" @click="unfollowThisMasseur" type="button" class="btn info-button" key="unfollow">
+                        Unfollow <span class="fas fa-user-minus"></span>
+                      </button>
                     </div>
                     <div v-if="isMyProfile" class="d-flex justify-content-center row">
-                      <button type="button" class="btn info-button large-edit-profile" data-toggle="modal" data-target="#modalLoginForm">Edit profile</button>
+                      <button type="button" class="btn info-button large-edit-profile" data-toggle="modal" data-target="#modalLoginForm">
+                        Edit profile
+                        <span class="far fa-edit"></span>
+                      </button>
                     </div>
                   </li>
                 </ul>
@@ -391,14 +418,6 @@ header {
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-}
-
-.send-message-btn {
-  width: 108px;
-}
-
-.follow-button-style {
-  width: 75px;
 }
 
 .brand-name {
