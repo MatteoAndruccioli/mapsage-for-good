@@ -5,6 +5,7 @@ const Municipality = require("../models/municipalitiesModel")
 const fs = require('fs')
 const base64Util = require('./utils/base64Util')
 
+//masseur register request management
 exports.handleRegisterRequest = function(req, res) {
   let profileImagePath;
   if (!req.body.profile_picture) {
@@ -37,7 +38,6 @@ exports.handleRegisterRequest = function(req, res) {
     followers: [],
     notifications: []
   }
-  //console.log(userData)
 
   // Need to perform "findOne" on both because there is a single login for both customers and masseurs
   Promise.all([
@@ -80,6 +80,7 @@ exports.handleRegisterRequest = function(req, res) {
   }).catch(err => { res.json({ error: err}) })
 }
 
+//gets logged masseur info
 exports.readMasseurByJwt = function(req, res) {
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
@@ -115,6 +116,7 @@ exports.readMasseurByJwt = function(req, res) {
   }
 }
 
+//gets info about masseur specified by id 
 exports.readMasseurById = function(req, res) {
   // No JWT check because no need for authentication searching a masseur
   Masseur.findById(req.params.id, function(err, user) {
@@ -143,6 +145,7 @@ exports.readMasseurById = function(req, res) {
   })
 }
 
+//gets info about masseurs owning a study in a certain location
 exports.readMasseursByLocation = function(req, res) {
   // No JWT check because no need for authentication searching a masseur
   const type = req.body.type;
@@ -193,6 +196,7 @@ exports.readMasseursByLocation = function(req, res) {
   }).catch(err => { res.json({ error: err}) })
 }
 
+//updates masseur info
 exports.editMasseurInfo = async function(req, res){
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
@@ -238,6 +242,7 @@ exports.editMasseurInfo = async function(req, res){
   }
 }
 
+//updates location of masseur's study 
 exports.editMasseurLocation = function(req, res) {
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
@@ -250,7 +255,6 @@ exports.editMasseurLocation = function(req, res) {
       Masseur.findOne({ _id: decodedPayload._id })
         .then(user => {
           if (user != null) {
-            console.log(req.body.new_coordinates)
             user.location.geometry.coordinates = req.body.new_coordinates
             user.save(function(err, savedObj){
               if(err) { // some error occurs during save
