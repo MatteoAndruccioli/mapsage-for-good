@@ -16,7 +16,7 @@
           </div>
         </div>
 
-        <button ref="previousMessagesButton" v-if="!previousMessagesAvailable()" @click.prevent.stop="getPreviousMessages" type="button" class="next-messages-button"><span>Previous messages</span></button>
+        <button ref="previousMessagesButton" v-if="!previousMessagesAvailable()" @click="getPreviousMessages" type="button" class="next-messages-button"><span>Previous messages</span></button>
         <div v-for="msg in messages" :key="msg._id">
           <ChatMessage :messageBody="msg.body" :isUserMessage="isUserMessage(msg.sender)" />
         </div>
@@ -50,8 +50,9 @@ export default {
   data() {
     return {
       messageBody: '',
-
-      oldMessages: []
+      oldMessages: [],
+      getPreviousMessagesClicked: false,
+      oldScrollHeight: 0
     }
   },
   methods: {
@@ -60,7 +61,7 @@ export default {
       this.$emit('backToChatList')
     },
     sendMessage() {
-      if (this.messageBody != '') {
+      if (this.messageBody.trim() != '') {
         this.$emit('sendMessage', this.messageBody.trim())
         this.messageBody = ''
       }
@@ -71,6 +72,8 @@ export default {
       }
     },
     getPreviousMessages() {
+      this.getPreviousMessagesClicked = true
+      this.oldScrollHeight = this.$el.querySelector(".list-group").scrollHeight
       this.oldMessages = this.messages.slice(0) // array clone
       this.$emit('previousMessagesEvent', this.messages.length)
     },
@@ -79,12 +82,16 @@ export default {
         this.messages.length == this.oldMessages.length
     }
   },
-  updated() {
-    const elem = this.$el.querySelector(".list-group")
-    console.log("updated")
-    if(elem.scrollTop !== 0) {
-      elem.scrollTop = elem.scrollHeight
-    }
+  mounted() {
+    this.$watch('messages', function() {
+      const scrollbar = this.$el.querySelector(".list-group")
+      if(!this.getPreviousMessagesClicked) {
+        scrollbar.scrollTop = scrollbar.scrollHeight
+      } else {
+        scrollbar.scrollTop = scrollbar.scrollHeight - this.oldScrollHeight;
+        this.getPreviousMessagesClicked = false;
+      }
+    })
   }
 }
 </script>
