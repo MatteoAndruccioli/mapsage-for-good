@@ -1,6 +1,7 @@
 <template>
-  <div class="container text-muted">
+  <div class="container text-muted flex-column">
     <div class="row justify-content-center">
+      <img src="../assets/images/logo_transparent.png" alt="Brand logo"/>
       <form class="text-center col-4">
         <div class="form-group">
           <label for="searchCity" class="hidden">City</label>
@@ -109,9 +110,22 @@
 </script>
 
 <style lang="scss" scoped>
+img {
+  max-width:80%;
+  height: auto;
+  margin-bottom: 25px;
+  opacity: 0.5;
+}
 form {
   .hidden {
-    visibility: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
   }
   #error {
     color: red;
