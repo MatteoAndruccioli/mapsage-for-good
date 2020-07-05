@@ -4,6 +4,7 @@ const Customer = require("../models/customersModel")
 const fs = require('fs')
 const base64Util = require('./utils/base64Util')
 
+//register request management
 exports.handleRegisterRequest = function(req, res) {
   let profileImagePath;
   if (!req.body.profile_picture) {
@@ -21,9 +22,7 @@ exports.handleRegisterRequest = function(req, res) {
     profile_picture: profileImagePath,
     notifications: []
   }
-  //console.log(userData)
-
-  // Need to perform "findOne" on both because there is a single login for both customers and masseurs
+  //Need to perform "findOne" on both because there is a single login for both customers and masseurs
   Promise.all([
     Customer.findOne({ email: req.body.email }),
     Masseur.findOne({ email: req.body.email })
@@ -39,7 +38,6 @@ exports.handleRegisterRequest = function(req, res) {
           if (err) console.log("error: " + err)
         })
       }
-
       bcrypt.hash(req.body.password, 10, (err, hash) => {
         userData.password = hash
         Customer.create(userData)
@@ -61,9 +59,10 @@ exports.handleRegisterRequest = function(req, res) {
     } else {
       res.json({ error: 'User already exists' })
     }
-  }).catch(err => { res.json({ error: err}) })
+  }).catch(err => { res.json({ error: "error performing search of user with specified email"}) })
 }
 
+//retrieves logged user info
 exports.readCustomerByJwt = function(req, res) {
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;

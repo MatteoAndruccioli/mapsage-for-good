@@ -15,15 +15,19 @@ const MasseurSchema = new Schema({
         required: true
     },
     phone_number: String,
+    //short description of masseur's past experience and skill used for introduction
     expertise: String,
+    //list of advertisement published by this user
     advertisements: [{
       title: String,
       body: String
     }],
+    //masseur's followers
     followers: [{
       follower_id: String,
       follower_type: String
     }],
+    //notifications about advertisement published by masseurs' followed by this user
     notifications: [{
       masseur_id: String,
       masseur_brand: String,
@@ -35,6 +39,7 @@ const MasseurSchema = new Schema({
         default: Date.now
     },
     profile_picture: String,
+    //info to geolocalize masseur's study
     location: {
       type: {
         type: String,
