@@ -17,20 +17,20 @@ exports.follow = function(req, res) {
             {new: true},   
             function(err, user) {
               if (err) {
-                reject({error: "error in customer search"  })
+                res.status(500).json({error: "error in customer search"  })
               } else {
                 if (user == null) {
-                  res.json({error:"follow failed"})
+                  res.status(404).json({error:"follow failed user not found"})
                 } else {
-                  res.json({description:"ok"})
+                  res.sendStatus(204)
                 }
               }
             }) 
         } else {
-          res.json({error: "user not found"})
+          res.status(404).json({error: "user not found"})
         }
       }).catch(err => {
-        res.json({error: "error discovering user's type"})
+        res.status(500).json({error: "error discovering user's type"})
       })
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed
@@ -55,21 +55,21 @@ exports.unfollow = function(req, res){
             {new: true},
             function(err, user) {
               if (err) {
-                reject({error: "error in customer search"})
+                res.status(500).json({error: "error in customer search"})
               } else {
                 if (user == null) {
-                  res.json({error: "unfollow failed" })
+                  res.status(404).json({error: "unfollow failed user not found" })
                 } else {
-                  res.json({ description:"ok" })
+                  res.sendStatus(204)
                 }
               }
             }
           )
         } else {
-          res.json({error: "user not found"})
+          res.status(404).json({error: "user not found"})
         }
       }).catch(err => {
-        res.json({error: "error discovering user's type"})
+        res.status(500).json({error: "error discovering user's type"})
       })
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed
