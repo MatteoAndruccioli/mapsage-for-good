@@ -229,10 +229,12 @@ export default {
             vm.isFollow = true
           }
         } else {
+          alert(res.data.error)
           console.log(res.data.error)
         }
       }).catch(err => {
-        console.log(err)
+        alert(err.response.data.error)
+        console.log(err.response.data.error)
       })
     },
     editMasseurInfo: function() {
@@ -252,11 +254,12 @@ export default {
             vm.phone_number = res.data.updatedUser.phone_number
             vm.expertise = res.data.updatedUser.expertise
           } else {
-            alert("Login failed!! try again");
+            alert(res.data.error);
             console.log(res.data.error)
           }
         }).catch(err => {
-          console.log(err)
+          alert(err.response.data.error)
+          console.log(err.response.data.error)
         })
       }
     },
@@ -282,10 +285,12 @@ export default {
           if (!res.data.error) {
             vm.location = location
           } else {
+            alert(res.data.error)
             console.log(res.data.error)
           }
         }).catch(err => {
-          console.log(err)
+          alert(err.response.data.error)
+          console.log(err.response.data.error)
         })
       }
     },
@@ -312,8 +317,8 @@ export default {
               console.log(res.data.error)
             }
           }).catch(err => {
-            alert(err)
-            console.log(err)
+            alert(err.response.data.error)
+            console.log(err.response.data.error)
           })
       }
     },
@@ -333,8 +338,8 @@ export default {
             console.log(res.data.error)
           }
         }).catch(err => {
-          alert(err)
-          console.log(err)
+          alert(err.response.data.error)
+          console.log(err.response.data.error)
         })
     },
     unfollowThisMasseur: function() {
@@ -347,8 +352,8 @@ export default {
             console.log(res.data.error)
           }
         }).catch(err => {
-          alert(err)
-          console.log(err)
+          alert(err.response.data.error)
+          console.log(err.response.data.error)
         })
     },
     handleMessageReceived: function(msg) {

@@ -51,9 +51,9 @@ exports.handleLogoutRequest = function(req, res) {
       res.clearCookie("jwt");
       res.json({ description: "Logout succeded" })
     } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
+      res.sendStatus(401).json({error: "unauthorized user"}); // The JWT is not valid - verify method failed
     }
   } else {
-    res.sendStatus(401); // No JWT specified
+    res.sendStatus(401).json({error: "unauthorized user"}); // No JWT specified
   }
 }

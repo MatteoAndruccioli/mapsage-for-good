@@ -77,7 +77,7 @@ exports.handleRegisterRequest = function(req, res) {
     } else {
       res.json({ error: 'User already exists' })
     }
-  }).catch(err => { res.status(500).json({ error: err}) })
+  }).catch(err => { res.status(500).json({ error: 'error performing search of user with specified email'}) })
 }
 
 //gets logged masseur info
@@ -109,14 +109,14 @@ exports.readMasseurByJwt = function(req, res) {
         res.status(500).json({ error: err })
       })
     } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
+      res.sendStatus(401).json({error: "unauthorized user"}); // The JWT is not valid - verify method failed
     }
   } else {
-    res.sendStatus(401); // No JWT specified
+    res.sendStatus(401).json({error: "unauthorized user"}); // No JWT specified
   }
 }
 
-//gets info about masseur specified by id 
+//gets info about masseur specified by id
 exports.readMasseurById = function(req, res) {
   // No JWT check because no need for authentication searching a masseur
   Masseur.findById(req.params.id, function(err, user) {
@@ -191,7 +191,7 @@ exports.readMasseursByLocation = function(req, res) {
         }
       }).catch(err => { res.status(500).json({ error: err}) })
     } else {
-      res.status(404).json({ error: 'No municipalities found' })
+      res.status(404).json({ error: 'Not supported city' })
     }
   }).catch(err => { res.status(500).json({ error: "error while looking for municipality"}) })
 }
@@ -235,14 +235,14 @@ exports.editMasseurInfo = async function(req, res){
           res.status(500).send({ error: "error while looking for masseur" })
         })
     } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
+      res.sendStatus(401).json({error: "unauthorized user"}); // The JWT is not valid - verify method failed
     }
   } else {
-    res.sendStatus(401); // No JWT specified
+    res.sendStatus(401).json({error: "unauthorized user"}); // No JWT specified
   }
 }
 
-//updates location of masseur's study 
+//updates location of masseur's study
 exports.editMasseurLocation = function(req, res) {
   if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
@@ -272,9 +272,9 @@ exports.editMasseurLocation = function(req, res) {
           res.status(500).send({ error: "error looking for masseur" })
         })
     } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
+      res.sendStatus(401).json({error: "unauthorized user"}); // The JWT is not valid - verify method failed
     }
   } else {
-    res.sendStatus(401); // No JWT specified
+    res.sendStatus(401).json({error: "unauthorized user"}); // No JWT specified
   }
 }

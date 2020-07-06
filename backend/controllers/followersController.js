@@ -14,7 +14,7 @@ exports.follow = function(req, res) {
           Masseur.findOneAndUpdate(
             {_id: req.body.masseur_id},
             {$addToSet: {followers: {follower_id: decodedPayload._id, follower_type: promise.type}}},
-            {new: true},   
+            {new: true},
             function(err, user) {
               if (err) {
                 res.status(500).json({error: "error in customer search"  })
@@ -25,7 +25,7 @@ exports.follow = function(req, res) {
                   res.sendStatus(204)
                 }
               }
-            }) 
+            })
         } else {
           res.status(404).json({error: "user not found"})
         }
@@ -33,10 +33,10 @@ exports.follow = function(req, res) {
         res.status(500).json({error: "error discovering user's type"})
       })
     } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
+      res.sendStatus(401).json({error: "unauthorized user"}); // The JWT is not valid - verify method failed
     }
   } else {
-    res.sendStatus(401); // No JWT specified
+    res.sendStatus(401).json({error: "unauthorized user"}); // No JWT specified
   }
 }
 
@@ -72,9 +72,9 @@ exports.unfollow = function(req, res){
         res.status(500).json({error: "error discovering user's type"})
       })
     } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
+      res.sendStatus(401).json({error: "unauthorized user"}); // The JWT is not valid - verify method failed
     }
   } else {
-    res.sendStatus(401); // No JWT specified
+    res.sendStatus(401).json({error: "unauthorized user"}); // No JWT specified
   }
 }

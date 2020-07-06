@@ -71,7 +71,8 @@ export default {
           console.log(res.data.error)
         }
       }).catch(err => {
-        console.log(err)
+        alert("Login failed!! try again");
+        console.log(err.response.data.error)
       })
     }
   }

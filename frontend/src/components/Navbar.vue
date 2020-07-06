@@ -72,8 +72,8 @@ export default {
               console.log(res.data.error)
             }
           }).catch(err => {
-            alert(err)
-            console.log(err)
+            alert(err.response.data.error)
+            console.log(err.response.data.error)
           })
       }
     },

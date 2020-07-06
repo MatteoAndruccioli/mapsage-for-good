@@ -24,7 +24,7 @@
 
     <footer class="container row col-12">
       <form class="input-group col-12" v-on:submit.prevent="sendMessage">
-        <textarea v-model="messageBody" class="form-control" aria-label="With textarea"></textarea>
+        <textarea v-model="messageBody" class="form-control input-message-field" aria-label="With textarea"></textarea>
         <button class="my-send-button btn" type="submit" aria-label="Send message" title="Send message">
           <span class="fas fa-paper-plane"></span>
         </button>
@@ -166,13 +166,13 @@ export default {
     height: 90%;
   }
 
-  textarea {
+  .input-message-field {
     height: 90%;
     resize: none;
     overflow: hidden;
   }
 
-  textarea:focus {
+  .input-message-field:focus {
     box-shadow: none;
   }
 

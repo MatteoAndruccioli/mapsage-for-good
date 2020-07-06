@@ -22,7 +22,7 @@ exports.setVisualized = function(req, res){
               if (err) {
                 res.status(500).json({error: "error setting notification visualized"})
               }
-              res.sendStatus(204) //204 request resolved, no result will be returned 
+              res.sendStatus(204) //204 request resolved, no result will be returned
             })
         } else {
           res.status(404).json({error: "user not found"})
@@ -31,10 +31,10 @@ exports.setVisualized = function(req, res){
         res.status(500).json({error: "error discovering user's type"})
       })
     } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
+      res.sendStatus(401).json({error: "unauthorized user"}); // The JWT is not valid - verify method failed
     }
   } else {
-    res.sendStatus(401); // No JWT specified
+    res.sendStatus(401).json({error: "unauthorized user"}); // No JWT specified
   }
 }
 
@@ -64,14 +64,13 @@ exports.getNotificationSet = function(req, res){
                       visualized: not.visualized
                     }
                   })
-                  res.json({notifications: notifications })
+                  res.json({notifications: notifications})
                 } else {
                   res.status(404).json({error: "user not found"})
                 }
               }).catch(err => {
                 res.status(500).json({error: "error while looking for user"})
               })
-
         } else {
           res.status(404).json({error: "user not found"})
         }
@@ -79,9 +78,9 @@ exports.getNotificationSet = function(req, res){
         res.status(500).json({error: "error discovering user's type"})
       })
     } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
+      res.sendStatus(401).json({error: "unauthorized user"}); // The JWT is not valid - verify method failed
     }
   } else {
-    res.sendStatus(401); // No JWT specified
+    res.sendStatus(401).json({error: "unauthorized user"}); // No JWT specified
   }
 }

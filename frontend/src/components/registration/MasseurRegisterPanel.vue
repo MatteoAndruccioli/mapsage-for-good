@@ -97,7 +97,8 @@ export default {
             console.log(res.data.error)
           }
         }).catch(err => {
-          console.log(err)
+          alert(err.response.data.error)
+          console.log(err.response.data.error)
         })
     },
     handleImage(input) {

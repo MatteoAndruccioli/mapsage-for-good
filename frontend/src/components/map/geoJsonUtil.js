@@ -44,6 +44,8 @@ export function buildGeoJsonLayer(lng, lat, geoJsonLayer) {
       } else {
         reject("Not supported city")
       }
+    }).catch(err => {
+      reject(err.response.data.error)
     })
   })
 }

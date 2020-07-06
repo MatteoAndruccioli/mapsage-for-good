@@ -47,16 +47,17 @@ export default {
       axios.get('http://localhost:3000/customers/profile', { withCredentials: true })
         .then(res => {
           if (!res.data.error) {
-            //console.log(res.data)
             vm.first_name = res.data.first_name
             vm.last_name = res.data.last_name
             vm.email = res.data.email
             vm.profile_picture = res.data.profile_picture
           } else {
+            alert(res.data.error)
             console.log(res.data.error)
           }
         }).catch(err => {
-          console.log(err)
+          alert(err.response.data.error)
+          console.log(err.response.data.error)
         })
     }
   },

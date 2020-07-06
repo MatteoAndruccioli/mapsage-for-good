@@ -5,7 +5,7 @@ var chatUtil = require('./utils/chatUtil')
 
 //logged user retieves last messages from chat specified by id
 exports.lastMessages = function(req, res){
-    if (req.signedCookies.jwt != null) {
+  if (req.signedCookies.jwt != null) {
     const token = req.signedCookies.jwt;
     try {
       var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
@@ -39,10 +39,10 @@ exports.lastMessages = function(req, res){
         }
       })
     } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
+      res.status(401).json({error: "unauthorized user"}); // The JWT is not valid - verify method failed
     }
   } else {
-    res.sendStatus(401); // No JWT specified
+    res.status(401).json({error: "unauthorized user"}); // No JWT specified
   }
 }
 
@@ -110,10 +110,10 @@ exports.chatInfoByUsersId = function(req, res){
         res.status(500).json({ error: "mongoose error while checking if chat already exists" })
       })
     } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
+      res.sendStatus(401).json({error: "unauthorized user"}); // The JWT is not valid - verify method failed
     }
   } else {
-    res.sendStatus(401); // No JWT specified
+    res.sendStatus(401).json({error: "unauthorized user"}); // No JWT specified
   }
 }
 
@@ -158,9 +158,9 @@ exports.getUserChats = function(req, res){
         res.status(500).json({error: 'chat not found'})
       })
     } catch (error) {
-      res.sendStatus(401); // The JWT is not valid - verify method failed
+      res.sendStatus(401).json({error: "unauthorized user"}); // The JWT is not valid - verify method failed
     }
   } else {
-    res.sendStatus(401); // No JWT specified
+    res.sendStatus(401).json({error: "unauthorized user"}); // No JWT specified
   }
 }

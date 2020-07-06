@@ -53,8 +53,8 @@ export default {
               console.log(res.data.error)
             }
           }).catch(err => {
-            alert(err)
-            console.log(err)
+            alert(err.response.data.error)
+            console.log(err.response.data.error)
           })
       }
       this.$router.push({ name: 'MasseurProfile_view', params: { id: referredNews.masseur_id }}, () => {});
@@ -83,8 +83,8 @@ export default {
             console.log(res.data.error)
           }
         }).catch(err => {
-          alert(err)
-          console.log(err)
+          alert(err.response.data.error)
+          console.log(err.response.data.error)
         })
     }
   },
@@ -100,6 +100,10 @@ export default {
 <style scoped>
   button {
     background-color: #343a40 !important;
+  }
+
+  button:focus {
+    box-shadow: none !important;
   }
 
   section {

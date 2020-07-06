@@ -100,8 +100,8 @@ export default {
             console.log(res.data.error)
           }
         }).catch(err => {
-          alert(err)
-          console.log(err)
+          alert(err.response.data.error)
+          console.log(err.response.data.error)
         })
     },
     // Propagated from ChatPanel child when send button in pressed
@@ -157,8 +157,8 @@ export default {
               console.log(res.data.error)
             }
           }).catch(err => {
-            alert(err)
-            console.log(err)
+            alert(err.response.data.error)
+            console.log(err.response.data.error)
           })
       } else if (chatReferredByMsg != null && chatReferredByMsg.chat_id == this.actual_c_id) {
         // The chat referred by the message is in the chat list and it is the actual opened
@@ -188,8 +188,8 @@ export default {
           console.log(res.data.error)
         }
       }).catch(err => {
-        alert(err)
-        console.log(err)
+        alert(err.response.data.error)
+        console.log(err.response.data.error)
       })
   }
 }
