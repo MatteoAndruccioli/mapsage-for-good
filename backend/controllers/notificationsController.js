@@ -20,15 +20,15 @@ exports.setVisualized = function(req, res){
             {new: true},
             (err, updatedUser) => {
               if (err) {
-                res.json({error: "error setting notification visualized"})
+                res.status(500).json({error: "error setting notification visualized"})
               }
-              res.json({ succeeded: true })
+              res.sendStatus(204) //204 request resolved, no result will be returned 
             })
         } else {
-          res.json({error: "user not found"})
+          res.status(404).json({error: "user not found"})
         }
       }).catch(err => {
-        res.json({error: "error discovering user's type"})
+        res.status(500).json({error: "error discovering user's type"})
       })
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed
@@ -66,17 +66,17 @@ exports.getNotificationSet = function(req, res){
                   })
                   res.json({notifications: notifications })
                 } else {
-                  res.json({error: "errore nel recuperare l'utente per le notifiche"})
+                  res.status(404).json({error: "user not found"})
                 }
               }).catch(err => {
-                res.json({error: "errore nel recuperare l'utente per le notifiche"})
+                res.status(500).json({error: "error while looking for user"})
               })
 
         } else {
-          res.json({error: "user not found"})
+          res.status(404).json({error: "user not found"})
         }
       }).catch(err => {
-        res.json({error: "error discovering user's type"})
+        res.status(500).json({error: "error discovering user's type"})
       })
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed
