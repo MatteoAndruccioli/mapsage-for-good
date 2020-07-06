@@ -15,8 +15,8 @@
     </section>
     <div id="buttons-panel" class="row">
       <a id="btn-more" class="mr-auto btn btn-secondary" href="http://www.garanteprivacy.it/web/guest/home/docweb/-/docweb-display/docweb/3585077">More info</a>
-      <a v-on:click="acceptCookiePolicy" id="btn-accept" class="btn btn-primary text-white">Accept</a>
-      <a v-on:click="hideBanner" id="btn-reject" class="btn btn-primary text-white">Reject</a>
+      <a v-on:click="acceptCookiePolicy" id="btn-accept" class="btn submit-button">Accept</a>
+      <a v-on:click="hideBanner" id="btn-reject" class="btn submit-button">Reject</a>
     </div>
   </div>
 </template>
@@ -59,6 +59,41 @@ export default {
     }
     #btn-reject {
       margin-right: 10px;
+    }
+
+    .submit-button {
+      padding: .5rem 1rem;
+      line-height: 1.5;
+      border-radius: .3rem;
+      color: #fff;
+      background-color: #17a2b8;
+      transition: all 0.5s;
+      span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.5s;
+        &:after {
+          content: '\00bb';
+          position: absolute;
+          opacity: 0;
+          top: 0;
+          right: -20px;
+          transition: 0.5s;
+        }
+      }
+      &:hover {
+        color: #fff;
+        background-color: #138496;
+        border-color: #117a8b;
+        span {
+          padding-right: 15px;
+          &:after {
+            opacity: 1;
+            right: 0;
+          }
+        }
+      }
     }
   }
 </style>

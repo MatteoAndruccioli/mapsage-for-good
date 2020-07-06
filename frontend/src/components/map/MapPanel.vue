@@ -164,7 +164,7 @@
                   }
                   // get position
                   navigator.geolocation.getCurrentPosition(pos => {
-                    console.log(pos)
+                    //console.log(pos)
                     const latlng = L.latLng(pos.coords.latitude, pos.coords.longitude)
                     vm.geoJsonLayer.clearLayers();
                     vm.geoJsonLayer.addLayer(L.marker(latlng).bindPopup("I'm here!", { closeButton: false }))

@@ -3,7 +3,7 @@
     <div class="container justify-content-between">
       <div class="row">
         <section class="col-9">
-          {{masseur_brand}} has publish a new advertisement:
+          {{masseur_brand}} has published a new advertisement:
           <br/>
           <b>{{advertisement_title}}</b>
         </section>

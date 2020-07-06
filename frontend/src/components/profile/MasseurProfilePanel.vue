@@ -13,7 +13,7 @@
                     <h5 class="text-center my-auto">{{brand_name}}</h5>
 
                     <div class="d-flex justify-content-between row info-button-container mx-1">
-                      <button v-if="isMyProfile" type="button" class="btn info-button" data-toggle="modal" data-target="#modalLoginForm">
+                      <button @click="handleEditButtonClick" v-if="isMyProfile" type="button" class="btn info-button" data-toggle="modal" data-target="#modalLoginForm">
                         Edit profile
                         <span class="far fa-edit"></span>
                       </button>
@@ -46,7 +46,7 @@
                     </div>
 
                     <div v-if="isMyProfile" class="d-flex justify-content-center row">
-                      <button type="button" class="btn info-button large-edit-profile" data-toggle="modal" data-target="#modalLoginForm">
+                      <button @click="handleEditButtonClick" type="button" class="btn info-button large-edit-profile" data-toggle="modal" data-target="#modalLoginForm">
                         Edit profile
                         <span class="far fa-edit"></span>
                       </button>
@@ -114,7 +114,7 @@
                       </button>
                     </div>
                     <div v-if="isMyProfile" class="d-flex justify-content-center row">
-                      <button type="button" class="btn info-button large-edit-profile" data-toggle="modal" data-target="#modalLoginForm">
+                      <button @click="handleEditButtonClick" type="button" class="btn info-button large-edit-profile" data-toggle="modal" data-target="#modalLoginForm">
                         Edit profile
                         <span class="far fa-edit"></span>
                       </button>
@@ -143,7 +143,7 @@
 
             <div v-if="!this.isAdvertisementListEmpty" class="adv-list-container">
               <ul :class="{ list_group_height_masseur: isMyProfile, list_group_height_customer: !isMyProfile }" class="list-group">
-                <div v-for="adv in advertisements" :key="adv.title" id="advList">
+                <div v-for="(adv, i) in advertisements" :key="i" id="advList">
                   <Advertisement :title="adv.title" :body="adv.body"> </Advertisement>
                 </div>
               </ul>
@@ -299,6 +299,11 @@ export default {
         })
       }
     },
+    handleEditButtonClick: function() {
+      this.edit_brand_name = this.brand_name
+      this.edit_phone_number = this.phone_number
+      this.edit_expertise = this.expertise
+    },
     openChatWithThisMasseur: function() {
       if (!this.isCurrentUserLoggedIn) {
         this.$router.push({ name: 'Login_view',
@@ -391,7 +396,7 @@ header {
 
 .bottom-right-masseur-info {
   margin-bottom: .5rem;
-  overflow: auto;
+  overflow-x: auto;
 }
 
 .expertise-container {
@@ -404,6 +409,8 @@ header {
 
 .expertise-container > p {
   margin-top: 1rem;
+  max-height: 10rem;
+  overflow-y: auto;
 }
 
 .right-upper-card {
@@ -617,7 +624,7 @@ b {
 }
 
 .list_group_height_customer {
-  max-height: 550px;
+  max-height: 620px;
 }
 
 #map-container {
@@ -632,6 +639,10 @@ b {
 
 ::-webkit-scrollbar {
     width: 0px;
+}
+
+form input:invalid, textarea {
+  box-shadow: none;
 }
 
 @media screen and (min-width: 992px) {
