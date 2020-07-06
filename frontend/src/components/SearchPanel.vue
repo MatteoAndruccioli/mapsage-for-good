@@ -93,11 +93,9 @@
         }
       }
     },
-    created() {
+    mounted() {
       window.addEventListener("resize", this.setAutocompletePlaceholder);
       this.setAutocompletePlaceholder();
-    },
-    mounted() {
       this.autocomplete = new Autocomplete('#autocomplete', {
         search: this.getSuggestions,
         onSubmit: this.handleAutocSelection

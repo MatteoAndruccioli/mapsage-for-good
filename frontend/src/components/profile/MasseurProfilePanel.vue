@@ -8,10 +8,8 @@
               <section class="left-upper-card card col-lg-5">
                 <img class="card-img-top" :src="profile_picture" alt="Avatar">
                 <ul class="list-group list-group-flush">
-
                   <li class="list-group-item d-flex justify-content-between brand-group-small-screen row">
                     <h5 class="text-center my-auto">{{brand_name}}</h5>
-
                     <div class="d-flex justify-content-between row info-button-container mx-1">
                       <button @click="handleEditButtonClick" v-if="isMyProfile" type="button" class="btn info-button" data-toggle="modal" data-target="#modalLoginForm">
                         Edit profile
@@ -44,7 +42,6 @@
                         Unfollow <span class="fas fa-user-minus"></span>
                       </button>
                     </div>
-
                     <div v-if="isMyProfile" class="d-flex justify-content-center row">
                       <button @click="handleEditButtonClick" type="button" class="btn info-button large-edit-profile" data-toggle="modal" data-target="#modalLoginForm">
                         Edit profile
@@ -56,11 +53,9 @@
               </section>
 
               <!-- MODAL STARTS HERE -->
-              <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                aria-hidden="true">
+              <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
-
                     <header class="modal-header">
                       <h4 class="modal-title w-100 font-weight-bold">Update your profile</h4>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -122,7 +117,6 @@
                   </li>
                 </ul>
               </section>
-
             </div>
           </section>
 
@@ -133,14 +127,12 @@
 
         <aside class="advertisementsBox my-box col-lg-4 col-md-12">
           <h5>Last advertisements</h5>
-
           <div :class="{ voidBackgroundColor: this.isAdvertisementListEmpty && !isMyProfile }" class="col-12 aside-main">
             <div  v-if="this.isAdvertisementListEmpty" class="jumbotron-container">
               <div class="jumbotron custom-jumbotron">
                 <p>There is still no advertisement to show</p>
               </div>
             </div>
-
             <div v-if="!this.isAdvertisementListEmpty" class="adv-list-container">
               <ul :class="{ list_group_height_masseur: isMyProfile, list_group_height_customer: !isMyProfile }" class="list-group">
                 <div v-for="(adv, i) in advertisements" :key="i" id="advList">
@@ -148,7 +140,6 @@
                 </div>
               </ul>
             </div>
-
             <div v-if="isMyProfile" class="col-12 form-container">
               <form v-on:submit.prevent="addAdvertisement">
                 <h5 class="text-center mb-3">Add a new advertisement</h5>
@@ -163,7 +154,6 @@
               </form>
             </div>
           </div>
-
         </aside>
       </div>
     </div>
@@ -299,6 +289,7 @@ export default {
         })
       }
     },
+    // Pre-compiles the bootstrap modal fields
     handleEditButtonClick: function() {
       this.edit_brand_name = this.brand_name
       this.edit_phone_number = this.phone_number
@@ -389,7 +380,6 @@ export default {
 </script>
 
 <style scoped>
-
 header {
   text-align: center;
 }
@@ -706,5 +696,4 @@ form input:invalid, textarea {
     display: block;
   }
 }
-
 </style>

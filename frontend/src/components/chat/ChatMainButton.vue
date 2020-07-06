@@ -1,7 +1,6 @@
 <template>
   <aside class="aside-flex-container">
     <div class="btn-group dropup ml-auto" :class="{'show': isOpen}">
-      <!-- data-toggle="dropdown" -->
       <button @click="handleChatButtonClick" type="button" class="btn btn-primary dropdown-toggle chat" aria-haspopup="true" :aria-expanded="isOpen">
         Chat <span class="fas fa-comment-alt"></span> <span class="badge badge-light" v-if="totPendingNotifications>0">{{ totPendingNotifications }}</span>
       </button>
@@ -147,7 +146,6 @@ export default {
 
       const chatReferredByMsg = this.chats.find(chat => chat.chat_id == msg.chat_id)
       if (chatReferredByMsg == null) {
-        //console.log("downloading chat...")
         // The chat referred by the message is not in the chat list - downloads the chat from server
         axios.put('http://localhost:3000/chat/chatInfo', { receiver: msg.sender }, { withCredentials: true })
           .then(res => {
@@ -165,7 +163,6 @@ export default {
       } else if (chatReferredByMsg != null && chatReferredByMsg.chat_id == this.actual_c_id) {
         // The chat referred by the message is in the chat list and it is the actual opened
         this.messages.push({ body: msg.payload, sender: msg.sender})
-        //console.log("chat extists and it is open")
       } else {
         // The chat referred by the message is in the chat list - updating existing chat
         if (chatReferredByMsg.visualized) {
@@ -173,7 +170,6 @@ export default {
           this.totPendingNotifications++
         }
         // If chat has already a pending notification ('visualized'=false) then do nothing
-        //console.log("chat extists but closed, refreshing visualized field...")
       }
     }
   },

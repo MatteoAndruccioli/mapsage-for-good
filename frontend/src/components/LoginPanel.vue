@@ -37,7 +37,7 @@
 
 <script>
 import axios from 'axios'
-import { hex_sha512 } from '../assets/js/sha512.js'
+import { hex_sha512 } from './utils/sha512.js'
 
 export default {
   data () {
@@ -46,10 +46,8 @@ export default {
       password: ''
     }
   },
-
   methods: {
     login () {
-      //axios.post('http://192.168.1.6:3000/users/login', {
       axios.post('http://localhost:3000/users/login', {
         email: this.email,
         password: hex_sha512(this.password)
@@ -80,9 +78,7 @@ export default {
 }
 </script>
 
-
 <style scoped>
-
 .submit-button:hover {
     color: #fff;
     background-color: #138496;
@@ -106,29 +102,36 @@ form {
   margin-right: 3rem;
   margin-top: 3rem;
 }
+
 footer {
   margin-top: 1.5rem;
   text-align: center;
 }
+
 .main-header {
   text-align: center;
   margin-top: 3rem;
   margin-bottom: 1rem;
 }
+
 .dividing-element {
   margin-right: 1rem;
   margin-left: 1rem;
   margin-top: 3rem;
 }
+
 .lone-image {
   height:420px;
 }
+
 .bottom-image {
   margin-top: 3rem;
 }
+
 .login-elements-container {
   padding-top: 3rem!important;
 }
+
 .signup-style {
   color: #17a2b8;
   font-weight: 500;

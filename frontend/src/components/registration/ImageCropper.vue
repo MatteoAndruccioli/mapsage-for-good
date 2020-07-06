@@ -29,9 +29,6 @@ export default {
         zoomable: false,
         scalable: false,
         aspectRatio: 1,
-        // Ogni volta che avviene un crop event
-        // (es. muovo il crop box, resize del crop box, ecc.)
-        // inizia o finisce, questo metodo viene chiamato.
         crop: () => {
           const canvas = this.cropper.getCroppedCanvas()
           this.croppedImage = canvas.toDataURL("image/png")

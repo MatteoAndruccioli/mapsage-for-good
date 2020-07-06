@@ -12,7 +12,6 @@
     "@trevoreyre/autocomplete-js": "^2.2.0",
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
-    "bootstrap-vue": "^2.1.0",
     "core-js": "^3.6.5",
     "cropperjs": "^1.5.7",
     "css-animation-sync": "^0.2.0",
@@ -45,7 +44,6 @@
     "portal-vue": "^2.1.6",
     "sass": "^1.26.8",
     "sass-loader": "^8.0.2",
-    "vue-cli-plugin-bootstrap-vue": "~0.6.0",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {

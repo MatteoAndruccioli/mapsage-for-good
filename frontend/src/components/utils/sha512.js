@@ -19,7 +19,6 @@ var hexcase = 0;  /* hex output format. 0 - lowercase; 1 - uppercase        */
  */
 export function hex_sha512(s)    { return rstr2hex(rstr_sha512(str2rstr_utf8(s))); }
 
-
 /*
  * Calculate the SHA-512 of a raw string
  */

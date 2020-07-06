@@ -2,10 +2,10 @@
   <div>
     <Navbar/>
     <div class="page-not-found-panel">
-      <img src="../assets/dog-ate.png" alt="A dog eating a sheet">
+      <img src="../assets/images/dog-ate.png" alt="A dog eating a sheet">
       <p class="display-4"> A Dog Ate this Page </p>
       <p class="lead description">Your dog is cute but honestly a menace. Where are my shoes? Where is my graduation certificate? Where is the chocolate cake I baked for my Aunt’s birthday? And why did you take your dog to the vet on that same Thursday?!</p>
-      <router-link :to="{ name: 'Home_view'}" class="btn submit-button" type="button" title="Go back to Home"><span>Go to Home</span></router-link>
+      <router-link :to="{ name: 'Home_view'}" class="btn submit-button" type="button"><span>Go to Home</span></router-link>
     </div>
   </div>
 </template>

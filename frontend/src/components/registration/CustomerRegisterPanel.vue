@@ -31,7 +31,7 @@
 
 <script>
 import axios from 'axios'
-import { hex_sha512 } from '../../assets/js/sha512.js'
+import { hex_sha512 } from '../utils/sha512.js'
 import ImageCropper from './ImageCropper'
 
 export default {
@@ -51,7 +51,7 @@ export default {
     }
   },
   methods: {
-    register () {
+    register() {
       let userData = {
         first_name: this.customer_first_name,
         last_name: this.customer_last_name,
@@ -143,5 +143,4 @@ export default {
     }
   }
 }
-
 </style>

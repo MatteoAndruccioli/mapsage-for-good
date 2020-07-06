@@ -8,7 +8,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import Navbar from '../components/Navbar'
 import SearchPanel from '../components/SearchPanel'
 import ChatMainButton from '../components/chat/ChatMainButton'

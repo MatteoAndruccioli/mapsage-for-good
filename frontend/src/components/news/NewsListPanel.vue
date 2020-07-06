@@ -44,8 +44,6 @@ export default {
   },
   mounted() {
     sync('spinner')
-    //https://github.com/bealearts/css-animation-sync
-    //https://stackoverflow.com/questions/4838972/how-to-sync-css-animations-across-multiple-elements
     const animation = new sync('blinker')
     animation.start()
   }

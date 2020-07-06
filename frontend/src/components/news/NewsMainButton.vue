@@ -8,7 +8,6 @@
       <section v-if="newsList==null || (newsList!=null && newsList.length==0)">
         <p>We will notify you as soon as a news is available!</p>
       </section>
-
       <NewsListPanel v-if="newsList!=null && newsList.length>0" @openNews="handleOpenNews" @pastNewsEvent="getPastNews" :newsList="newsList"/>
     </main>
   </div>
@@ -98,34 +97,31 @@ export default {
 }
 </script>
 
-
 <style scoped>
+  button {
+    background-color: #343a40 !important;
+  }
 
-button {
-  background-color: #343a40 !important;
-}
+  section {
+    display: flex;
+    margin: auto;
+    background-color: #f0f0f0;
+    height: 80px;
+    width: 25em;
+  }
 
-section {
-  display: flex;
-  margin: auto;
-  background-color: #f0f0f0;
-  height: 80px;
-  width: 25em;
-}
+  section > p {
+    margin: auto;
+    text-align: center;
+  }
 
-section > p {
-  margin: auto;
-  text-align: center;
-}
+  main {
+    background-color: #f0f0f0 !important;
+    padding: 0px;
+    margin-top: 10px;
+  }
 
-main {
-  background-color: #f0f0f0 !important;
-  padding: 0px;
-  margin-top: 10px;
-}
-
-.my-visibility{
-  margin-bottom: 90px;
-}
-
+  .my-visibility{
+    margin-bottom: 90px;
+  }
 </style>

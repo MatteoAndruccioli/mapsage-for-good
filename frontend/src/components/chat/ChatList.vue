@@ -1,8 +1,6 @@
 <template>
   <div class="outer-container">
-
     <h5 class="text-header">Your chat</h5>
-
     <main>
       <ul class="list-group">
         <div v-if="!anyChatIsPresent()" class="jumbotron-container">
@@ -12,8 +10,6 @@
             </div>
           </div>
         </div>
-
-
         <div v-for="chat in chats" :key="chat._id" >
           <ChatListElement
             :fullName="chat.receiver_fullName"
@@ -26,7 +22,6 @@
         </div>
       </ul>
     </main>
-
   </div>
 </template>
 
@@ -36,9 +31,7 @@ import ChatListElement from './ChatListElement'
 
 export default {
   props: ['chats'],
-
   methods: {
-    //this method propagates child-generated backToChatList event to his father
     onOpenChat: function(chat_id, receiver_id, receiver_fullName, receiver_imgPath) {
       this.$emit('openChat', chat_id, receiver_id, receiver_fullName, receiver_imgPath)
     },
@@ -46,11 +39,8 @@ export default {
       return this.chats != null && this.chats.length > 0
     }
   },
-
   mounted() {
     sync('spinner')
-    //https://github.com/bealearts/css-animation-sync
-    //https://stackoverflow.com/questions/4838972/how-to-sync-css-animations-across-multiple-elements
     const animation = new sync('blinker')
     animation.start()
   },
@@ -86,7 +76,7 @@ export default {
   }
 
   .jumbotron-container {
-    height: 100%; 
+    height: 100%;
     align-self: stretch!important;
   }
 

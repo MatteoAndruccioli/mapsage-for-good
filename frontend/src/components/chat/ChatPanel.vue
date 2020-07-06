@@ -15,7 +15,6 @@
             </div>
           </div>
         </div>
-
         <button ref="previousMessagesButton" v-if="!previousMessagesAvailable()" @click="getPreviousMessages" type="button" class="next-messages-button"><span>Previous messages</span></button>
         <div v-for="msg in messages" :key="msg._id">
           <ChatMessage :messageBody="msg.body" :isUserMessage="isUserMessage(msg.sender)" />
@@ -56,7 +55,6 @@ export default {
     }
   },
   methods: {
-    //this method propagates child-generated backToChatList event to his father
     onBackToChatList() {
       this.$emit('backToChatList')
     },

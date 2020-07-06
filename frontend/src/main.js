@@ -1,7 +1,6 @@
 import '@babel/polyfill'
 import 'mutationobserver-shim'
 import Vue from 'vue'
-import './plugins/bootstrap-vue'
 import App from './App.vue'
 import router from './router'
 
@@ -14,7 +13,7 @@ import 'leaflet/dist/leaflet.css'
 import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css'
 import 'leaflet-easybutton'
 import 'leaflet-easybutton/src/easy-button.css'
-// Code required to display leaflet markers with Vue.js Webpack (comments included)
+// Code required to display leaflet markers with Vue.js Webpack
 // eslint-disable-next-line
 delete L.Icon.Default.prototype._getIconUrl
 // eslint-disable-next-line

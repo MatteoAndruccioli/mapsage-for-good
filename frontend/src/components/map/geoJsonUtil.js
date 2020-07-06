@@ -21,7 +21,6 @@ export function buildGeoJsonLayer(lng, lat, geoJsonLayer) {
           boundariesColor = "#FF2249"
           masseursFound = false
         }
-        //console.log(coordinates)
         const geoJson = L.geoJSON({
           type: "FeatureCollection",
           features: coordinates
@@ -50,7 +49,6 @@ export function buildGeoJsonLayer(lng, lat, geoJsonLayer) {
 }
 
 function buildMarkerPopup(masseurProperties) {
-  //console.log(masseurProperties);
   const div1 = L.DomUtil.create('div', 'card');
   div1.setAttribute('style', 'width: 18em; background-color: #f5f5f5;')
   const img = L.DomUtil.create('img', 'card-img-top', div1);
