@@ -17,10 +17,10 @@
           <router-link class="nav-link" to="/register">Register</router-link>
         </li>
         <li v-if="isCustomer" class="nav-item">
-          <router-link class="nav-link" to="/customerProfile">Customer Profile</router-link>
+          <router-link class="nav-link" to="/customerProfile">Profile</router-link>
         </li>
         <li v-if="isMasseur" class="nav-item">
-          <router-link class="nav-link" :to="'/masseurProfile/' + this.currentUserId">Masseur Profile</router-link>
+          <router-link class="nav-link" :to="'/masseurProfile/' + this.currentUserId">Profile</router-link>
         </li>
         <li v-if="isUserLoggedIn" class="nav-item">
           <a class="nav-link" v-on:click="logout">Logout</a>
