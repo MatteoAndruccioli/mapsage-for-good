@@ -69,15 +69,15 @@ exports.handleRegisterRequest = function(req, res) {
               signed: true
             }
             res.cookie('jwt', token, cookieConfig)
-            res.send({ _id: user._id })
+            res.status(201).send({ _id: user._id })
           }).catch(err => {
-            res.json({ error: err })
+            res.status(500).json({ error: err })
           })
       })
     } else {
       res.json({ error: 'User already exists' })
     }
-  }).catch(err => { res.json({ error: err}) })
+  }).catch(err => { res.status(500).json({ error: err}) })
 }
 
 //gets logged masseur info
@@ -103,10 +103,10 @@ exports.readMasseurByJwt = function(req, res) {
           }
           res.json(userData)
         } else {
-          res.json({ error: 'Masseur does not exist' })
+          res.status(404).json({ error: 'Masseur does not exist' })
         }
       }).catch(err => {
-        res.json({ error: err })
+        res.status(500).json({ error: err })
       })
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed
@@ -121,7 +121,7 @@ exports.readMasseurById = function(req, res) {
   // No JWT check because no need for authentication searching a masseur
   Masseur.findById(req.params.id, function(err, user) {
     if (err) {
-      res.send({ error: err })
+      res.status(500).send({ error: "error looking for masseur by id" })
     } else {
       if (user == null) {
         res.status(404).send({
@@ -189,11 +189,11 @@ exports.readMasseursByLocation = function(req, res) {
             cityBoundaries: municipality
           })
         }
-      }).catch(err => { res.json({ error: err}) })
+      }).catch(err => { res.status(500).json({ error: err}) })
     } else {
-      res.json({ error: 'No municipalities found' })
+      res.status(404).json({ error: 'No municipalities found' })
     }
-  }).catch(err => { res.json({ error: err}) })
+  }).catch(err => { res.status(500).json({ error: "error while looking for municipality"}) })
 }
 
 //updates masseur info
@@ -218,21 +218,21 @@ exports.editMasseurInfo = async function(req, res){
             user.save(function(err,savedObj){
               // some error occurs during save
               if(err){
-                res.send({ error: err })
+                res.status(500).send({ error: "error while saving updates" })
               }
               // for some reason no saved obj return
               else if(!savedObj){
-                res.send({ error: 'no user found' })
+                res.status(404).send({ error: 'no user found' })
               }
               else {
                 res.json({updatedUser: user})
               }
             })
           } else {
-            res.send({ error: 'User does not exist' })
+            res.status(404).send({ error: 'User does not exist' })
           }
         }).catch(err => {
-          res.send({ error: err })
+          res.status(500).send({ error: "error while looking for masseur" })
         })
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed
@@ -249,7 +249,7 @@ exports.editMasseurLocation = function(req, res) {
     try {
       var decodedPayload = jwt.verify(token, process.env.SECRET_KEY);
       if (req.body.new_coordinates == null) {
-        res.send({ error: 'no coordinates specified' })
+        res.status(400).send({ error: 'no coordinates specified' })
         return;
       }
       Masseur.findOne({ _id: decodedPayload._id })
@@ -258,18 +258,18 @@ exports.editMasseurLocation = function(req, res) {
             user.location.geometry.coordinates = req.body.new_coordinates
             user.save(function(err, savedObj){
               if(err) { // some error occurs during save
-                res.send({ error: err })
+                res.status(500).send({ error: "error saving updates" })
               } else if(!savedObj) {
-                res.send({ error: 'no user found' })
+                res.status(404).send({ error: 'no user found' })
               } else { // user updated correctly
                 res.json({updatedUser: user})
               }
             })
           } else {
-            res.send({ error: 'User does not exist' })
+            res.status(404).send({ error: 'User does not exist' })
           }
         }).catch(err => {
-          res.send({ error: err })
+          res.status(500).send({ error: "error looking for masseur" })
         })
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed

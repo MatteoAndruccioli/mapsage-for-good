@@ -15,7 +15,7 @@ exports.lastMessages = function(req, res){
       //looks for the chat and retrieves messages
       Chat.findById(req.body.chat_id, function(err, chat) {
         if (err) {
-          res.send({ error: "error in finding chat by id" })
+          res.status(500).send({ error: "error in finding chat by id" })
         } else {
           if (chat == null) {
             res.status(404).send({error: 'Chat does not exist'})
@@ -29,11 +29,11 @@ exports.lastMessages = function(req, res){
                 if(!updateQuery.error){
                   res.json({ messages: messagesToReturn })
                 } else {
-                  res.json({error: updateQuery.error })
+                  res.status(500).json({error: updateQuery.error })
                 }
               }).catch( err => res.json({ error: err}))
             } else {
-              res.json({error: "invalid user_id for specified chat"})
+              res.status(404).json({error: "invalid user_id for specified chat"})
             }
           }
         }
@@ -60,7 +60,7 @@ exports.chatInfoByUsersId = function(req, res){
       }).then(storedChat => {
         if (storedChat == null) {
           if (decodedPayload._id == req.body.receiver) {
-            res.json({ error:"user ids are the same id"})
+            res.status(400).json({ error:"user ids are the same id"})
             return
           }
           //check whether both users exist
@@ -79,7 +79,7 @@ exports.chatInfoByUsersId = function(req, res){
                 messages: []
               }
               Chat.create(newChat).then(chat => {
-                res.json({
+                res.status(201).json({ //201 == created
                   visualized: true,
                   chat_id: chat._id,
                   receiver_fullName: chatUtil.getUserFullName(p2.type, p2.user),
@@ -87,12 +87,12 @@ exports.chatInfoByUsersId = function(req, res){
                   receiver_id: req.body.receiver
                 })
               }) .catch(err => {
-                res.json({error: "mongoose error while adding new chat"})
+                res.status(500).json({error: "mongoose error while adding new chat"})
               })
             } else {
-              res.json({error: 'Chat did not exist and at least one of the two user ids is wrong (no user with that id)'})
+              res.status(404).json({error: 'Chat did not exist and at least one of the two user ids is wrong (no user with that id)'})
             }
-          }).catch(err => {res.json({ error: "error handling check on users id"}) })
+          }).catch(err => {res.status(500).json({ error: "error handling check on users id"}) })
         } else {
           userUtil.userWithIdExists(req.body.receiver).then(p => {
             res.json({
@@ -103,11 +103,11 @@ exports.chatInfoByUsersId = function(req, res){
               receiver_id: req.body.receiver
             })
           }).catch(err => {
-            res.json({ error: "error handling check on receiver id"})
+            res.status(500).json({ error: "error handling check on receiver id"})
           })
         }
       }).catch(err => {
-        res.json({ error: "mongoose error while checking if chat already exists" })
+        res.status(500).json({ error: "mongoose error while checking if chat already exists" })
       })
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed
@@ -149,13 +149,13 @@ exports.getUserChats = function(req, res){
             })
             res.json({chats: chatInfoToRet})
           }).catch(err => {
-            res.json({error: "error handling chat info promises"})
+            res.status(500).json({error: "error handling chat info promises"})
           })
         } else {
-          res.json({error: 'Chat does not exist'})
+          res.status(404).json({error: 'Chat does not exist'})
         }
       }).catch(err => {
-        res.json({error: 'chat not found'})
+        res.status(500).json({error: 'chat not found'})
       })
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed

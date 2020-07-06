@@ -51,15 +51,15 @@ exports.handleRegisterRequest = function(req, res) {
               signed: true
             }
             res.cookie('jwt', token, cookieConfig)
-            res.send({ _id: user._id })
+            res.status(201).send({ _id: user._id })
           }).catch(err => {
-            res.json({ error: err })
+            res.status(500).json({ error: err })
           })
       })
     } else {
       res.json({ error: 'User already exists' })
     }
-  }).catch(err => { res.json({ error: "error performing search of user with specified email"}) })
+  }).catch(err => { res.status(500).json({ error: "error performing search of user with specified email"}) })
 }
 
 //retrieves logged user info
@@ -81,10 +81,10 @@ exports.readCustomerByJwt = function(req, res) {
           };
           res.json(userData)
         } else {
-          res.json({ error: 'Customer does not exist' })
+          res.status(404).json({ error: 'Customer does not exist' })
         }
       }).catch(err => {
-        res.json({ error: err })
+        res.status(500).json({ error: err })
       })
     } catch (error) {
       res.sendStatus(401); // The JWT is not valid - verify method failed

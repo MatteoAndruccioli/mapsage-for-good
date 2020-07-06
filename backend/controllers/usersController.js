@@ -32,15 +32,13 @@ exports.handleLoginRequest = function(req, res) {
         res.cookie('jwt', token, cookieConfig)
         res.json({ profile_type: user_type, _id: user._id })
       } else {
-        console.log("wrong password")
         res.json({ error: 'Wrong password' })
       }
     } else {
-      console.log("User does not exist")
-      res.json({ error: 'User does not exist' })
+      res.status(404).json({ error: 'User does not exist' })
     }
   }).catch(err => {
-    res.json({ error: err })
+    res.status(500).json({ error: "error while looking for user" })
   })
 }
 
