@@ -3,47 +3,49 @@ import L from 'leaflet'
 import router from '../../router'
 
 export function buildGeoJsonLayer(lng, lat, geoJsonLayer) {
-  axios.post('http://localhost:3000/masseurs/masseursByLocation', {
-    type: "Point",
-    coordinates: [lng, lat]
-  }).then(res => {
-    if(!res.data.error && res.data.cityBoundaries) {
-      var boundariesColor = "#17a2b8"
-      var masseursFound = false
-      var coordinates = new Array
-      coordinates.push(res.data.cityBoundaries)
-      if(res.data.masseursLocations) {
-        res.data.masseursLocations.forEach(location => coordinates.push(location));
-        masseursFound = true
-      } else {
-        alert("Sorry! No masseurs in the specified city")
-        boundariesColor = "#FF2249"
-        masseursFound = false
-      }
-      console.log(coordinates)
-      const geoJson = L.geoJSON({
-        type: "FeatureCollection",
-        features: coordinates
-      }, {
-        onEachFeature: function(feature, layer) {
-          if (feature.geometry.type == "MultiPolygon" && !masseursFound) {
-            layer.bindPopup("There are no masseurs here, look elsewhere!", { closeButton: false });
-          } else if (feature.geometry.type == "Point") {
-            layer.bindPopup(buildMarkerPopup(feature.properties), { closeButton: false });
-          }
-        },
-        style: function() {
-          return {
-            color: boundariesColor,
-            weight: 0.8
-          }
+  return new Promise((resolve, reject) => {
+    axios.post('http://localhost:3000/masseurs/masseursByLocation', {
+      type: "Point",
+      coordinates: [lng, lat]
+    }).then(res => {
+      if(!res.data.error && res.data.cityBoundaries) {
+        var boundariesColor = "#17a2b8"
+        var masseursFound = false
+        var coordinates = new Array
+        coordinates.push(res.data.cityBoundaries)
+        if(res.data.masseursLocations) {
+          res.data.masseursLocations.forEach(location => coordinates.push(location));
+          masseursFound = true
+        } else {
+          alert("Sorry! No masseurs in the specified city")
+          boundariesColor = "#FF2249"
+          masseursFound = false
         }
-      });
-      geoJsonLayer.addLayer(geoJson)
-    } else {
-      alert("Error: not supported city")
-      console.log("Error: not supported city")
-    }
+        //console.log(coordinates)
+        const geoJson = L.geoJSON({
+          type: "FeatureCollection",
+          features: coordinates
+        }, {
+          onEachFeature: function(feature, layer) {
+            if (feature.geometry.type == "MultiPolygon" && !masseursFound) {
+              layer.bindPopup("There are no masseurs here, look elsewhere!", { closeButton: false });
+            } else if (feature.geometry.type == "Point") {
+              layer.bindPopup(buildMarkerPopup(feature.properties), { closeButton: false });
+            }
+          },
+          style: function() {
+            return {
+              color: boundariesColor,
+              weight: 0.8
+            }
+          }
+        });
+        geoJsonLayer.addLayer(geoJson)
+        resolve()
+      } else {
+        reject("Not supported city")
+      }
+    })
   })
 }
 

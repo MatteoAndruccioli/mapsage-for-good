@@ -115,7 +115,6 @@ export default {
     },
     handleLocationChosedEvent(location) {
       this.masseur_location_latlgn = location;
-      console.log(this.masseur_location_latlgn)
     }
   }
 }

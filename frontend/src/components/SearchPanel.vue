@@ -146,6 +146,12 @@ form {
       flex-grow: 1;
       &:hover {
         background-color: #CCCDD1;
+        .fa-map-marked-alt {
+          color: #767478;
+        }
+      }
+      .fa-map-marked-alt {
+        color: #929196;
       }
     }
   }

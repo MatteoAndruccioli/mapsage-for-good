@@ -1,25 +1,13 @@
 <template>
-  <div id="map"></div>
+  <div id="map">
+    <div v-if="showLoading" class="loader"></div>
+  </div>
 </template>
 
 <script>
   import L from 'leaflet'
   import * as esri from 'esri-leaflet'
   import * as geocoding from 'esri-leaflet-geocoder'
-  import 'leaflet/dist/leaflet.css'
-  import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css'
-  import 'leaflet-easybutton'
-  import 'leaflet-easybutton/src/easy-button.css'
-  // Code required to display leaflet markers with Vue.js Webpack (comments included)
-  // eslint-disable-next-line
-  delete L.Icon.Default.prototype._getIconUrl
-  // eslint-disable-next-line
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png')
-  })
-
   import {buildGeoJsonLayer} from './geoJsonUtil'
 
   export default {
@@ -29,7 +17,8 @@
         map: null,
         geoJsonLayer: null,
         editButton: null,
-        new_location: null
+        new_location: null,
+        showLoading: true
       }
     },
     methods: {
@@ -50,49 +39,68 @@
 
         this.geoJsonLayer = new L.layerGroup().addTo(this.map)
 
-        // Map configuration
-        switch(this.initType) {
-          case 'SEARCH_MAP':
+        new Promise((resolve, reject) => {
+          // Map configuration
+          switch(this.initType) {
+            case 'SEARCH_MAP':
             this.initLocation(this.initialCity, this.initType)
-            this.initSearchControl(this.initType)
-          break;
-          case 'REGISTER_PANEL_MAP':
-            this.initGPSLocationButton(this.initType)
-            this.initSearchControl(this.initType)
-          break;
-          case 'PROFILE_MAP':
-            if (this.enableEditLocationButton) {
-              this.initEditLocationButton()
-            }
-            this.initLocation(this.initialLocation, this.initType)
-          break;
-          default:
-        }
+              .then(() => resolve())
+              .catch((reason) => reject(reason))
+            this.initSearchControl(this.initType) // no need for promise because no async behaviour is present
+            break;
+            case 'REGISTER_PANEL_MAP':
+              this.initGPSLocationButton(this.initType)
+              this.initSearchControl(this.initType)
+              resolve();
+            break;
+            case 'PROFILE_MAP':
+              if (this.enableEditLocationButton) {
+                this.initEditLocationButton() // no need for promise because no async behaviour is present
+              }
+              this.initLocation(this.initialLocation, this.initType)
+                .then(() => resolve())
+                .catch((reason) => reject(reason))
+            break;
+            default:
+          }
+        }).then(() => {
+          this.showLoading = false
+        }).catch(reason => {
+          this.showLoading = false
+          alert("An error occurs during map search. Error description: " + reason)
+          console.log(reason)
+        })
       },
       // Locates map on "initialLocation" location
       initLocation(location, initType) {
         const vm = this;
-        if (initType == 'PROFILE_MAP') {
-          const latLng = L.latLng(location[1], location[0]);
-          this.geoJsonLayer.addLayer(L.marker(latLng).bindPopup("I'm here!", { closeButton: false }));
-          this.map.setView(latLng);
-        } else if (initType == 'SEARCH_MAP') {
-          var geocoder = geocoding.geocodeService();
-          geocoder.geocode().text(this.initialCity).run(function (error, response) {
-            if (error) {
-              console.log(error);
-              return;
-            }
-            if(response.results[0] != null) {
-              const lng = response.results[0].latlng.lng;
-              const lat = response.results[0].latlng.lat;
-              buildGeoJsonLayer(lng, lat, vm.geoJsonLayer);
-              vm.map.fitBounds(response.results[0].bounds);
-            } else {
-              alert("Sorry! No results found")
-            }
-          });
-        }
+        return new Promise((resolve, reject) => {
+          if (initType == 'PROFILE_MAP') {
+            const latLng = L.latLng(location[1], location[0]);
+            this.geoJsonLayer.addLayer(L.marker(latLng).bindPopup("I'm here!", { closeButton: false }));
+            this.map.setView(latLng);
+            resolve();
+          } else if (initType == 'SEARCH_MAP') {
+            var geocoder = geocoding.geocodeService();
+            geocoder.geocode().text(this.initialCity).run(function (error, response) {
+              if (error) {
+                console.log(error);
+                reject(error);
+                return;
+              }
+              if(response.results[0] != null) {
+                const lng = response.results[0].latlng.lng;
+                const lat = response.results[0].latlng.lat;
+                buildGeoJsonLayer(lng, lat, vm.geoJsonLayer)
+                  .then(() => resolve())
+                  .catch((reason) => reject(reason))
+                vm.map.fitBounds(response.results[0].bounds);
+              } else {
+                reject("Geocoder does not found results")
+              }
+            });
+          }
+        })
       },
       // Builds and configures search control
       initSearchControl(initType) {
@@ -109,7 +117,14 @@
           const lat = data.results[0].latlng.lat;
           switch (initType) {
             case 'SEARCH_MAP':
-              buildGeoJsonLayer(lng, lat, vm.geoJsonLayer);
+              vm.showLoading = true;
+              buildGeoJsonLayer(lng, lat, vm.geoJsonLayer)
+                .then(() => vm.showLoading = false)
+                .catch((reason) => {
+                  vm.showLoading = false
+                  alert("An error occurs during map search. Error description: " + reason)
+                  console.log(reason)
+                })
               break;
             case 'REGISTER_PANEL_MAP':
               vm.geoJsonLayer.addLayer(L.marker(data.results[0].latlng).bindPopup("I'm here!", { closeButton: false }));
@@ -181,9 +196,12 @@
       }
     },
     mounted() {
-      // Timeout is required in case of use in MasseurRegisterPanel and MasseurProfilePanel.
-      // It is irrelevant in case of use in SearchVisualizer
-      setTimeout(this.init, 500)
+      if (this.initType == "SEARCH_MAP") {
+        this.init()
+      } else {
+        // Timeout is required in case of use in MasseurRegisterPanel and MasseurProfilePanel bacause of Boostrap.
+        setTimeout(this.init, 500)
+      }
     }
   }
 </script>
@@ -192,6 +210,23 @@
 
 #map {
   height: 100%;
+  display: flex;
+}
+
+.loader {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #17a2b8;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 1s linear infinite;
+  margin: auto;
+  z-index: 9999;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 </style>
