@@ -29,6 +29,11 @@ cd backend
 npm install
 ```
 
+### MongoDB Set Up
+```
+mongoimport --collection municipalities --db mapsage .\municipalities.json
+```
+
 # Run Application:
 
 
